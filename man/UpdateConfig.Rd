@@ -1,0 +1,48 @@
+\name{UpdateConfig}
+\alias{AddConstants}
+\alias{AddDerived}
+\alias{AddNumericConstant}
+\alias{AddNumerics}
+\alias{AddStim}
+\alias{UpdateConfig}
+\title{Modify a \code{StimConfig} list}
+\usage{
+  UpdateConfig(config, level, value)
+
+  AddStim(config, value)
+
+  AddNumerics(config, value)
+
+  AddConstants(config, value)
+
+  AddDerived(config, value)
+
+  AddNumericConstant(config, value)
+}
+\arguments{
+  \item{config}{a \code{StimConfig} list}
+
+  \item{level}{the part of the list to modify: \code{Stim},
+  \code{Numerics}, \code{Constants}, or \code{Derived}}
+
+  \item{value}{the value(s) to append to the StimConfig at
+  the given level.}
+}
+\value{
+  an updated copy of \code{StimConfig}
+}
+\description{
+  Modify a \code{StimConfig} list
+}
+\details{
+  Shortcut functions are provided by \code{AddStim},
+  \code{AddNumerics}, \code{AddConstants},
+  \code{AddNumericConstant}, and \code{AddDerived}.
+
+  Named stimuli need to be wrapped inside of \code{c()}.
+  For example, to add a Dialect constant of "SAE" to
+  \code{config}, use \code{AddConstant(config, c(Dialect =
+  "SAE"))}. This prevents the function from interpreting
+  "\code{Dialect = dialect}" as a function parameter.
+}
+
