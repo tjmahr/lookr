@@ -7,7 +7,6 @@
 
 
 
-
 #' Load and parse a \code{.gazedata} file for a LWL experiment
 #' 
 #' @param gazedata_path Either the full or relative path to the \code{.gazedata}
@@ -153,8 +152,9 @@ Gazedata <- function(gazedata_path, output_file = NULL) {
   # Extract the fields from the basename.
   file_info <- unlist(str_split(file_basename, pattern = "_"))
   task <- file_info[1]
-  block_name <- file_info[2]
-  subject <- file_info[3]
+  block_name <- str_extract(file_basename, "Block[0-9]{1}")
+  subject <- str_extract(file_basename, "[0-9]{3}[CLPD][0-9]{2}[MF][AS][1-9]{1}")
+  
   
   # `block_name` is "Block1" or "Block2" right now. We just want the number.
   block <- as.integer(str_extract(block_name, pattern = "[1-9]"))
