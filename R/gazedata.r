@@ -6,7 +6,6 @@
 
 
 
-
 #' Load and parse a \code{.gazedata} file for a LWL experiment
 #' 
 #' @param gazedata_path Either the full or relative path to the \code{.gazedata}
@@ -163,6 +162,7 @@ Gazedata <- function(gazedata_path, output_file = NULL) {
   gazedata$Task <- task
   gazedata$BlockNo <- block
   gazedata$Subject <- subject
+  gazedata$Basename <- file_basename
 
   # Final steps
   
