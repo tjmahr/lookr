@@ -5,7 +5,6 @@
 
 
 
-
 #' Load and parse a \code{.gazedata} file for a LWL experiment
 #' 
 #' @param gazedata_path Either the full or relative path to the \code{.gazedata}
@@ -167,7 +166,7 @@ Gazedata <- function(gazedata_path, output_file = NULL) {
   # Final steps
   
   # Re-order the columns of gazedata.
-  columns_in_order <- c('Task', 'Subject', 'BlockNo', 'TrialNo', 'Time',
+  columns_in_order <- c('Task', 'Subject', 'BlockNo', 'Basename', 'TrialNo', 'Time',
                         'XLeft', 'XRight', 'XMean', 'YLeft', 'YRight', 'YMean', 
                         'ZLeft', 'ZRight', 'ZMean', 'DiameterLeft', 
                         'DiameterRight', 'DiameterMean')
