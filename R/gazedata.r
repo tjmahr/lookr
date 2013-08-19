@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 #' Load and parse a \code{.gazedata} file for a LWL experiment
 #' 
 #' @param gazedata_path Either the full or relative path to the \code{.gazedata}
@@ -88,7 +81,7 @@
 #' @export
 Gazedata <- function(gazedata_path, output_file = NULL) {
   # Read in the .gazedata file.
-  gazedata <- read.delim(gazedata_path, na.strings = c('-1.#INF', '1.#INF'),
+  gazedata <- read.delim(gazedata_path, na.strings = c('-1.#INF', '1.#INF'), 
                          stringsAsFactors = FALSE)
   
   # The only data that needs to be kept from the .gazedata file are those data
@@ -137,33 +130,12 @@ Gazedata <- function(gazedata_path, output_file = NULL) {
     DiameterMean <- ComputePairMeans(DiameterLeft, DiameterRight)
   })
   
-  # Add informative columns
-  
-  # The basename of a gazedata file for a Looking While Listening task conforms
-  # to the naming convention: `[Task]_[BlockNo]_[SubjectID]`. We extract these
-  # 3 fields and include them in the gazedata.
-  
-  # Get the basename of the gazedata filepath.
-  file_name <- basename(gazedata_path)
-  file_basename <- file_path_sans_ext(file_name)
-  
-  # Extract the fields from the basename.
-  file_info <- unlist(str_split(file_basename, pattern = "_"))
-  task <- file_info[1]
-  block_name <- str_extract(file_basename, "Block[0-9]{1}")
-  subject <- str_extract(file_basename, "[0-9]{3}[CLPD][0-9]{2}[MF][AS][1-9]{1}")
-  
-  
-  # `block_name` is "Block1" or "Block2" right now. We just want the number.
-  block <- as.integer(str_extract(block_name, pattern = "[1-9]"))
-  
-  # Include task, block, and subject info. 
-  gazedata$Task <- task
-  gazedata$BlockNo <- block
-  gazedata$Subject <- subject
-  gazedata$Basename <- file_basename
-
-  # Final steps
+  # Add informative columns from the gazedata filename
+  file_info <- ParseFilename(gazedata_path)
+  gazedata$Task <- file_info$Task
+  gazedata$BlockNo <- file_info$Block
+  gazedata$Subject <- file_info$Subject
+  gazedata$Basename <- file_info$Basename
   
   # Re-order the columns of gazedata.
   columns_in_order <- c('Task', 'Subject', 'BlockNo', 'Basename', 'TrialNo', 'Time',
@@ -185,3 +157,36 @@ Gazedata <- function(gazedata_path, output_file = NULL) {
 }
 
 
+
+
+#' Extract information from a filename
+#' 
+#' The basename of a file in a Looking While Listening task conforms to the 
+#' naming convention: [Task]_[BlockNo]_[SubjectID]. Block names are reduced to 
+#' just the integer value, i.e., \code{"Block1"} becomes \code{1}.
+#' 
+#' @param filename a filename with a pattern like [Task]_[BlockNo]_[SubjectID]
+#' @return a list with \code{Task}, \code{Block},\code{Subject} and
+#'   \code{Basename} fields.
+#'   
+#' @importFrom tools file_path_sans_ext
+#' @import stringr
+#' @export
+ParseFilename <- function(filename) {
+  file_basename <- file_path_sans_ext(basename(filename))
+  
+  # Extract the fields from the basename.
+  file_info <- unlist(str_split(file_basename, pattern = "_"))
+  task <- file_info[1]
+  block_name <- str_extract(file_basename, "Block[0-9]{1}")
+  
+  # `block_name` is "Block1" or "Block2" right now. We just want the number.
+  block <- as.integer(str_extract(block_name, pattern = "[1-9]"))
+  
+  # The [MFX] field includes X to match the files in the dummy/test data
+  subject <- str_extract(file_basename, "[0-9]{3}[CLPD][0-9]{2}[MFX][AS][1-9]{1}")
+  
+  # Bundle these four data together
+  file_info <- list(Task = task, Block = block, Subject = subject, Basename = file_basename)
+  file_info
+}
