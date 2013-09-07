@@ -281,8 +281,7 @@ DetermineStim.Coartic <- function(stimlog) {
               Attention = "Attention", 
               WordGroup = "WordGroup", 
               StimType = "StimType",
-              TargetWord = "TargetWord",
-              Protocol = "WFF_Area") 
+              TargetWord = "TargetWord") 
   
   shared_num <- c(AttentionDur = 'AttentionDur',
                   ImageOnset = 'Image2sec.OnsetTime', 
@@ -331,7 +330,7 @@ DetermineStim.Coartic <- function(stimlog) {
   basename <- attr(stimlog, "Basename")
   
   file_info <- ParseFilename(basename)
-  string_constants <- c(Task = file_info$Task, Subject = file_info$Subject)
+  string_constants <- c(Task = file_info$Task, Subject = file_info$Subject, Protocol = "WFF_Area")
   
   config <- AddConstants(config, string_constants)
   config <- AddNumericConstant(config, c(Block = file_info$Block))
