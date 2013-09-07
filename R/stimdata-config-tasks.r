@@ -275,12 +275,13 @@ DetermineStim.Coartic <- function(stimlog) {
   shared <- c(ImageL = "ImageL", 
               ImageR = "ImageR", 
               Carrier = "Carrier", 
-              Target = 'Target',
+              TargetImage = "Target",
+              Target = 'TargetWord',
               Audio = 'AudioStim',
               Attention = 'Attention', 
               WordGroup = 'WordGroup', 
               StimType = 'StimType',
-              TargetWord = 'TargetWord') 
+              TargetWord = 'TargetWord') ) 
   
   shared_num <- c(AttentionDur = 'AttentionDur',
                   ImageOnset = 'Image2sec.OnsetTime', 
@@ -337,23 +338,6 @@ DetermineStim.Coartic <- function(stimlog) {
   config
   
 }
-
-
-
-
-
-
-DetermineStim.VisWorld <- function(stimlog) {
-  
-  
-  
-  # @todo(tjmahr)
-  
-}
-
-
-
-
 
 
 
