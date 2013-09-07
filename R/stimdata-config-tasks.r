@@ -276,12 +276,13 @@ DetermineStim.Coartic <- function(stimlog) {
               ImageR = "ImageR", 
               Carrier = "Carrier", 
               TargetImage = "Target",
-              Target = 'TargetWord',
-              Audio = 'AudioStim',
-              Attention = 'Attention', 
-              WordGroup = 'WordGroup', 
-              StimType = 'StimType',
-              TargetWord = 'TargetWord') ) 
+              Target = "TargetWord",
+              Audio = "AudioStim",
+              Attention = "Attention", 
+              WordGroup = "WordGroup", 
+              StimType = "StimType",
+              TargetWord = "TargetWord",
+              Protocol = "WFF_Area") 
   
   shared_num <- c(AttentionDur = 'AttentionDur',
                   ImageOnset = 'Image2sec.OnsetTime', 
