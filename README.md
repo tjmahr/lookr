@@ -7,9 +7,9 @@ lookr
 
 
 ### Short-term Tasks
-- [ ] implement `CombineGazeDataAndStimdata`
 - [ ] develop tests for `Stimdata`
 - [ ] document the experiments in `/inst/test/data`
+- [x] implement `CombineGazeDataAndStimdata`
 - [x] implement `Stimdata` function
 - [x] import `Gazedata` function to test out the Roxygen2 style docs on a function 
 - [x] bundle up the test files
