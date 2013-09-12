@@ -202,17 +202,14 @@ FinalizeStimdata.RWL <- function(stimdata) {
 
 
 FinalizeStimdata.Coartic <- function(stimdata) {
-
-  
   # Create a field for the Distractor Image
-  stimdata$DistractorImage <- ifelse(stimdata$Target == "ImageL", 
-                                     "ImageR", "ImageL")
+  stimdata$DistractorImage <- ifelse(stimdata$TargetImage == "ImageL", "ImageR", "ImageL")
   
   # Reorder the stimdata
   first <- c("Task", "DateTime", "Subject", "Block", "TrialNo")
   target_stim <- c("TargetWord")
   place_stim <- c("ImageL", "ImageR")
-  img_stim <- c("Target", "DistractorImage")
+  img_stim <- c("TargetImage", "DistractorImage")
   
   ordering <- c(first, target_stim, place_stim, img_stim)
   stimdata <- ReorderStimdata(stimdata, ordering)
