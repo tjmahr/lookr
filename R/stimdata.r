@@ -223,6 +223,7 @@ Stimdata <- function(stimdata_path, outputFile = NULL) {
   # Finalize stimdata
   class(stimdata) <- c(task, "Stimdata", class(stimdata))
   stimdata <- FinalizeStimdata(stimdata)
+  stimdata$Basename <- file_info$Basename
   
   # Optionally write out stimdata as a tab-delimited table.
   if (!is.null(outputFile)) {
