@@ -6,17 +6,10 @@ lookr
 
 
 
-### Short-term Tasks
+## Tasks
+- [ ] `Session` calls `%@%`. Document and add attributes.r to repo.
 - [ ] develop tests for `Stimdata`
 - [ ] document the experiments in `/inst/test/data`
-- [x] implement `CombineGazeDataAndStimdata`
-- [x] implement `Stimdata` function
-- [x] import `Gazedata` function to test out the Roxygen2 style docs on a function 
-- [x] bundle up the test files
-- [x] include some LWL references
-
-
-### Eventual-term Tasks
 - [ ] include Pat Reidy's original "beta" version scripts under `inst`
 
 
