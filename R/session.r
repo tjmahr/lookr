@@ -1,6 +1,3 @@
-print.Gazedata <- function(...) str(...)
-print.Stimdata <- function(...) str(...)
-
 
 #### Session initialization and methods ---------------------------------------
 
@@ -27,10 +24,11 @@ print.Stimdata <- function(...) str(...)
 #' @return A Session object.
 #' @S3method Session list
 #' @S3method Session character
+#' @export
 Session <- function(...) UseMethod('Session')
 
 #' @method Session list
-#' @rdname Sessions
+#' @rdname Session
 Session.list <- function(list_of_blocks) {
   # Creating a Session object from a list of Block objects is very straight- 
   # forward, conceptually:  All that's really happening is that all the Blocks 
@@ -60,7 +58,7 @@ Session.list <- function(list_of_blocks) {
 } 
 
 #' @method Session character
-#' @rdname Sessions
+#' @rdname Session
 Session.character <- function(session_path) {
   # Get all the .gazedata files that are in the session directory.
   gazedata_files <- dir(session_path, pattern='gazedata', full.names=TRUE)
@@ -161,6 +159,7 @@ Session.character <- function(session_path) {
 #' @S3method Block Gazedata
 #' @S3method Block Stimdata
 #' @S3method Block character
+#' @export
 Block <- function(...) UseMethod('Block')
 
 #' @method Block Gazedata
@@ -179,7 +178,6 @@ Block.Stimdata <- function(stimdata, gazedata) Block(gazedata, stimdata)
 
 #' @method Block character
 #' @rdname Block
-#' @example Block("RealWordListening/TimePoint1/001L/RWL_Block1_001L28FS1") 
 Block.character <- function(block_path) {
   # Initialize the Gazedata object.
   gazedata_path <- sprintf('%s.gazedata', block_path)

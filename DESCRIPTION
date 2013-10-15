@@ -13,3 +13,8 @@ Collate:
     'stimdata-config-tasks.r'
     'stimdata-config.r'
     'stimdata-finalize.r'
+    'attributes.r'
+    'oop.r'
+    'prime.r'
+    'session.r'
+    'options.r'
