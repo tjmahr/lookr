@@ -4,15 +4,6 @@
 
 
 
-library(plyr)
-library(stringr)
-library(lubridate)
-library(tools)
-
-
-
-
-
 #' Open a stimulus log file outputted by Eprime
 #' 
 #' @param stimdata_path Either the full or relative path to the \code{.txt} file
@@ -116,7 +107,7 @@ LoadStimdataFile <- function(stimdata_path) {
 
 
 
-
+#' @importFrom lubridate mdy hms
 ExtractStim <- function(stim_config, stimlog) {
   # Get the values from the stimdata file
   stim <- stim_config$Stim

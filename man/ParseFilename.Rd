@@ -5,12 +5,12 @@
   ParseFilename(filename)
 }
 \arguments{
-  \item{filename}{a filename with the pattern
+  \item{filename}{a filename with a pattern like
   [Task]_[BlockNo]_[SubjectID]}
 }
 \value{
-  a list with \code{Task}, \code{Block}, and \code{Subject}
-  fields.
+  a list with \code{Task}, \code{Block},\code{Subject} and
+  \code{Basename} fields.
 }
 \description{
   The basename of a file in a Looking While Listening task

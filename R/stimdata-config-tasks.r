@@ -1,35 +1,3 @@
-#' Extract information from a filename
-#' 
-#' The basename of a file in a Looking While Listening task conforms to the 
-#' naming convention: [Task]_[BlockNo]_[SubjectID]. Block names are reduced to 
-#' just the integer value, i.e., \code{"Block1"} becomes \code{1}.
-#' 
-#' @param filename a filename with a pattern like [Task]_[BlockNo]_[SubjectID]
-#' @return a list with \code{Task}, \code{Block},\code{Subject} and
-#'   \code{Basename} fields.
-#'   
-#' @importFrom tools file_path_sans_ext
-#' @import stringr
-#' @export
-ParseFilename <- function(filename) {
-  file_basename <- file_path_sans_ext(basename(filename))
-  
-  # Extract the fields from the basename.
-  file_info <- unlist(str_split(file_basename, pattern = "_"))
-  task <- file_info[1]
-  block_name <- str_extract(file_basename, "Block[0-9]{1}")
-  
-  # `block_name` is "Block1" or "Block2" right now. We just want the number.
-  block <- as.integer(str_extract(block_name, pattern = "[1-9]"))
-  
-  # The [MFX] field includes X to match the files in the dummy/test data
-  subject <- str_extract(file_basename, "[0-9]{3}[CLPD][0-9]{2}[MFX][AS][1-9]{1}")
-  
-  # Bundle these four data together
-  file_info <- list(Task = task, Block = block, Subject = subject, Basename = file_basename)
-  file_info
-}
-
 
 GetDialectCode <- function(filename) {
   # Look for subject identifier substring

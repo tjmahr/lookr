@@ -1,44 +1,49 @@
-#' Manipulate attributes of objects
+#' Get or set attributes of an object
 #' 
-#' `%@@%` is a utility function for getting the value of an attribute from an R 
-#' object. This is a wrapper for the built-in function `attr`.
+#' \code{\%@@\%} is an infix-form wrapper for the \code{attr} function.
 #' 
-#' `%@@%.list` applies `%@@%` onto each object in a list of R objects. Therefore, 
-#' `%@@%` cannot grab attributes of lists, unless they are lists within lists. 
-#' This is weird; maybe I should fix this.
+#' @details
+#' \code{\%@@\%} is a utility function for getting the value of an attribute from 
+#' an R object. This is a wrapper for the built-in function \code{attr}. 
+#' \code{\%@@\%.list} applies \code{\%@@\%} onto each object in a list of R objects.
+#' Therefore, \code{\%@@\%} cannot grab attributes of lists, unless they are lists
+#' within lists. This is weird; maybe I should fix this.
 #' 
-#' @usage `%@@%` should be written as infix (like a division sign)
-#'   
-#' @param object An R object with attributes
+#' @param x An object with attributes
+#' @param xs A list of objects (with attributes).
 #' @param attribute A character string that names an attribute of the object.
 #' @return The value in the attribute slot of object, or the values of the 
 #'   attribute for each element element in a list.
 #'   
+#' @name attributes
+#' @rdname attributes
 #' @S3method '%@@%' default
 #' @S3method '%@@%' list
 #' @export
-`%@%` <- function(object, attribute) UseMethod('%@%')
-
-#' @method '%@@%' default
-#' @rdname '%@@%'
-`%@%.default` <- function(object, attribute) attr(object, attribute)
-
-#' @method '%@@%' list
-#' @rdname '%@@%'
-#' @param xs A list of objects (with attributes).
+#' 
 #' @examples
 #' MakeCat <- function(name, owner) { 
 #'  structure(list(Name = name), Owner = owner, class = "cat")
 #' }
+#' 
 #' kiki <- MakeCat("Kiki", "AML")
 #' nooper <- MakeCat("Nooper", "TJM")
-#' kiki %@% "Owner"
+#' 
+#' kiki %@@% "Owner"
 #' # [1] "AML"
-#' list(nooper, kiki) %@% "Owner"
+#' 
+#' list(nooper, kiki) %@@% "Owner"
 #' # [1] "TJM" "AML"
-#' nooper %@% "Owner" <- NA
-#' list(nooper, kiki) %@% "Owner"
+#' 
+#' nooper %@@% "Owner" <- NA
+#' list(nooper, kiki) %@@% "Owner"
 #' # [1] NA    "AML"
+`%@%` <- function(x, attribute) UseMethod('%@%')
+
+#' @rdname attributes
+`%@%.default` <- function(x, attribute) attr(x, attribute)
+
+#' @rdname attributes
 `%@%.list` <- function(xs, attribute) {
   sapply(xs, function(x) attr(x, attribute))
 }
@@ -61,7 +66,9 @@
 #              object.
 # Returns:
 #   Nothing.  Rather, the attribute slot of object is modified in place.
+
 #' @export
+#' @rdname attributes
 `%@%<-` <- function(object, attribute, value) `attr<-`(object, attribute, value)
 
 

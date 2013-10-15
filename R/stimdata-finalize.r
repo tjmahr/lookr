@@ -218,15 +218,3 @@ FinalizeStimdata.Coartic <- function(stimdata) {
 }
 
 
-
-
-
-# FinalizeStimdata.VisWorld <- function(stimdata) { }
-
-
-
-
-
-
-
-

@@ -1,20 +1,23 @@
 Package: lookr
-Title: Tools to analyze Looking-While-Listening eyetracking experiments
-Version: 0.1.0
-Date: 2013-04-13
+Title: 
+Description: 
+Version: 0.1
 Author: Tristan Mahr
 Maintainer: Tristan Mahr <mahr@wisc.edu>
-Description: 
+Depends:
+    R (>= 3.0.1)
 License: MIT
+LazyData: true
 Collate:
-    'lookr.r'
+    'attributes.r'
     'gazedata.r'
-    'stimdata.r'
+    'lookr-package.r'
+    'lookr.r'
+    'oop.r'
+    'options.r'
+    'prime.r'
+    'session.r'
     'stimdata-config-tasks.r'
     'stimdata-config.r'
     'stimdata-finalize.r'
-    'attributes.r'
-    'oop.r'
-    'prime.r'
-    'session.r'
-    'options.r'
+    'stimdata.r'

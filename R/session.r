@@ -1,6 +1,3 @@
-
-#### Session initialization and methods ---------------------------------------
-
 #' Combine Blocks into Sessions
 #' 
 #' Session is a generic function for initializing a Session object, which

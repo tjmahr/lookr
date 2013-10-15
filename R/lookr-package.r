@@ -2,5 +2,5 @@
 #'
 #' @name lookr
 #' @docType package
-#' @import plyr tools stringr lubridate
+#' @import plyr stringr
 NULL
