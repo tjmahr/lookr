@@ -12,7 +12,7 @@
 #'   for restoring the original default values.
 #'   
 #' @examples
-#' lwl_opts <- .MakeNewDefaults(list(
+#' lwl_opts <- MakeNewDefaults(list(
 #'   interpolation_window = 100, 
 #'   timeslice_start = -200, 
 #'   timeslice_end = 2000
@@ -44,7 +44,7 @@
 #' # 
 #' # $timeslice_end
 #' # [1] 2000
-.MakeNewDefaults <- function(value = list()) {
+MakeNewDefaults <- function(value = list()) {
   # Hang onto the default values passed into this function
   defaults <- value
   
@@ -69,13 +69,13 @@
     invisible(NULL)
   }
 
-  merge <- function(values) MergeLists(defaults, values)
+  merge <- function(values) merge_lists(defaults, values)
   restore <- function(target = value) defaults <<- target
     
   list(get = get, set = set, merge = merge, restore = restore)
 }
 
-MergeLists <- function(x, y) {
+merge_lists <- function(x, y) {
   x[names(y)] <- y
   x
 }
