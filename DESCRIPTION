@@ -12,7 +12,6 @@ Collate:
     'attributes.r'
     'gazedata.r'
     'lookr-package.r'
-    'lookr.r'
     'oop.r'
     'options.r'
     'prime.r'

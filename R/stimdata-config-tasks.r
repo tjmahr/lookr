@@ -1,7 +1,7 @@
 
 GetDialectCode <- function(filename) {
   # Look for subject identifier substring
-  pattern <- "[0-9]{3}[CLP][0-9]{2}[MF][SA][1-9]"
+  pattern <- "[0-9]{3}[CLP][0-9]{2}[MFX][SA][1-9]"
   sub_id <- str_extract(filename, pattern)
   # Pull the second to last character
   code <- str_sub(sub_id, nchar(sub_id) - 1, nchar(sub_id) - 1)

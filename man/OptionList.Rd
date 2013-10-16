@@ -1,0 +1,67 @@
+\name{OptionList}
+\alias{OptionList}
+\title{Make an Option List}
+\usage{
+  OptionList(value = list())
+}
+\arguments{
+  \item{value}{a list of options and their respective
+  values}
+}
+\value{
+  an \code{OptionList} containing four functions:
+  \code{$get(name, default = FALSE)} to get the value of an
+  option name, \code{$set(...)} for setting option values,
+  \code{$merge(values)} for internally merging lists of
+  options, \code{$restore(...)} for restoring the original
+  default values.
+}
+\description{
+  This function was copied from
+  \href{https://github.com/yihui/knitr/blob/master/R/defaults.R}{\code{knitr:::new_defaults}}.
+  It encloses the default values inside of a list's
+  environment and uses functions stored in that list to
+  manipulate and retrieve those defaults.
+}
+\examples{
+lwl_opts <- OptionList(list(
+  interpolation_window = 100,
+  timeslice_start = -200,
+  timeslice_end = 2000
+))
+
+lwl_opts$get()
+# $interpolation_window
+# [1] 100
+#
+# $timeslice_start
+# [1] -200
+#
+# $timeslice_end
+# [1] 2000
+
+# Set new values
+lwl_opts$set(interpolation_window = 200, timeslice_start = 250)
+lwl_opts$get("interpolation_window")
+# [1] 200
+
+# Get the default window value
+lwl_opts$get("interpolation_window", default = TRUE)
+# $interpolation_window
+# [1] 100
+
+# Restore defaluts
+lwl_opts$restore()
+
+# The `print(...)` method for an `OptionList` just prints `$get(...)`
+lwl_opts
+# $interpolation_window
+# [1] 100
+#
+# $timeslice_start
+# [1] -200
+#
+# $timeslice_end
+# [1] 2000
+}
+

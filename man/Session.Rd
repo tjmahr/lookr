@@ -1,14 +1,11 @@
 \name{Session}
 \alias{Session}
 \alias{Session.character}
-\alias{Session.list}
 \title{Combine Blocks into Sessions}
 \usage{
   Session(...)
 
-  \method{Session}{list} (list_of_blocks)
-
-  \method{Session}{character} (session_path)
+  Session.character(session_path)
 }
 \arguments{
   \item{list_of_blocks}{A list of Block objects, each Block
