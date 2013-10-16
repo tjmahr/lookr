@@ -1,4 +1,4 @@
-#' Make an options list
+#' Make an Option List
 #' 
 #' This function was copied from 
 #' [`knitr:::new_defaults`](https://github.com/yihui/knitr/blob/master/R/defaults.R).
@@ -6,13 +6,13 @@
 #' functions stored in that list to manipulate and retrieve those defaults.
 #' 
 #' @param value a list of options and their respective values
-#' @return list of four functions: `$get(name, default = FALSE)` to get the 
-#'   value of an option name, `$set(...)` for setting option values, 
-#'   `$merge(values)` for internally merging lists of options, `$restore(...)` 
-#'   for restoring the original default values.
+#' @return an OptionList containing four functions: `$get(name, default =
+#'   FALSE)` to get the value of an option name, `$set(...)` for setting option
+#'   values, `$merge(values)` for internally merging lists of options,
+#'   `$restore(...)` for restoring the original default values.
 #'   
 #' @examples
-#' lwl_opts <- MakeNewDefaults(list(
+#' lwl_opts <- OptionList(list(
 #'   interpolation_window = 100, 
 #'   timeslice_start = -200, 
 #'   timeslice_end = 2000
@@ -33,6 +33,11 @@
 #' lwl_opts$get("interpolation_window")
 #' # [1] 200
 #' 
+#' # Get the default window value
+#' lwl_opts$get("interpolation_window", default = TRUE)
+#' # $interpolation_window
+#' # [1] 100
+#' 
 #' # Restore defaluts
 #' lwl_opts$restore()
 #' lwl_opts$get()
@@ -44,7 +49,7 @@
 #' # 
 #' # $timeslice_end
 #' # [1] 2000
-MakeNewDefaults <- function(value = list()) {
+OptionList <- function(value = list()) {
   # Hang onto the default values passed into this function
   defaults <- value
   
@@ -68,11 +73,12 @@ MakeNewDefaults <- function(value = list()) {
     defaults <<- merge(dots)
     invisible(NULL)
   }
-
+  
   merge <- function(values) merge_lists(defaults, values)
   restore <- function(target = value) defaults <<- target
-    
-  list(get = get, set = set, merge = merge, restore = restore)
+  
+  structure(list(get = get, set = set, merge = merge, restore = restore), 
+            class = "OptionList")
 }
 
 merge_lists <- function(x, y) {
