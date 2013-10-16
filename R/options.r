@@ -1,15 +1,15 @@
 #' Make an Option List
 #' 
 #' This function was copied from 
-#' [`knitr:::new_defaults`](https://github.com/yihui/knitr/blob/master/R/defaults.R).
+#' \href{https://github.com/yihui/knitr/blob/master/R/defaults.R}{\code{knitr:::new_defaults}}.
 #' It encloses the default values inside of a list's environment and uses 
 #' functions stored in that list to manipulate and retrieve those defaults.
 #' 
 #' @param value a list of options and their respective values
-#' @return an OptionList containing four functions: `$get(name, default =
-#'   FALSE)` to get the value of an option name, `$set(...)` for setting option
-#'   values, `$merge(values)` for internally merging lists of options,
-#'   `$restore(...)` for restoring the original default values.
+#' @return an \code{OptionList} containing four functions: \code{$get(name,
+#'   default = FALSE)} to get the value of an option name, \code{$set(...)} for
+#'   setting option values, \code{$merge(values)} for internally merging lists
+#'   of options, \code{$restore(...)} for restoring the original default values.
 #'   
 #' @examples
 #' lwl_opts <- OptionList(list(
@@ -40,7 +40,9 @@
 #' 
 #' # Restore defaluts
 #' lwl_opts$restore()
-#' lwl_opts$get()
+#' 
+#' # The `print(...)` method for an `OptionList` just prints `$get(...)`
+#' lwl_opts
 #' # $interpolation_window
 #' # [1] 100
 #' # 
@@ -81,7 +83,22 @@ OptionList <- function(value = list()) {
             class = "OptionList")
 }
 
+
 merge_lists <- function(x, y) {
   x[names(y)] <- y
   x
 }
+
+
+#' Print an option list
+#' 
+#' This function just wraps a call to \code{$get(...)}. \code{print(lwl_opts)} 
+#' gives the same results as \code{lwl_opts$get()}
+#' 
+#' @param ... parameters passed to the Option List's \code{$get(...)} internal 
+#'   method. If blank, get everything. If a specific slot is named, get that. If
+#'   \code{default = TRUE}, get the defaults.
+#'   
+#' @method print OptionList
+#' @export
+print.OptionList <- function(option_list, ...) print(option_list$get(...))
