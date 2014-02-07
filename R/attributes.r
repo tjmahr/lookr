@@ -22,12 +22,12 @@
 #' @export
 #' 
 #' @examples
-#' MakeCat <- function(name, owner) { 
+#' Cat <- function(name, owner) { 
 #'  structure(list(Name = name), Owner = owner, class = "cat")
 #' }
 #' 
-#' kiki <- MakeCat("Kiki", "AML")
-#' nooper <- MakeCat("Nooper", "TJM")
+#' kiki <- Cat("Kiki", "AML")
+#' nooper <- Cat("Nooper", "TJM")
 #' 
 #' kiki %@@% "Owner"
 #' # [1] "AML"
