@@ -1,0 +1,170 @@
+```{r, echo = FALSE}
+library(lookr)
+```
+
+Data Structures and Abstractions
+===============================================================================
+
+In this doc, I discuss what makes up our eye-tracking data and the main levels of abstraction that we use to contain the data.
+
+
+Eye-tracking data
+-------------------------------------------------------------------------------
+
+Here are the files that make up a single subject's eye-tracking data. This participant received two blocks of the coarticulation experiment.
+
+```{r}
+data_files <- list.files("data/Coartic_WFFArea_2a/001P00XS1/")
+data_files
+```
+
+Each experimental block produces a `.txt` file and a `.gazedata` file. These two files contain all the pertinent experimental data for an eye-tracking block. During an experiment, Eprime also produces an `.edat` file, but that file is unusable outside of Eprime so we ignore it.
+
+The `.txt` and `.gazedata` files for a block should have the same basename (i.e., the same filename, except for the file extension). When we truncate the file extensions, we see that we only have two unique filenames, one for each block of data.
+
+```{r}
+unique(tools::file_path_sans_ext(data_files))
+```
+
+### Stimdata
+
+The `.txt` file for a block is the _Stimdata_ file. It contains information about each experimental trial (like stimulus presentation or event timing). Eprime generates this file, and it's not pretty. Here is a single trial, as recorded in the file.
+
+```
+		*** LogFrame Start ***
+		TrialList: 1
+		Procedure: TrialProcedure
+		ImageL: BoardBook1
+		ImageR: StuffedDog1
+		Carrier: Where
+		Target: ImageL
+		Pitch: hi
+		AudioStim: Whe_hi_the_V_Book_neut
+		Attention: AN_LookAtThat
+		AudioDur: 2190
+		AttentionDur: 1500
+		WordGroup: dog-book
+		StimType: neutral
+		TargetWord: book
+		Running: TrialList
+		TrialList.Cycle: 1
+		TrialList.Sample: 1
+		Image2sec.OnsetTime: 37347
+		Image2sec.StartTime: 37324
+		Fixation.OnsetDelay: 39
+		Fixation.OnsetTime: 38902
+		Fixation.StartTime: 38893
+		Target.OnsetDelay: 0
+		Target.OnsetTime: 39353
+		Target.StartTime: 39289
+		Wait1SecFirst.OnsetDelay: 0
+		Wait1SecFirst.OnsetTime: 41543
+		Wait1SecFirst.StartTime: 41543
+		Attention.OnsetDelay: 3
+		Attention.OnsetTime: 42546
+		Attention.StartTime: 42343
+		*** LogFrame End ***
+```
+
+The `Stimdata()` function extracts and massages the pertinent experimental information from the stimdata file into a dataframe. The massaging process is complex and kind of a pain, but it handles the many iterations of our eye-tracking experiments: It determines which task is being performed and with which stimulus presentation protocol, and it adjusts the timing attributes accordingly. If we design and implement a new experiment or a new version of an existing experiment, I usually edit the backend of `Stimdata()` function to account for the new experiment.
+
+Anyway, in the output of `Stimdata()`, each row of the dataframe represents the attributes of an experimental trial. 
+
+```{r}
+stim_path <- "data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block1_001P00XS1.txt"
+stimdata <- Stimdata(stim_path)
+str(stimdata)
+```
+
+
+### Gazedata
+
+The `.gazedata` file contains tab-delimited _Gazedata_ from the eye-tracker for the entire block. 
+
+```{r}
+gaze_path <- "data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block1_001P00XS1.gazedata"
+raw_gaze <- read.delim(gaze_path, na.strings = c("-1.#INF", "1.#INF"), 
+                       stringsAsFactors = FALSE)
+str(raw_gaze)
+```
+
+We don't need all these columns [TODO document these variables], so `Gazedata()` keeps just the ones we care about. The function also computes the monocular averages for each gaze-data variable, combining avaialble data from the left and right eyes. 
+
+```{r}
+gazedata <- Gazedata(gaze_path)
+str(gazedata)
+```
+
+Sometimes only one of the eyes is tracked, so we use data from the available eye to compute the monocular average, as shown in the example below. Some researchers advise against this kind of interpolation [citation TODO]. 
+
+```{r}
+xmean_from_right <- subset(gazedata[c("XLeft", "XRight", "XMean")], 
+                           is.na(XLeft) & !is.na(XRight))
+head(xmean_from_right)
+```
+
+
+Trials, Blocks and Sessions
+-------------------------------------------------------------------------------
+
+### Block
+
+Now that we have the stimdata for each trial and the gazedata from the whole block, we can combine these two together using `Block()`. This function slices up the gazedata, creating a dataframe for each trial. The stimulus properties for each trial are attached to the trial as attributes. The gazedata dataframe and attached stimdata make up a `Trial` object. The code below shows the structure of a single trial.
+
+```{r}
+block <- Block(gazedata, stimdata)
+trial <- block[[1]]
+str(trial)
+```
+
+### ToTarget
+
+When the stimdata and gazedata are combined, six new columns are also produced. The columns all end in `ToTarget` and they describe the screen location of the gaze in terms of proximity to the target image. That is, plain-old `XMean` describes the location of the gaze such that 0 is the left side of the screen and 1 is the right side. In the `trial` above, the target word is on the left side of the screen, so small `XMean` values are closer to the left side of the screen and hence closer to the target. In `XMeanToTarget`, the `XMean` values are flipped so that greater values are closer to the target image. Essentially, the target image becomes the right image for all trials. This kind of normalization is useful if we want to look at the gaze-location with respect to the target image over several trials.
+
+```{r, warning = FALSE}
+# the added columns
+grep("ToTarget", names(trial), value = TRUE)
+library(ggplot2)
+# default plot
+qplot(data = trial, x = Time, y = XMean) + labs(title = "Raw XMean value")
+qplot(data = trial, x = Time, y = XMeanToTarget) + 
+  labs(title = "XMean flipped towards target")
+```
+
+### Working with attributes with `%@%` 
+
+A `Block` is a list of `Trial` objects. We can access the attributes of multiple trials using the `%@%` function.
+
+```{r}
+block %@% "TargetWord"
+block %@% "TargetImage"
+block %@% "TargetOnset"
+```
+
+The attribute-infix function `%@%` can also be used on single trials to get _and set_ their attribute values.
+
+```{r}
+trial %@% "TargetWord"
+trial %@% "TargetImage"
+```
+
+Here's how one can use `%@%` to manually adjust the timing of trials so that the TargetOnset occurs at 0ms. You should never have to manually do this, because the `AlignTrials` functions does this for you.
+
+```{r, warning = FALSE}
+trial$Time <- trial$Time - (trial %@% "TargetOnset")
+trial %@% "TargetOnset" <- 0
+qplot(data = trial, x = Time, y = XMeanToTarget, xlim = c(-800, 1500)) + 
+  labs(title = "Looking to target with adjusted time values\n(Don't ever do this manually!)")
+```
+
+### Session
+
+
+### Task
+
+***
+
+```{r}
+Sys.time()
+sessionInfo()
+```

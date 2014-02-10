@@ -2,26 +2,26 @@
 \alias{OptionList}
 \title{Make an Option List}
 \usage{
-  OptionList(value = list())
+OptionList(value = list())
 }
 \arguments{
   \item{value}{a list of options and their respective
   values}
 }
 \value{
-  an \code{OptionList} containing four functions:
-  \code{$get(name, default = FALSE)} to get the value of an
-  option name, \code{$set(...)} for setting option values,
-  \code{$merge(values)} for internally merging lists of
-  options, \code{$restore(...)} for restoring the original
-  default values.
+an \code{OptionList} containing four functions:
+\code{$get(name, default = FALSE)} to get the value of an
+option name, \code{$set(...)} for setting option values,
+\code{$merge(values)} for internally merging lists of
+options, \code{$restore(...)} for restoring the original
+default values.
 }
 \description{
-  This function was copied from
-  \href{https://github.com/yihui/knitr/blob/master/R/defaults.R}{\code{knitr:::new_defaults}}.
-  It encloses the default values inside of a list's
-  environment and uses functions stored in that list to
-  manipulate and retrieve those defaults.
+This function was copied from
+\href{https://github.com/yihui/knitr/blob/master/R/defaults.R}{\code{knitr:::new_defaults}}.
+It encloses the default values inside of a list's
+environment and uses functions stored in that list to
+manipulate and retrieve those defaults.
 }
 \examples{
 lwl_opts <- OptionList(list(

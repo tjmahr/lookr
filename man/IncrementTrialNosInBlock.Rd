@@ -1,0 +1,23 @@
+\name{IncrementTrialNosInBlock}
+\alias{IncrementTrialNosInBlock}
+\title{Increment trial numbers for a whole block of Trials}
+\usage{
+IncrementTrialNosInBlock(block, increment)
+}
+\arguments{
+  \item{block}{A Block object}
+
+  \item{increment}{An integer that will be added to the
+  TrialNo attribute of each Trial in block.}
+}
+\value{
+A Block object that is identical to block, except that the
+TrialNo attributes of the Trials in it have been modified.
+}
+\description{
+IncrementTrialNosInBlock is a utility function for
+incrementing by a fixed number, the trial number of each
+Trial object in a Block.
+}
+\keyword{internal}
+

@@ -2,8 +2,8 @@
 \alias{MakeStimdataConfig}
 \title{Make a stimdata configuration}
 \usage{
-  MakeStimdataConfig(named_stim, numerics = NULL,
-    constants = NULL, derived = NULL)
+MakeStimdataConfig(named_stim, numerics = NULL, constants = NULL,
+  derived = NULL)
 }
 \arguments{
   \item{named_stim}{a character vector of named values that
@@ -21,12 +21,12 @@
   description.}
 }
 \value{
-  a list with the class \code{StimConfig}. This list has
-  four slots: \code{Stim}, \code{Numerics},
-  \code{Constants}, and \code{Derived}.
+a list with the class \code{StimConfig}. This list has four
+slots: \code{Stim}, \code{Numerics}, \code{Constants}, and
+\code{Derived}.
 }
 \description{
-  \code{MakeStimdataConfig} specifies how
-  \code{ExtractStim} processes an Eprime stimdata file.
+\code{MakeStimdataConfig} specifies how \code{ExtractStim}
+processes an Eprime stimdata file.
 }
 

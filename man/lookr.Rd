@@ -4,7 +4,9 @@
 \alias{lookr-package}
 \title{Tools to analyze looking-while-listening eyetracking experiments}
 \description{
-  Tools to analyze looking-while-listening eyetracking
-  experiments
+Tools to analyze looking-while-listening eyetracking
+experiments
+
+lookr.
 }
 

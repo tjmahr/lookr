@@ -1,0 +1,24 @@
+\name{CombineGazedataStimdata}
+\alias{CombineGazedataStimdata}
+\title{Combine Gazedata and Stimdata}
+\usage{
+CombineGazedataStimdata(gazedata, stimdata)(trial_number)
+}
+\arguments{
+  \item{gazedata}{A Gazedata object.}
+
+  \item{stimdata}{A Stimdata object.}
+
+  \item{trial_number}{The trial number of the trial whose
+  gazedata and stimdata will be combined.}
+}
+\value{
+A data.frame of the gazedata, augmented with attributes for
+the stimdata.
+}
+\description{
+CombineGazedataStimdata is a utility function for combining
+the gazedata and stimdata of a single trial from a Gazedata
+and Stimdata object. This function is curried.
+}
+

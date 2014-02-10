@@ -7,17 +7,17 @@
 \alias{UpdateConfig}
 \title{Modify a \code{StimConfig} list}
 \usage{
-  UpdateConfig(config, level, value)
+UpdateConfig(config, level, value)
 
-  AddStim(config, value)
+AddStim(config, value)
 
-  AddNumerics(config, value)
+AddNumerics(config, value)
 
-  AddConstants(config, value)
+AddConstants(config, value)
 
-  AddDerived(config, value)
+AddDerived(config, value)
 
-  AddNumericConstant(config, value)
+AddNumericConstant(config, value)
 }
 \arguments{
   \item{config}{a \code{StimConfig} list}
@@ -29,20 +29,20 @@
   the given level.}
 }
 \value{
-  an updated copy of \code{StimConfig}
+an updated copy of \code{StimConfig}
 }
 \description{
-  Modify a \code{StimConfig} list
+Modify a \code{StimConfig} list
 }
 \details{
-  Shortcut functions are provided by \code{AddStim},
-  \code{AddNumerics}, \code{AddConstants},
-  \code{AddNumericConstant}, and \code{AddDerived}.
+Shortcut functions are provided by \code{AddStim},
+\code{AddNumerics}, \code{AddConstants},
+\code{AddNumericConstant}, and \code{AddDerived}.
 
-  Named stimuli need to be wrapped inside of \code{c()}.
-  For example, to add a Dialect constant of "SAE" to
-  \code{config}, use \code{AddConstant(config, c(Dialect =
-  "SAE"))}. This prevents the function from interpreting
-  "\code{Dialect = dialect}" as a function parameter.
+Named stimuli need to be wrapped inside of \code{c()}. For
+example, to add a Dialect constant of "SAE" to
+\code{config}, use \code{AddConstant(config, c(Dialect =
+"SAE"))}. This prevents the function from interpreting
+"\code{Dialect = dialect}" as a function parameter.
 }
 
