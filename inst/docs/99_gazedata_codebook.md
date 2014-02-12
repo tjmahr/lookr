@@ -42,13 +42,14 @@ The main eye-tracking variables are straightforward. (Descriptions adapted from 
 - **DiameterPupilLeftEye**: Size (mm) of the left pupil.
 - **DistanceLeftEye**: Distance (mm) from eyetracker to left eye.
 
-The **Validity Codes** are described in detail in the [Timing Guide for Tobii Eye Trackers white paper](http://www.tobii.com/Global/Analysis/Training/WhitePapers/Tobii_Eye_Tracking_Timing_whitepaper.pdf).
+The **Validity Codes** are described in detail in the [Timing Guide for Tobii Eye Trackers white paper](http://www.tobii.com/Global/Analysis/Training/WhitePapers/Tobii_Eye_Tracking_Timing_whitepaper.pdf):
 
-> The TET Server provides validity codes for each eye with every gaze data point. The validity code is a measure of the system’s certainty that it has recorded the correct data. The validity code ranges from 0 to 4, with the 
-following interpretations for each value: 
-* 0 The system is certain that it has recorded all relevant data for the particular eye, and that the data recorded belongs to the particular eye (no risk of confusing left eye with right eye by the system). 
-* 1 The system has only recorded one eye, and has made some assumptions and estimations regarding if the recorded eye is left or right. However, it is still highly probable that the estimations done are correct. The validity code on the other eye is in this case always set to 3. 
-* 2 The system has only recorded one eye, and has no way of determining if this is the left or the right eye. 
-* 3 The system is confident that the actual gaze data is actually incorrect or corrupted. The other eye will always have validity code 1. 
-* 4 The actual gaze data is missing or definitely incorrect. A couple of gaze data with validity code 4 on both eyes, followed by a number of gaze data with validity code 0 on both eyes, are usually a sure sign of a blink. 
-During search mode each sample that does not contain information on eye position is marked as a non valid data point. It is recommended that the validity codes are always used for data filtering, to remove data points  which are obviously incorrect. For most studies, we recommend removing all data points with a validity code of 2 or higher.
+> The TET Server provides validity codes for each eye with every gaze data point. The validity code is a measure of the system’s certainty that it has recorded the correct data. The validity code ranges from 0 to 4, with the 
+following interpretations for each value: 
+* 0 The system is certain that it has recorded all relevant data for the particular eye, and that the data recorded belongs to the particular eye (no risk of confusing left eye with right eye by the system). 
+* 1 The system has only recorded one eye, and has made some assumptions and estimations regarding if the recorded eye is left or right. However, it is still highly probable that the estimations done are correct. The validity code on the other eye is in this case always set to 3. 
+* 2 The system has only recorded one eye, and has no way of determining if this is the left or the right eye. 
+* 3 The system is confident that the actual gaze data is actually incorrect or corrupted. The other eye will always have validity code 1. 
+* 4 The actual gaze data is missing or definitely incorrect. A couple of gaze data with validity code 4 on both eyes, followed by a number of gaze data with validity code 0 on both eyes, are usually a sure sign of a blink. 
+
+> During search mode each sample that does not contain information on eye position is marked as a non valid data point. It is recommended that the validity codes are always used for data filtering, to remove data points  which are obviously incorrect. For most studies, we recommend removing all data points with a validity code of 2 or higher.
