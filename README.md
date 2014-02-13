@@ -4,9 +4,6 @@ lookr
 `lookr` will provide a set of tools for analyzing looking-while-listening eyetracking experiments performed by the [Learning to Talk](http://learningtotalk.org/) project. 
 
 ## Tasks
-- [ ] `Session` calls `%@%`. Document and add attributes.r to repo.
-- Testing: 
-    - [ ] does the `Session` function work for the deidentified test-data? Might need to adjust regexes then test Session on each test session.
 - [ ] develop tests for `Stimdata`
 - [ ] document the experiments in `/inst/test/data`
 - [ ] include Pat Reidy's original "beta" version scripts under `inst`
