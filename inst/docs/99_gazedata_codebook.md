@@ -42,7 +42,11 @@ The main eye-tracking variables are straightforward. (Descriptions adapted from 
 - **DiameterPupilLeftEye**: Size (mm) of the left pupil.
 - **DistanceLeftEye**: Distance (mm) from eyetracker to left eye.
 
-The **Validity Codes** are described in detail in the [Timing Guide for Tobii Eye Trackers white paper](http://www.tobii.com/Global/Analysis/Training/WhitePapers/Tobii_Eye_Tracking_Timing_whitepaper.pdf):
+
+Validity Codes
+-------------------------------------------------------------------------------
+
+The validity codes are described in detail in the [Timing Guide for Tobii Eye Trackers white paper](http://www.tobii.com/Global/Analysis/Training/WhitePapers/Tobii_Eye_Tracking_Timing_whitepaper.pdf):
 
 > The TET Server provides validity codes for each eye with every gaze data point. The validity code is a measure of the system’s certainty that it has recorded the correct data. The validity code ranges from 0 to 4, with the 
 following interpretations for each value: 
@@ -53,3 +57,16 @@ following interpretations for each value:
 * 4 The actual gaze data is missing or definitely incorrect. A couple of gaze data with validity code 4 on both eyes, followed by a number of gaze data with validity code 0 on both eyes, are usually a sure sign of a blink. 
 
 > During search mode each sample that does not contain information on eye position is marked as a non valid data point. It is recommended that the validity codes are always used for data filtering, to remove data points  which are obviously incorrect. For most studies, we recommend removing all data points with a validity code of 2 or higher.
+
+Here are the possible combinations of validity codes. Table adapted from the [Tobii Toolbox for Matlab](http://www.tobii.com/Global/Analysis/Downloads/Product_Descriptions/Tobii_Toolbox_for_Matlab_Product_Description.pdf) guide.
+
+Left eye code | Right eye code | Eyes detected | Eye identification 
+:-----------: | :------------: | :-----------: | :--------------------:
+0             | 0              | Both          | Correctly identified 
+4             | 0              | Right         | Correctly identified 
+0             | 4              | Left          | Correctly identified 
+3             | 1              | Right         | Estimated as probable 
+1             | 3              | Left          | Estimated as probable 
+2             | 2              | One eye       | Uncertain 
+4             | 4              | None          | Uncertain
+
