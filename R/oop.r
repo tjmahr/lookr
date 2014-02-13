@@ -8,11 +8,11 @@ c.Session <- function(session, ...) {
   trials <- c(session, ...)
   
   # Check whether trials should be a Task or Session object.
-  MakeUniqueAttributeChecker <- function(attr_name) { 
+  UniqueAttribute <- function(attr_name) { 
     function(trials) length(unique(trials %@% attr_name)) == 1
   } 
-  UniqueTask <- MakeUniqueAttributeChecker("Task")
-  UniqueSubject <- MakeUniqueAttributeChecker("Subject")
+  UniqueTask <- UniqueAttribute("Task")
+  UniqueSubject <- UniqueAttribute("Subject")
   
   # If there are multiple subjects, return a "Task".
   if (UniqueTask(trials)) {

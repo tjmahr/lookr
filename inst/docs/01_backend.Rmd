@@ -88,7 +88,7 @@ raw_gaze <- read.delim(gaze_path, na.strings = c("-1.#INF", "1.#INF"),
 str(raw_gaze)
 ```
 
-We don't need all these columns [TODO document these variables], so `Gazedata()` keeps just the ones we care about. The function also computes the monocular averages for each gaze-data variable, combining avaialble data from the left and right eyes. 
+We don't need all these columns---which are documented in another doc, btw---so `Gazedata()` keeps just the ones we care about. The function also computes the monocular averages for each gaze-data variable, combining available data from the left and right eyes. 
 
 ```{r}
 gazedata <- Gazedata(gaze_path)
@@ -104,18 +104,26 @@ head(xmean_from_right)
 ```
 
 
-Trials, Blocks and Sessions
+Blocks and Trials
 -------------------------------------------------------------------------------
-
-### Block
 
 Now that we have the stimdata for each trial and the gazedata from the whole block, we can combine these two together using `Block()`. This function slices up the gazedata, creating a dataframe for each trial. The stimulus properties for each trial are attached to the trial as attributes. The gazedata dataframe and attached stimdata make up a `Trial` object. The code below shows the structure of a single trial.
 
 ```{r}
-block <- Block(gazedata, stimdata)
-trial <- block[[1]]
+block1 <- Block(gazedata, stimdata)
+trial <- block1[[1]]
 str(trial)
 ```
+
+`Block` also accepts a character argument when it gives the basename of a block---that is, the path of gazedata file minus the `.gazedata` extension. This is the second rung in our ladder of convenient abstractions, as Blocks abstract away from Stimdata and Gazedata.
+
+```{r}
+gaze_path2 <- "data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1.gazedata"
+(block_basename <- tools::file_path_sans_ext(gaze_path2))
+# Load stimdata and gazedata and merge in one step
+block2 <- Block(block_basename)
+```
+
 
 ### ToTarget
 
@@ -136,9 +144,9 @@ qplot(data = trial, x = Time, y = XMeanToTarget) +
 A `Block` is a list of `Trial` objects. We can access the attributes of multiple trials using the `%@%` function.
 
 ```{r}
-block %@% "TargetWord"
-block %@% "TargetImage"
-block %@% "TargetOnset"
+block1 %@% "TargetWord"
+block1 %@% "TargetImage"
+block1 %@% "TargetOnset"
 ```
 
 The attribute-infix function `%@%` can also be used on single trials to get _and set_ their attribute values.
@@ -146,9 +154,13 @@ The attribute-infix function `%@%` can also be used on single trials to get _and
 ```{r}
 trial %@% "TargetWord"
 trial %@% "TargetImage"
+# Setting
+trial %@% "SpecialNewAttribute" 
+trial %@% "SpecialNewAttribute" <- "Hello!"
+trial %@% "SpecialNewAttribute" 
 ```
 
-Here's how one can use `%@%` to manually adjust the timing of trials so that the TargetOnset occurs at 0ms. You should never have to manually do this, because the `AlignTrials` functions does this for you.
+Here's how one can use `%@%` to manually adjust the timing of a Trial so that the TargetOnset occurs at 0ms. You should never have to manually do this, because the `AlignTrials` functions does this for you.
 
 ```{r, warning = FALSE}
 trial$Time <- trial$Time - (trial %@% "TargetOnset")
@@ -157,10 +169,69 @@ qplot(data = trial, x = Time, y = XMeanToTarget, xlim = c(-800, 1500)) +
   labs(title = "Looking to target with adjusted time values\n(Don't ever do this manually!)")
 ```
 
-### Session
+
+Sessions and Tasks
+-------------------------------------------------------------------------------
+
+We organize our data by task and then by subject. Put another way, block files are nested within subject folders within task folders, as shown in the mock file hierarchy below.
+
+```
+/data/
+|-- Task1
+|   |-- Subject1
+|   |   |-- Task1_Subject1_block1.gazedata
+|   |   |-- Task1_Subject1_block1.txt
+|   |   |-- Task1_Subject1_block2.gazedata
+|   |   |-- Task1_Subject1_block2.txt
+|-- Task2
+|   |-- Subject2
+|   |   |-- Task2_Subject2_block1.gazedata
+|   |   |-- Task2_Subject2_block1.txt
+|   |   |-- Task2_Subject2_block2.gazedata
+|   |   |-- Task2_Subject2_block2.txt
+|   |-- Subject3
+|   |   |-- Task2_Subject3_block2.gazedata
+|   |   |-- Task2_Subject3_block2.txt
+```
+
+Our next level of abstraction is the `Session` which contains all the blocks in a subject directory.
+
+```{r}
+session <- Session("data/Coartic_WFFArea_2a/001P00XS1/")
+```
+
+A `Session` is just a list of `Trial` objects; `Session[[1]]` is the first Trial object in the list. When we blocks are combined to form the session, the trials are renumbered. We can recover the original block number using `Basename` or `Block` attributes. 
+
+```{r}
+# Trial numbering of the separate blocks
+block_numbering <- c(block1 %@% "TrialNo", block2 %@% "TrialNo")
+data.frame(Basename = session %@% "Basename", BlockNo = session %@% "Block",
+           OrigTrialNo = block_numbering, TrialNo = session %@% "TrialNo")
+```
 
 
 ### Task
+
+The highest level of abstraction is the `Task`. It contains all the blocks for all the subjects in a task directory. Just like a `Session` or a `Block` it is just a list of Trial objects.
+
+```{r}
+coartic <- Task("data/Coartic_WFFArea_2a/")
+length(coartic)
+```
+
+#### Task fails gracefully
+
+Suppose we want to load data from 50 subjects. An idiomatic R approach might be something like `lapply(subject_paths, Session)` where we apply the `Session` function to each element in a vector of subject directories. But wait, there's a problem with the data for the 47th subject! After spending a couple minutes loading the data for 46 subjects, the whole thing crashes and we lose everything. Barf! This problem happens occasionally, especially for our eye-tracking tasks involving toddlers who fuss out from time to time.
+
+`Task()` fails gracefully when it encounters a bad block. Here I have simulated some bad data by truncating the data-files for a block midway through the experiment, which happens when we abort an experiment.
+
+```{r}
+(blocks_to_load <- list.files("data/RWL_WFFArea_Long/", recursive = TRUE, pattern = "gazedata"))
+task <- Task("data/RWL_WFFArea_Long/")
+# 3 of 4 blocks loaded
+unique(task %@% "Basename")
+```
+
 
 ***
 

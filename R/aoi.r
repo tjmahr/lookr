@@ -1,45 +1,38 @@
 
-# Create a generic function to add AOI information to trials
+
+#' Transform gazedata coordinates into AOI data
+#' 
+#' AddAOIData() adds two new columns to the gazedata in a Trial object: (1) 
+#' `GazeByAOI`, the screen-location of the image where the gaze is fixated 
+#' (e.g., `ImageL` or `UpperLeftImage`) and (2) `GazeByImageAOI`, the stimulus 
+#' contained in the image where the gaze is fixated (e.g., `TargetImage` or 
+#' `PhonologicalFoil`).
+#' 
+#' If the gaze is tracked but not fixated to a particular image on the screen,
+#' it gets the default value of `tracked`. If the gaze is missing during a
+#' particular frame, the value is `NA`.
+#' 
+#' "AOI" stands for Area of Interest.
+#' 
+#' @param trial A Trial object with a `Task` and `Protocol` attributes.
+#' @param trials a list of Trial objects, each with `Task` and `Protocol` 
+#'   attributes.
+#' @return The Trial object with the AOI data attached as new columns.
 AddAOIData <- function(...) UseMethod('AddAOIData')
 
+#' @export
 AddAOIData.list <- function(trials) {
-  # Preserve classes of inputted list
   classes <- class(trials)
   trials <- lapply(trials, AddAOIData)
   class(trials) <- classes
   trials
 }
 
-
-#' Transform gazedata coordinates into AOI data
-#' 
-#' @param trial A Trial object with a `Task` and `Protocol` attributes.
-#' @return The Trial object with the discretized data added to it as new
-#'   columns.
+#' @export
 AddAOIData.Trial <- function(trial) {
-  # We use the trials task and protocol attributes to determine what stimuli are
-  # contained in the AOI.
-  if (trial %@% "Task" == "RWL") {
-    stim <- list(Target = "TargetImage", SemanticFoil = "SemanticFoilImage", 
-                 PhonologicalFoil = "PhonologicalFoilImage", 
-                 Unrelated = "UnrelatedImage")
-  } else {
-    stim <- list(Target = "TargetImage", Distractor = "DistractorImage")
-  }
+  stim <- DetermineAOIStim(trial)
   
-  # The WFF_Movie protocol has an addition AOI.
-  if (trial %@% "Protocol" == "WFF_Movie") {
-    trial %@% "FixationImage" <- "FixationImage"
-    stim <- c(stim, Fixation = "FixationImage")
-  }  
-  
-  # We want two pieces of AOI information:
-  # 1. The screen-location of the image where the gaze is fixated 
-  #    (e.g., `ImageL` or `UpperLeftImage`)
-  # 2. The stimuli contained there (e.g., `TargetImage` or `PhonologicalFoil`)
-  
-  # By default we set all values as `tracked`---i.e., the gaze falls onscreen
-  # but is not in a relevant AOI. 
+  # By default we set all values as `tracked`.
   number_of_frames <- nrow(trial)
   gaze_by_image_aoi <- rep("tracked", times = number_of_frames)
   gaze_by_aoi <- rep("tracked", times = number_of_frames)
@@ -69,11 +62,35 @@ AddAOIData.Trial <- function(trial) {
 }
 
 
+# Use task and protocol attributes to determine which stimuli and AOI are used. 
+DetermineAOIStim <- function(trial) {
+  stim <- if (trial %@% "Task" == "RWL") {
+    list(Target = "TargetImage", SemanticFoil = "SemanticFoilImage", 
+         PhonologicalFoil = "PhonologicalFoilImage", 
+         Unrelated = "UnrelatedImage")
+  } else {
+    list(Target = "TargetImage", Distractor = "DistractorImage")
+  }
+  
+  # The WFF_Movie protocol has an additional AOI.
+  if (trial %@% "Protocol" == "WFF_Movie") {
+    trial %@% "FixationImage" <- "FixationImage"
+    stim <- c(stim, Fixation = "FixationImage")
+  }
+  stim
+}
+
+
+
+
+
+
 
 
 #' Get frames with gazedata within an Area of interest
 #' 
-#' @param trial a trial with an `XMean` and a `YMean` column.
+#' @keywords internal
+#' @param trial a Trial with `XMean` and `YMean` columns.
 #' @param img_AOI the coordinates of a rectangular Area of Interest given in
 #'   screen proportions.
 #' @return a vector of boolean values indicating whether the gaze values fall 
@@ -83,29 +100,35 @@ GetFramesWithGazeInAOI <- function(trial, img_AOI) {
   x_bounds <- img_AOI$x
   y_bounds <- img_AOI$y
   
-  # Get the frames whose `XMean` value is within the x-boundaries of the image
-  # AOI. Change N`A` values to `FALSE`.
-  gaze_in_x_bounds <- x_bounds[1] <= trial$XMean & trial$XMean <= x_bounds[2]
-  gaze_in_x_bounds[is.na(gaze_in_x_bounds)] <- FALSE
-  
-  # Get the frames whose `YMean` value is within the y-boundaries of the image
-  # AOI. Change `NA` values to `FALSE`.
-  gaze_in_y_bounds <- y_bounds[1] <= trial$YMean & trial$YMean <= y_bounds[2]
-  gaze_in_y_bounds[is.na(gaze_in_y_bounds)] <- FALSE
-  
   # The frames whose gaze is in the image AOI are those frames whose `XMean`
   # gaze value is in the x-boundaries and whose `YMean` value is in the
   # y-boundaries.
+  gaze_in_x_bounds <- CheckLooksInBounds(trial$XMean, x_bounds[1], x_bounds[2])
+  gaze_in_y_bounds <- CheckLooksInBounds(trial$YMean, y_bounds[1], y_bounds[2])
   gaze_in_aoi <- gaze_in_x_bounds & gaze_in_y_bounds
   gaze_in_aoi
 } 
 
 
-
+#' Check whether values in a vector each fall between an upper and lower bound
+#' 
+#' @keywords internal
+#' @param xs a set of x or y gaze coordinates
+#' @param lower_bound the lower bound of the range to check
+#' @param upper_bound the upper bound of the range to check
+#' @return a vector of boolean values indicating whether each x in xs falls
+#'   between the lower bound and upper bound (inclusive). NA values in xs are
+#'   missing looks so they are reported as FALSE.
+CheckLooksInBounds <- function(xs, lower_bound, upper_bound) {
+  gaze_in_bounds <- lower_bound <= xs & xs <= upper_bound
+  gaze_in_bounds[is.na(gaze_in_bounds)] <- FALSE
+  gaze_in_bounds
+}
 
 
 #' Get the boundaries of an Area of Interest from its name
 #' 
+#' @keywords internal
 #' @param image_location a string naming an image location. It may be:
 #'   `UpperLeftImage`, `UpperRightImage`, `LowerRightImage`, `LowerLeftImage`,
 #'   `FixationImage`, `ImageL`, or `ImageR`.
@@ -113,18 +136,20 @@ GetFramesWithGazeInAOI <- function(trial, img_AOI) {
 GetImageAOI <- function(image_location) {
   # Stop on non-string input
   if (!is.character(image_location)) stop("Invalid AOI name (not a string)")  
+  
   AOIs <- list(
     # Four image (RWL) tasks
-    UpperLeftImage = DefineAOI(x_pix = c(410, 860), y_pix = c(500, 50)), 
-    UpperRightImage = DefineAOI(x_pix = c(1060, 1510), y_pix = c(500, 50)),
-    LowerRightImage = DefineAOI(x_pix = c(1060, 1510), y_pix = c(1150, 700)), 
-    LowerLeftImage = DefineAOI(x_pix = c(410, 860), y_pix = c(1150, 700)), 
+    UpperLeftImage = AOI(x_pix = c(410, 860), y_pix = c(500, 50)), 
+    UpperRightImage = AOI(x_pix = c(1060, 1510), y_pix = c(500, 50)),
+    LowerRightImage = AOI(x_pix = c(1060, 1510), y_pix = c(1150, 700)), 
+    LowerLeftImage = AOI(x_pix = c(410, 860), y_pix = c(1150, 700)), 
     # Wait for fixation tasks
-    FixationImage = DefineAOI(x_pix = c(885, 1035), y_pix = c(525, 675)),
+    FixationImage = AOI(x_pix = c(885, 1035), y_pix = c(525, 675)),
     # Two image (MP) tasks
-    ImageL = DefineAOI(x_pix = c(100, 700), y_pix = c(300, 900)), 
-    ImageR = DefineAOI(x_pix = c(1220, 1820), y_pix = c(300, 900))
+    ImageL = AOI(x_pix = c(100, 700), y_pix = c(300, 900)), 
+    ImageR = AOI(x_pix = c(1220, 1820), y_pix = c(300, 900))
   )
+  
   if (!is.element(image_location, names(AOIs))) {
     stop(paste0("Invalid AOI name: \"", image_location, "\""))
   }
@@ -134,27 +159,22 @@ GetImageAOI <- function(image_location) {
 
 
 
-
-
 #' Convert pixel locations of an image to proportion-on-screen location
 #' 
-#' DefineAOI is a utility function for converting the pixel locations of 
-#' the x- and y-boundaries of an image to screen proportions that can be passed 
-#' to functions like AOIData. 
+#' AOI is a utility function for converting the pixel locations of the x- and
+#' y-boundaries of an image to screen proportions that can be passed to
+#' functions like AddAOIData.
 #' 
+#' @keywords internal
 #' @param x_pix A numeric vector whose elements determine the left and right 
-#'   boundaries of the image.  The order is not important, since the lesser 
-#'   number is always the left boundary and the greater number, always the right
-#'   boundary.
-#' @param y_pix A numeric vector whose elements determine the lower and upper
-#'   boundaries of the image.  The order is not important. Since the pixel 
-#'   origin is the top left corner of the screen, the lesser number is always 
-#'   the upper boundary, and the greater number is always the lower boundary.
-#' @return A list of the form `list(x=(left_prop, right_prop), y=(lower_prop,
-#'   upper_prop))`, where `left_prop`, `right_prop`, `lower_prop`, and
-#'   `upper_prop` are the screen proportion of the left, right, lower, and upper
-#'   boundaries, respectively.
-DefineAOI <- function(x_pix, y_pix) {
+#'   boundaries of the image.
+#' @param y_pix A numeric vector whose elements determine the lower and upper 
+#'   boundaries of the image.
+#' @return A list of the form `list(x = (left_prop, right_prop), y =
+#'   (lower_prop, upper_prop))`, where `left_prop`, `right_prop`, `lower_prop`,
+#'   and `upper_prop` are the screen proportion of the left, right, lower, and
+#'   upper boundaries, respectively.
+AOI <- function(x_pix, y_pix) {
   # Get the screen-dimensions, resorting to 1920 x 1200 by default if
   # lwl_constants has not been defined.
   default_width <- !exists("lwl_constants$screen_width")
@@ -174,11 +194,4 @@ DefineAOI <- function(x_pix, y_pix) {
   y_boundaries <- c(lower_prop, upper_prop)
   structure(list(x = x_boundaries, y = y_boundaries), class = "AOI")
 }
-
-
-
-
-
-
-
 

@@ -1,0 +1,28 @@
+\name{AlignZeroFrames}
+\alias{AlignZeroFrames}
+\title{Align the zero-time frames and normalize lengths of a list of trials}
+\usage{
+AlignZeroFrames(trials)
+}
+\arguments{
+  \item{trials}{a `list` of `Trial` objects}
+}
+\value{
+a truncated and zero-frame aligned `list` of `Trials`
+}
+\description{
+Because of the possible `TargetOnsetDelay` in
+Wait-For-Fixation trials, a list of a trials that have been
+time-aligned and time-sliced may have differing number of
+frames. This function truncates all trials so they have the
+same number of frames and so that the frame at time = 0
+occurs in the same place across all the list of trials.
+}
+\details{
+Two steps are involved in the alignment process: (1)
+Removing frames from the beginning of the trials so that
+zero frame occurs in the same frame across all the trials,
+then (2) removing frames from the end of the trials so that
+all they all have the same number of frames.
+}
+

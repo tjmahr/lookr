@@ -177,7 +177,7 @@ str(raw_gaze)
 ```
 
 
-We don't need all these columns [TODO document these variables], so `Gazedata()` keeps just the ones we care about. The function also computes the monocular averages for each gaze-data variable, combining avaialble data from the left and right eyes. 
+We don't need all these columns---which are documented in another doc, btw---so `Gazedata()` keeps just the ones we care about. The function also computes the monocular averages for each gaze-data variable, combining available data from the left and right eyes. 
 
 
 ```r
@@ -229,17 +229,15 @@ head(xmean_from_right)
 
 
 
-Trials, Blocks and Sessions
+Blocks and Trials
 -------------------------------------------------------------------------------
-
-### Block
 
 Now that we have the stimdata for each trial and the gazedata from the whole block, we can combine these two together using `Block()`. This function slices up the gazedata, creating a dataframe for each trial. The stimulus properties for each trial are attached to the trial as attributes. The gazedata dataframe and attached stimdata make up a `Trial` object. The code below shows the structure of a single trial.
 
 
 ```r
-block <- Block(gazedata, stimdata)
-trial <- block[[1]]
+block1 <- Block(gazedata, stimdata)
+trial <- block1[[1]]
 str(trial)
 ```
 
@@ -305,6 +303,29 @@ str(trial)
 ```
 
 
+`Block` also accepts a character argument when it gives the basename of a block---that is, the path of gazedata file minus the `.gazedata` extension. This is the second rung in our ladder of convenient abstractions, as Blocks abstract away from Stimdata and Gazedata.
+
+
+```r
+gaze_path2 <- "data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1.gazedata"
+(block_basename <- tools::file_path_sans_ext(gaze_path2))
+```
+
+```
+## [1] "data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1"
+```
+
+```r
+# Load stimdata and gazedata and merge in one step
+block2 <- Block(block_basename)
+```
+
+```
+## Reading stimdata in data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1.txt
+```
+
+
+
 ### ToTarget
 
 When the stimdata and gazedata are combined, six new columns are also produced. The columns all end in `ToTarget` and they describe the screen location of the gaze in terms of proximity to the target image. That is, plain-old `XMean` describes the location of the gaze such that 0 is the left side of the screen and 1 is the right side. In the `trial` above, the target word is on the left side of the screen, so small `XMean` values are closer to the left side of the screen and hence closer to the target. In `XMeanToTarget`, the `XMean` values are flipped so that greater values are closer to the target image. Essentially, the target image becomes the right image for all trials. This kind of normalization is useful if we want to look at the gaze-location with respect to the target image over several trials.
@@ -326,13 +347,13 @@ library(ggplot2)
 qplot(data = trial, x = Time, y = XMean) + labs(title = "Raw XMean value")
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-91.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-101.png) 
 
 ```r
 qplot(data = trial, x = Time, y = XMeanToTarget) + labs(title = "XMean flipped towards target")
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-92.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-102.png) 
 
 
 ### Working with attributes with `%@%` 
@@ -341,7 +362,7 @@ A `Block` is a list of `Trial` objects. We can access the attributes of multiple
 
 
 ```r
-block %@% "TargetWord"
+block1 %@% "TargetWord"
 ```
 
 ```
@@ -352,7 +373,7 @@ block %@% "TargetWord"
 ```
 
 ```r
-block %@% "TargetImage"
+block1 %@% "TargetImage"
 ```
 
 ```
@@ -363,7 +384,7 @@ block %@% "TargetImage"
 ```
 
 ```r
-block %@% "TargetOnset"
+block1 %@% "TargetOnset"
 ```
 
 ```
@@ -392,8 +413,26 @@ trial %@% "TargetImage"
 ## [1] "ImageL"
 ```
 
+```r
+# Setting
+trial %@% "SpecialNewAttribute"
+```
 
-Here's how one can use `%@%` to manually adjust the timing of trials so that the TargetOnset occurs at 0ms. You should never have to manually do this, because the `AlignTrials` functions does this for you.
+```
+## NULL
+```
+
+```r
+trial %@% "SpecialNewAttribute" <- "Hello!"
+trial %@% "SpecialNewAttribute"
+```
+
+```
+## [1] "Hello!"
+```
+
+
+Here's how one can use `%@%` to manually adjust the timing of a Trial so that the TargetOnset occurs at 0ms. You should never have to manually do this, because the `AlignTrials` functions does this for you.
 
 
 ```r
@@ -402,13 +441,190 @@ trial %@% "TargetOnset" <- 0
 qplot(data = trial, x = Time, y = XMeanToTarget, xlim = c(-800, 1500)) + labs(title = "Looking to target with adjusted time values\n(Don't ever do this manually!)")
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12.png) 
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13.png) 
 
 
-### Session
+
+Sessions and Tasks
+-------------------------------------------------------------------------------
+
+We organize our data by task and then by subject. Put another way, block files are nested within subject folders within task folders, as shown in the mock file hierarchy below.
+
+```
+/data/
+|-- Task1
+|   |-- Subject1
+|   |   |-- Task1_Subject1_block1.gazedata
+|   |   |-- Task1_Subject1_block1.txt
+|   |   |-- Task1_Subject1_block2.gazedata
+|   |   |-- Task1_Subject1_block2.txt
+|-- Task2
+|   |-- Subject2
+|   |   |-- Task2_Subject2_block1.gazedata
+|   |   |-- Task2_Subject2_block1.txt
+|   |   |-- Task2_Subject2_block2.gazedata
+|   |   |-- Task2_Subject2_block2.txt
+|   |-- Subject3
+|   |   |-- Task2_Subject3_block2.gazedata
+|   |   |-- Task2_Subject3_block2.txt
+```
+
+Our next level of abstraction is the `Session` which contains all the blocks in a subject directory.
+
+
+```r
+session <- Session("data/Coartic_WFFArea_2a/001P00XS1/")
+```
+
+```
+## Reading stimdata in data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block1_001P00XS1.txt
+## Reading stimdata in data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1.txt
+```
+
+
+A `Session` is just a list of `Trial` objects; `Session[[1]]` is the first Trial object in the list. When we blocks are combined to form the session, the trials are renumbered. We can recover the original block number using `Basename` or `Block` attributes. 
+
+
+```r
+# Trial numbering of the separate blocks
+block_numbering <- c(block1 %@% "TrialNo", block2 %@% "TrialNo")
+data.frame(Basename = session %@% "Basename", BlockNo = session %@% "Block", 
+    OrigTrialNo = block_numbering, TrialNo = session %@% "TrialNo")
+```
+
+```
+##                    Basename BlockNo OrigTrialNo TrialNo
+## 1  Coartic_Block1_001P00XS1       1           1       1
+## 2  Coartic_Block1_001P00XS1       1           2       2
+## 3  Coartic_Block1_001P00XS1       1           3       3
+## 4  Coartic_Block1_001P00XS1       1           4       4
+## 5  Coartic_Block1_001P00XS1       1           5       5
+## 6  Coartic_Block1_001P00XS1       1           6       6
+## 7  Coartic_Block1_001P00XS1       1           7       7
+## 8  Coartic_Block1_001P00XS1       1           8       8
+## 9  Coartic_Block1_001P00XS1       1           9       9
+## 10 Coartic_Block1_001P00XS1       1          10      10
+## 11 Coartic_Block1_001P00XS1       1          11      11
+## 12 Coartic_Block1_001P00XS1       1          12      12
+## 13 Coartic_Block1_001P00XS1       1          13      13
+## 14 Coartic_Block1_001P00XS1       1          14      14
+## 15 Coartic_Block1_001P00XS1       1          15      15
+## 16 Coartic_Block1_001P00XS1       1          16      16
+## 17 Coartic_Block1_001P00XS1       1          17      17
+## 18 Coartic_Block1_001P00XS1       1          18      18
+## 19 Coartic_Block1_001P00XS1       1          19      19
+## 20 Coartic_Block1_001P00XS1       1          20      20
+## 21 Coartic_Block1_001P00XS1       1          21      21
+## 22 Coartic_Block1_001P00XS1       1          22      22
+## 23 Coartic_Block1_001P00XS1       1          23      23
+## 24 Coartic_Block1_001P00XS1       1          24      24
+## 25 Coartic_Block2_001P00XS1       2           1      25
+## 26 Coartic_Block2_001P00XS1       2           2      26
+## 27 Coartic_Block2_001P00XS1       2           3      27
+## 28 Coartic_Block2_001P00XS1       2           4      28
+## 29 Coartic_Block2_001P00XS1       2           5      29
+## 30 Coartic_Block2_001P00XS1       2           6      30
+## 31 Coartic_Block2_001P00XS1       2           7      31
+## 32 Coartic_Block2_001P00XS1       2           8      32
+## 33 Coartic_Block2_001P00XS1       2           9      33
+## 34 Coartic_Block2_001P00XS1       2          10      34
+## 35 Coartic_Block2_001P00XS1       2          11      35
+## 36 Coartic_Block2_001P00XS1       2          12      36
+## 37 Coartic_Block2_001P00XS1       2          13      37
+## 38 Coartic_Block2_001P00XS1       2          14      38
+## 39 Coartic_Block2_001P00XS1       2          15      39
+## 40 Coartic_Block2_001P00XS1       2          16      40
+## 41 Coartic_Block2_001P00XS1       2          17      41
+## 42 Coartic_Block2_001P00XS1       2          18      42
+## 43 Coartic_Block2_001P00XS1       2          19      43
+## 44 Coartic_Block2_001P00XS1       2          20      44
+## 45 Coartic_Block2_001P00XS1       2          21      45
+## 46 Coartic_Block2_001P00XS1       2          22      46
+## 47 Coartic_Block2_001P00XS1       2          23      47
+## 48 Coartic_Block2_001P00XS1       2          24      48
+```
+
 
 
 ### Task
+
+The highest level of abstraction is the `Task`. It contains all the blocks for all the subjects in a task directory. Just like a `Session` or a `Block` it is just a list of Trial objects.
+
+
+```r
+coartic <- Task("data/Coartic_WFFArea_2a/")
+```
+
+```
+## Reading stimdata in data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block1_001P00XS1.txt
+## Reading stimdata in data/Coartic_WFFArea_2a/001P00XS1/Coartic_Block2_001P00XS1.txt
+```
+
+```r
+length(coartic)
+```
+
+```
+## [1] 48
+```
+
+
+#### Task fails gracefully
+
+Suppose we want to load data from 50 subjects. An idiomatic R approach might be something like `lapply(subject_paths, Session)` where we apply the `Session` function to each element in a vector of subject directories. But wait, there's a problem with the data for the 47th subject! After spending a couple minutes loading the data for 46 subjects, the whole thing crashes and we lose everything. Barf! This problem happens occasionally, especially for our eye-tracking tasks involving toddlers who fuss out from time to time.
+
+`Task()` fails gracefully when it encounters a bad block. Here I have simulated some bad data by truncating the data-files for a block midway through the experiment, which happens when we abort an experiment.
+
+
+```r
+(blocks_to_load <- list.files("data/RWL_WFFArea_Long/", recursive = TRUE, pattern = "gazedata"))
+```
+
+```
+## [1] "001P00XA1/RWL_Block1_001P00XA1.gazedata"          
+## [2] "001P00XA1/RWL_Block2_001P00XA1.gazedata"          
+## [3] "001P00XS1/RWL_Block1_001P00XS1.gazedata"          
+## [4] "001P00XS1/RWL_Block2_001P00XS1_corrupted.gazedata"
+```
+
+```r
+task <- Task("data/RWL_WFFArea_Long/")
+```
+
+```
+## Reading stimdata in data/RWL_WFFArea_Long/001P00XA1/RWL_Block1_001P00XA1.txt
+## Task: RWL,  Protocol: WFF_Area,  Dialect: AAE
+## Reading stimdata in data/RWL_WFFArea_Long/001P00XA1/RWL_Block2_001P00XA1.txt
+## Task: RWL,  Protocol: WFF_Area,  Dialect: AAE
+## Reading stimdata in data/RWL_WFFArea_Long/001P00XS1/RWL_Block1_001P00XS1.txt
+## Task: RWL,  Protocol: WFF_Area,  Dialect: SAE
+## Reading stimdata in data/RWL_WFFArea_Long/001P00XS1/RWL_Block2_001P00XS1_corrupted.txt
+```
+
+```
+## Warning: incomplete final line found on
+## 'data/RWL_WFFArea_Long/001P00XS1/RWL_Block2_001P00XS1_corrupted.txt'
+```
+
+```
+## Task: RWL,  Protocol: NoFixations,  Dialect: SAE
+```
+
+```
+## Warning: Empty stimdata fields: NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## Warning: data/RWL_WFFArea_Long/001P00XS1/RWL_Block2_001P00XS1_corrupted
+```
+
+```r
+# 3 of 4 blocks loaded
+unique(task %@% "Basename")
+```
+
+```
+## [1] "RWL_Block1_001P00XA1" "RWL_Block2_001P00XA1" "RWL_Block1_001P00XS1"
+```
+
+
 
 ***
 
@@ -418,7 +634,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2014-02-10 13:37:35 CST"
+## [1] "2014-02-13 10:16:13 CST"
 ```
 
 ```r

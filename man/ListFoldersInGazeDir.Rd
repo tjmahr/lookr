@@ -1,0 +1,20 @@
+\name{ListFoldersInGazeDir}
+\alias{ListFoldersInGazeDir}
+\title{List all subdirectories that begin with an L2T identifier}
+\usage{
+ListFoldersInGazeDir(gaze_dir)
+}
+\arguments{
+  \item{the}{path to a directory containing subject
+  subdirectories}
+}
+\value{
+a character vector of the subdirectories that begins with
+three digits followed by "C", "L", "P" or "X" --- i.e.,
+paths that begin with a L2T subject identifier.
+}
+\description{
+This is the first step in gathering all the data in an LWL
+experimental task.
+}
+

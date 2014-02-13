@@ -1,0 +1,16 @@
+\name{GetTrialLengths}
+\alias{GetTrialLengths}
+\title{Get the lengths (in frames) of a list of trials}
+\usage{
+GetTrialLengths(trials)
+}
+\arguments{
+  \item{trials}{a list of `Trial` objects.}
+}
+\value{
+a numeric vector with the number of frames in each `Trial`.
+}
+\description{
+Get the lengths (in frames) of a list of trials
+}
+
