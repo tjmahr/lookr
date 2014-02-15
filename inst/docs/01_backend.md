@@ -218,13 +218,10 @@ head(xmean_from_right)
 ```
 
 ```
-##     XLeft XRight  XMean
-## 26     NA 0.3737 0.3737
-## 51     NA 0.8178 0.8178
-## 75     NA 0.2354 0.2354
-## 77     NA 0.2078 0.2078
-## 229    NA 0.8307 0.8307
-## 322    NA 0.2721 0.2721
+## Classes 'Gazedata' and 'data.frame':	6 obs. of  3 variables:
+##  $ XLeft : num  NA NA NA NA NA NA
+##  $ XRight: num  0.374 0.818 0.235 0.208 0.831 ...
+##  $ XMean : num  0.374 0.818 0.235 0.208 0.831 ...
 ```
 
 
@@ -634,7 +631,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2014-02-13 10:16:13 CST"
+## [1] "2014-02-14 16:04:26 CST"
 ```
 
 ```r

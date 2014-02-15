@@ -5,6 +5,7 @@
 #' It encloses the default values inside of a list's environment and uses 
 #' functions stored in that list to manipulate and retrieve those defaults.
 #' 
+#' @export
 #' @param value a list of options and their respective values
 #' @return an \code{OptionList} containing four functions: \code{$get(name,
 #'   default = FALSE)} to get the value of an option name, \code{$set(...)} for
@@ -90,15 +91,13 @@ merge_lists <- function(x, y) {
 }
 
 
-#' Print an option list
-#' 
-#' This function just wraps a call to \code{$get(...)}. \code{print(lwl_opts)} 
-#' gives the same results as \code{lwl_opts$get()}
-#' 
-#' @param ... parameters passed to the Option List's \code{$get(...)} internal 
-#'   method. If blank, get everything. If a specific slot is named, get that. If
-#'   \code{default = TRUE}, get the defaults.
-#'   
-#' @method print OptionList
+#' @export
+lwl_opts <- OptionList(list(
+  interpolation_window = 100, 
+  timeslice_start = -200, 
+  timeslice_end = 2000
+))
+
+
 #' @export
 print.OptionList <- function(option_list, ...) print(option_list$get(...))

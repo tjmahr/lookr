@@ -23,8 +23,7 @@
 Session <- function(...) UseMethod('Session')
 
 
-#' @rdname Session
-#' @S3method Session character
+#' @export
 Session.character <- function(session_path) {
   # Get all the .gazedata files that are in the session directory.
   gazedata_files <- dir(session_path, pattern = 'gazedata', full.names = TRUE)
@@ -39,8 +38,7 @@ Session.character <- function(session_path) {
 } 
 
 
-#' @rdname Session
-#' @S3method Session list
+#' @export
 Session.list <- function(blocks) {  
   # Get number of trials before each block. Drop extraneous sum of all lengths
   trials_per_block <- sapply(blocks, length)
@@ -81,12 +79,6 @@ IncrementTrialNosInBlock <- function(block, increment) {
 
 
 
-
-
-
-
-
-
 #' Combine gaze- and stimdata for an experimental Block
 #' 
 #' Block is a generic function for initializing a Block object, which represents
@@ -116,9 +108,7 @@ IncrementTrialNosInBlock <- function(block, increment) {
 #' @export
 Block <- function(...) UseMethod('Block')
 
-
-#' @rdname Block
-#' @S3method Block character
+#' @export
 Block.character <- function(block_path) {
   gazedata <- Gazedata(paste0(block_path, '.gazedata'))
   stimdata <- Stimdata(paste0(block_path, '.txt'))
@@ -126,19 +116,13 @@ Block.character <- function(block_path) {
   Block(gazedata, stimdata)
 }
 
-
-#' @rdname Block
-#' @S3method Block Gazedata
+#' @export
 Block.Gazedata <- function(gazedata, stimdata) {
   # For each trial in the block, combine the gazedata and stimdata.
   trials <- lapply(stimdata$TrialNo, CombineGazedataStimdata(gazedata, stimdata))
   class(trials) <- c('Block', 'list')
   trials
 } 
-
-
-# deprecate?
-Block.Stimdata <- function(stimdata, gazedata) Block(gazedata, stimdata)
 
 
 
@@ -149,6 +133,7 @@ Block.Stimdata <- function(stimdata, gazedata) Block(gazedata, stimdata)
 #' stimdata of a single trial from a Gazedata and Stimdata object. This function
 #' is curried.
 #' 
+#' @keywords internal
 #' @param gazedata A Gazedata object.
 #' @param stimdata A Stimdata object.
 #' @param trial_number The trial number of the trial whose gazedata and stimdata

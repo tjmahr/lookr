@@ -25,7 +25,7 @@ Task <- function(...) UseMethod('Task')
 #' @export
 Task.character <-  function(task_path, partial = NA, handler = warning) {
   # Find subject subdirectories
-  paths <- ListFoldersInGazeDir(task_path)
+  paths <- ListSubjectsInTaskDir(task_path)
   paths <- if (!all(is.na(partial))) {
     paths[intersect(partial, 1:length(paths))]
   } else paths
@@ -46,9 +46,9 @@ Task.character <-  function(task_path, partial = NA, handler = warning) {
 #' @return a character vector of the subdirectories that begins with three 
 #'   digits followed by "C", "L", "P" or "X" --- i.e., paths that begin
 #'   with a L2T subject identifier.
-ListFoldersInGazeDir <- function(gaze_dir) {
-  l2t_pattern <- "^[0-9]{3}[CLPXclpx]"
-  subject_paths <- list.files(gaze_dir, pattern = l2t_pattern, full.names = T)
+ListSubjectsInTaskDir <- function(gaze_dir) {
+  l2t_dir <- lwl_constants$l2t_subject_dir
+  subject_paths <- list.files(gaze_dir, pattern = l2t_dir, full.names = TRUE)
   # Keep only directories
   subject_paths[file.info(subject_paths)$isdir]
 }

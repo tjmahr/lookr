@@ -14,6 +14,7 @@
 #' 
 #' "AOI" stands for Area of Interest.
 #' 
+#' @export
 #' @param trial A Trial object with a `Task` and `Protocol` attributes.
 #' @param trials a list of Trial objects, each with `Task` and `Protocol` 
 #'   attributes.
@@ -175,23 +176,18 @@ GetImageAOI <- function(image_location) {
 #'   and `upper_prop` are the screen proportion of the left, right, lower, and
 #'   upper boundaries, respectively.
 AOI <- function(x_pix, y_pix) {
-  # Get the screen-dimensions, resorting to 1920 x 1200 by default if
-  # lwl_constants has not been defined.
-  default_width <- !exists("lwl_constants$screen_width")
-  default_height <- !exists("lwl_constants$screen_height")
-  screen_width <- if (default_width) 1920 else lwl_constants$screen_width
-  screen_height <- if (default_height) 1200 else lwl_constants$screen_height
+  width <- lwl_constants$screen_width
+  height <- lwl_constants$screen_height
   # Compute AOI boundaries in proportions of the screen. Because the origin is
   # the upper left corner of the screen, min(x_pix) is the left boundary while
   # min(y_pix) is the upper boundary of the AOI.
-  left_prop <- min(x_pix) / screen_width
-  right_prop <- max(x_pix) / screen_width
+  left_prop <- min(x_pix) / width
+  right_prop <- max(x_pix) / width
   # Subtract from height to flip y-values so origin is in lower left corner.
-  lower_prop <- (screen_height - max(y_pix)) / screen_height
-  upper_prop <- (screen_height - min(y_pix)) / screen_height
+  lower_prop <- (height - max(y_pix)) / height
+  upper_prop <- (height - min(y_pix)) / height
   # Bundle the screen proportions of the x- and y-boundaries in a list.
   x_boundaries <- c(left_prop, right_prop)
   y_boundaries <- c(lower_prop, upper_prop)
   structure(list(x = x_boundaries, y = y_boundaries), class = "AOI")
 }
-

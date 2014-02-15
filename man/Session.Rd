@@ -1,14 +1,8 @@
 \name{Session}
 \alias{Session}
-\alias{Session.character}
-\alias{Session.list}
 \title{Create a Session from multiple LWL Blocks}
 \usage{
 Session(...)
-
-\method{Session}{character}(session_path)
-
-\method{Session}{list}(blocks)
 }
 \arguments{
   \item{session_path}{The directory path of both pairs of

@@ -7,13 +7,6 @@ c.Session <- function(session, ...) {
   class(session) <- 'list'
   trials <- c(session, ...)
   
-  # Check whether trials should be a Task or Session object.
-  UniqueAttribute <- function(attr_name) { 
-    function(trials) length(unique(trials %@% attr_name)) == 1
-  } 
-  UniqueTask <- UniqueAttribute("Task")
-  UniqueSubject <- UniqueAttribute("Subject")
-  
   # If there are multiple subjects, return a "Task".
   if (UniqueTask(trials)) {
     if (UniqueSubject(trials)) as.Session(trials) else as.Task(trials)
@@ -36,9 +29,27 @@ as.Task <- function(x) {
   x
 }
 
+#' @export
 is.Session <- function(x) inherits(x, "Session")
+
+#' @export
 is.Task <- function(x) inherits(x, "Task")
 
+#' @export
 print.Trial <- function(trial, ...) str(trial, ...)
+
+#' @export
 print.Gazedata <- function(...) str(...)
+
+#' @export
 print.Stimdata <- function(...) str(...)
+
+
+# Check whether trials should be a Task or Session object.
+UniqueAttribute <- function(attr_name) { 
+  function(trials) n_distinct(trials %@% attr_name) == 1
+} 
+UniqueTask <- UniqueAttribute("Task")
+UniqueSubject <- UniqueAttribute("Subject")
+
+n_distinct <- function(xs) length(unique(xs))

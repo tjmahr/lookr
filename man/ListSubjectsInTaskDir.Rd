@@ -1,8 +1,8 @@
-\name{ListFoldersInGazeDir}
-\alias{ListFoldersInGazeDir}
+\name{ListSubjectsInTaskDir}
+\alias{ListSubjectsInTaskDir}
 \title{List all subdirectories that begin with an L2T identifier}
 \usage{
-ListFoldersInGazeDir(gaze_dir)
+ListSubjectsInTaskDir(gaze_dir)
 }
 \arguments{
   \item{the}{path to a directory containing subject

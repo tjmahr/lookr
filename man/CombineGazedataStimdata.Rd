@@ -21,4 +21,5 @@ CombineGazedataStimdata is a utility function for combining
 the gazedata and stimdata of a single trial from a Gazedata
 and Stimdata object. This function is curried.
 }
+\keyword{internal}
 

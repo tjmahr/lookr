@@ -1,14 +1,8 @@
 \name{Block}
 \alias{Block}
-\alias{Block.Gazedata}
-\alias{Block.character}
 \title{Combine gaze- and stimdata for an experimental Block}
 \usage{
 Block(...)
-
-\method{Block}{character}(block_path)
-
-\method{Block}{Gazedata}(gazedata, stimdata)
 }
 \arguments{
   \item{block_path}{A character string. The full file path

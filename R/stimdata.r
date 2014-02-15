@@ -2,6 +2,57 @@
 # Eprime outputted by Eprime.
 
 
+#' Parse an LWL stimulus data file outputted by Eprime
+#' 
+#' \code{Stimdata} is used to read and parse the \code{.txt} file that is output
+#' by E-prime during a session of a Looking While Listening experiment.
+#' 
+#' @param stimdata_path Either the full or relative path to the \code{.txt} file
+#'   that is to be parsed.
+#' @param output_file Either \code{NULL} or the path---full or relative---for 
+#'   the output file. If \code{NULL}, then no output file is created. If a path 
+#'   is specified, then the parsed stimdata is written out as a \code{.csv} 
+#'   file. Default is \code{NULL}.
+#' @return A dataframe containing the parsed stimdata.  Each row of the 
+#'   dataframe is the stimdata for a single experimental trial.
+#'   
+#' @details 
+#' A stimdata file in a Looking While Listening task file the naming 
+#' convention: \code{[Task]_[BlockNo]_[SubjectID]}. The stimdata file is 
+#' assigned a class based on the task in the filename, and then methods for 
+#' extracting the stimdata are dispatched based on that class value. Valid task
+#' names include "RWL", "MP", "Coartic" and "VisWorld".
+#' 
+#' @importFrom tools file_path_sans_ext
+#' @export
+Stimdata <- function(stimdata_path, outputFile = NULL) {  
+  # Extract experiment information from the input file name
+  file_info <- ParseFilename(stimdata_path)
+  task <- file_info$Task
+  
+  # Load the stimdata file
+  stimlog <- LoadStimdataFile(stimdata_path)
+  class(stimlog) <- c(task, class(stimlog))
+  
+  # Determine the appropriate stimdata features and extract them.
+  config <- DetermineStim(stimlog)
+  stimdata <- ExtractStim(config, stimlog)
+  
+  # Finalize stimdata
+  class(stimdata) <- c(task, "Stimdata", class(stimdata))
+  stimdata <- FinalizeStimdata(stimdata)
+  stimdata$Basename <- file_info$Basename
+  
+  # Optionally write out stimdata as a tab-delimited table.
+  if (!is.null(outputFile)) {
+    write.table(stimdata, file = outputFile, sep = ',',
+                quote = FALSE, row.names = FALSE)
+  }
+  
+  stimdata
+}
+
+
 
 
 #' Open a stimulus log file outputted by Eprime
@@ -53,60 +104,7 @@ LoadStimdataFile <- function(stimdata_path) {
 
 
 
-# Extract values of a given type from a stimdata file
-# 
-# `.GetValuesOfStimdataType` is a utility function for extracting from a 
-# stimlog, the value of a given type of stimdata for each trial. This function 
-# is curried so that `.GetValuesOfStimdataType(stimlog)` returns a function
-# that can be applied to a vector of the names of the stimdata types.
-# 
-# @param stimlog A character vector whose elements are the lines of the 
-#   stimlog.
-# @param stimdataType A character string identifying the type of stimdata whose
-#   value for each trial should be found.  E.g., 'Image1' is the stimdata type 
-#   of the top left image in the Real Word Listening task.
-# @return Either a character vector or numeric vector, each element of which is
-#   the value of stimdataType for a trial.
-# @examples
-# ```
-# # Single value extraction
-# # onset_times <- .GetValuesOfStimdataType(stimlog)("Image2sec.OnsetTime")
-# 
-# # Multiple value extraction
-# # image_names <- c("ImageL", "ImageR")
-# # image_values <- Map(.GetValuesOfStimdataType(stimlog), image_names)
-# ```
-# @export
-.GetValuesOfStimdataType <- function(stimlog) {  
-  # Define the function that is returned once a stimlog argument is passed to
-  # `.GetValuesOfStimdataType.`
-  .LambdaStimdataType <- function(stimdata_type) {
-    # The stimdata for each trial is logged using the following pattern:
-    # `\t\t{stimdataType}: {value}`. Create a regular expression that can 
-    # be used to find the line in each trial where `stimdataType` is logged.
-    stim_pattern <- sprintf('\t*%s: ', stimdata_type)
-    
-    # Extract the lines of the stimlog where `stimdataType` is logged.
-    stimlog_lines <- grep(stim_pattern, stimlog, value = TRUE)
-    values <- sub(stim_pattern, '', stimlog_lines)
-    return(values)
-  } 
-  return(.LambdaStimdataType)
-}
-
-# Wrapper for `.GetValuesOfStimdataType` that returns whether a value is
-# present in `stimlog`
-# @export
-.CheckForStimdataType <- function(stimlog, stimdataType) {
-  values <- .GetValuesOfStimdataType(stimlog)(stimdataType)
-  found <- length(values) != 0
-  return(found)
-}
-
-
-
-
-
+#' @keywords internal
 #' @importFrom lubridate mdy hms
 ExtractStim <- function(stim_config, stimlog) {
   # Get the values from the stimdata file
@@ -174,55 +172,51 @@ ExtractStim <- function(stim_config, stimlog) {
 
 
 
-
-#' Parse an LWL stimulus data file outputted by Eprime
+#' Extract values of a given type from a stimdata file
 #' 
-#' \code{Stimdata} is used to read and parse the \code{.txt} file that is output
-#' by E-prime during a session of a Looking While Listening experiment.
+#' `.GetValuesOfStimdataType` is a utility function for extracting from a 
+#' stimlog, the value of a given type of stimdata for each trial. This function 
+#' is curried so that `.GetValuesOfStimdataType(stimlog)` returns a function 
+#' that can be applied to a vector of the names of the stimdata types.
 #' 
-#' @param stimdata_path Either the full or relative path to the \code{.txt} file
-#'   that is to be parsed.
-#' @param output_file Either \code{NULL} or the path---full or relative---for 
-#'   the output file. If \code{NULL}, then no output file is created. If a path 
-#'   is specified, then the parsed stimdata is written out as a \code{.csv} 
-#'   file. Default is \code{NULL}.
-#' @return A dataframe containing the parsed stimdata.  Each row of the 
-#'   dataframe is the stimdata for a single experimental trial.
-#'   
-#' @details 
-#' A stimdata file in a Looking While Listening task file the naming 
-#' convention: \code{[Task]_[BlockNo]_[SubjectID]}. The stimdata file is 
-#' assigned a class based on the task in the filename, and then methods for 
-#' extracting the stimdata are dispatched based on that class value. Valid task
-#' names include "RWL", "MP", "Coartic" and "VisWorld".
+#' @keywords internal
+#' @param stimlog A character vector whose elements are the lines of the 
+#'   stimlog.
+#' @param stimdataType A character string identifying the type of stimdata whose
+#'   value for each trial should be found.  E.g., 'Image1' is the stimdata type 
+#'   of the top left image in the Real Word Listening task.
+#' @return Either a character vector or numeric vector, each element of which is
+#'   the value of stimdataType for a trial.
+#' @examples
+#' # Single value extraction
+#' # onset_times <- .GetValuesOfStimdataType(stimlog)("Image2sec.OnsetTime")
 #' 
-#' @importFrom tools file_path_sans_ext
-#' @export
-Stimdata <- function(stimdata_path, outputFile = NULL) {  
-  # Extract experiment information from the input file name
-  file_info <- ParseFilename(stimdata_path)
-  task <- file_info$Task
-  
-  # Load the stimdata file
-  stimlog <- LoadStimdataFile(stimdata_path)
-  class(stimlog) <- c(task, class(stimlog))
-  
-  # Determine the appropriate stimdata features and extract them.
-  config <- DetermineStim(stimlog)
-  stimdata <- ExtractStim(config, stimlog)
-  
-  # Finalize stimdata
-  class(stimdata) <- c(task, "Stimdata", class(stimdata))
-  stimdata <- FinalizeStimdata(stimdata)
-  stimdata$Basename <- file_info$Basename
-  
-  # Optionally write out stimdata as a tab-delimited table.
-  if (!is.null(outputFile)) {
-    write.table(stimdata, file = outputFile, sep = ',',
-                quote = FALSE, row.names = FALSE)
-  }
-  
-  stimdata
+#' # Multiple value extraction
+#' # image_names <- c("ImageL", "ImageR")
+#' # image_values <- Map(.GetValuesOfStimdataType(stimlog), image_names)
+#' 
+.GetValuesOfStimdataType <- function(stimlog) {  
+  # Define the function that is returned once a stimlog argument is passed to
+  # `.GetValuesOfStimdataType.`
+  .LambdaStimdataType <- function(stimdata_type) {
+    # The stimdata for each trial is logged using the following pattern:
+    # `\t\t{stimdataType}: {value}`. Create a regular expression that can 
+    # be used to find the line in each trial where `stimdataType` is logged.
+    stim_pattern <- sprintf('\t*%s: ', stimdata_type)
+    
+    # Extract the lines of the stimlog where `stimdataType` is logged.
+    stimlog_lines <- grep(stim_pattern, stimlog, value = TRUE)
+    values <- sub(stim_pattern, '', stimlog_lines)
+    return(values)
+  } 
+  return(.LambdaStimdataType)
 }
 
-
+#' @keywords internal
+.CheckForStimdataType <- function(stimlog, stimdataType) {
+  # Wrapper for `.GetValuesOfStimdataType` that returns whether a value is 
+  # present in `stimlog`
+  values <- .GetValuesOfStimdataType(stimlog)(stimdataType)
+  found <- length(values) != 0
+  return(found)
+}
