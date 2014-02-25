@@ -3,13 +3,15 @@
 
 
 
-
 #' Align trial objects in a list
 #' 
 #' This function normalizes trials by length and by timing such that: 
-#' * all trials have the same number of frames
-#' * the event specified as time 0 occurs in the same frame in each trial 
-#' * frames at the same index have the same time (in ms.) across trials
+#' 
+#' \itemize{
+#'   \item all trials have the same number of frames
+#'   \item the event specified as time 0 occurs in the same frame in each trial
+#'   \item frames at the same index have the same time (in ms.) across trials
+#' }
 #' 
 #' Because trials may vary in length, empty frames may be added to the beginning
 #' or end of a trial to normalize the frame-length of trials. These are filled
@@ -108,8 +110,6 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
       with_new_frames <- rbind(new_frames, trial)
     } else if (location == 'end') {
       with_new_frames <- rbind(trial, new_frames)
-    } else {
-      return()
     }
     # Update attributes
     new_attributes <- attributes(trial)
@@ -165,119 +165,25 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 
 #' Adjust the event-timing attributes of a trial
 #' 
+#' @keywords internal
 #' @param trial
 #' @param alignment_event
 #' @return the inputted trial object with updated timing attributes
 .AdjustTimingMarks <- function(trial, alignment_event) {
   adjust_by <- trial %@% alignment_event
   
-  usual_events <- c('ImageOnset', 'CarrierOnset', 'CarrierEnd', 'TargetOnset', 
-                    'TargetEnd', 'AttentionOnset', 'AttentionEnd', 'FixationOnset')
-  for (event in usual_events) { 
+  events <- c('ImageOnset', 'CarrierOnset', 'CarrierEnd', 'TargetOnset', 
+               'TargetEnd', 'AttentionOnset', 'AttentionEnd', 'FixationOnset')
+  for (event in events) { 
     trial %@% event <- (trial %@% event - adjust_by)
   }
   
   # Add an attribute which tracks where the trial was aligned.
-  timing_attributes <- attributes(trial)[names(attributes(trial)) %in% usual_events]
+  timing_attributes <- attributes(trial)[names(attributes(trial)) %in% events]
   alignment_names <- names(which(timing_attributes == 0))
-  trial %@% 'AlignedBy' <- paste(alignment_names, collapse="_")
+  trial %@% 'AlignedBy' <- alignment_names
   trial
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Generic function for time slicing
-TimeSlice <- function(...) UseMethod('TimeSlice')
-
-
-#' Slice an interval of time in a Trial or dataframe
-#' 
-#' @param dframe a `data.frame` object (i.e., a `Trial` or a data-frame 
-#'   describing log-odds) with a column named `Time`.
-#' @param from the time at which to start slicing. This value can be a 
-#'   `character` string naming a valid timing attribute of the data-frame or
-#'   trial (e.g., `"TargetOnset"` for a `Trial`), a function that returns at
-#'   timing attribute (e.g., `TargetOnset` if `TargetOnset(trial)` would return
-#'   the target onset attribute), a numeric value specifying a time-point in
-#'   milliseconds, or `NULL` in which case the function slices from the first
-#'   time frame.
-#' @param to time to which to finish slicing. The parameter may be of the same 
-#'   classes as described above for `from`, but when `NULL` is passed a value, 
-#'   the final time frame is used for slicing.
-#' @return A time-sliced subset of `dframe`. An attribute called
-#'   "NumberOfFrames" is attached to the dataframe, so the length of the
-#'   time-sliced dataframe maybe queried.
-TimeSlice.data.frame <- function(dframe, from = lwl_opts$get("timeslice_start"), 
-                                 to = lwl_opts$get("timeslice_end")) {
-  # Resolve what time (in ms.) is meant by `from` and `to`.
-  from <- switch(class(from), 
-                 "NULL" = dframe$Time[1],
-                 "character" = (dframe %@% from),
-                 "function" = from(dframe),
-                 "numeric" = from)
-  to <- switch(class(to), 
-               "NULL" = dframe$Time[length(dframe$Time)],
-               "character" = (dframe %@% to),
-               "function" = to(dframe),
-               "numeric" = to)
-  
-  # Convert the start and end times into the corresponding frame numbers.
-  start_index <- max(which(dframe$Time <= from))
-  end_index <- max(which(dframe$Time <= to))
-  
-  # Slice, then attach the number of frames as an attribute.
-  dframe <- dframe[seq(start_index, end_index), ] 
-  dframe %@% "NumberOfFrames" <- length(dframe$Time)
-  dframe
-}
-
-
-#' Slice an interval of time across a list of dataframes
-#' 
-#' This function applies the `TimeSlice.data.frame` across a list of objects and
-#' preserves the classes of the `list` object.
-TimeSlice.list <- function(trials, from = lwl_opts$get("timeslice_start"), to = lwl_opts$get("timeslice_end")) {
-  # Create curried version of the function that can be mapped onto a list of
-  # dataframes, then apply that function.
-  lambda_dframe <- function(dframe) TimeSlice(dframe, from, to)
-  sliced <- Map(lambda_dframe, trials)
-  
-  # Preserve class of "Trials" if necessary.
-  class(sliced) <- class(trials)
-  return(sliced)
-}
-
 
 
 
@@ -425,31 +331,104 @@ BinWiseTimeSlice <- function(trials, start_time, end_time, bin_size = 3) {
 
 #' Get the lengths (in frames) of a list of trials
 #' 
+#' @keywords internal
 #' @param trials a list of `Trial` objects.
 #' @return a numeric vector with the number of frames in each `Trial`.
-GetTrialLengths <- function(trials) {
-  times <- Map(getElement, trials, "Time")
-  mapply(length, times)
-}
+GetTrialLengths <- function(trials) sapply(trials, nrow)
 
 
 #' Get the frame number for a certain Time value in a list of Trials
 #' 
+#' @keywords internal
 #' @param trials a list of `Trial` objects
 #' @param time_point a numeric value indicating the time to find in the Trial
 #' @return a numeric vector listing the frames at which the desired time occurs
 #'   in each `Trial`
 GetFrameAtTime <- function(trials, time_point = 0) {
-  # Make a helper function that returns the frame where a time-point occurs in
-  # a vector.
-  .WhichTime <- function(time_vector, time_point) {
-    tframe <- which(time_vector == time_point)
-    return(tframe)
-  }
-  # Get the `"Time"` columns of the all the trials, then use the helper function
-  # to get the frame number for each time column.
+  # Helper function that returns the frame where a time occurs in a vector.
+  which_time <- function(times, point = time_point) which(times == time_point)
+  # Find the time-point in each of the Time columns
   times <- Map(getElement, trials, "Time")
-  tframes <- laply(times, .WhichTime, time_point)
-  return(tframes)
+  sapply(times, which_time)
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Timeslicing --------------------------------------------------------------
+
+
+#' Slice an interval of time in a Trial or dataframe
+#' 
+#' @param dframe a `data.frame` object (i.e., a `Trial` or a data-frame 
+#'   describing log-odds) with a column named `Time`.
+#' @param trials a list of Trial objects
+#' @param from the time at which to start slicing. This value can be a 
+#'   `character` string naming a valid timing attribute of the data-frame or 
+#'   trial (e.g., `"TargetOnset"` for a `Trial`), a numeric value specifying a 
+#'   time-point in milliseconds, or `NULL` in which case the function slices 
+#'   from the first time frame.
+#' @param to time to which to finish slicing. The parameter may be of the same 
+#'   classes as described above for `from`, but when `NULL` is passed a value, 
+#'   the final time frame is used for slicing.
+#' @return A time-sliced subset of the `dframe` or the `trials`. An attribute
+#'   called "NumberOfFrames" is attached to the updated objects, so the length
+#'   of the time-sliced dataframe maybe queried.
+#' @export
+TimeSlice <- function(...) UseMethod('TimeSlice')
+
+#' @export
+TimeSlice.list <- function(trials, from = lwl_opts$get("timeslice_start"), 
+                           to = lwl_opts$get("timeslice_end")) {
+  classes <- class(trials)
+  # Apply the dataframe function onto each dataframe in trials
+  lambda_dframe <- function(dframe) TimeSlice(dframe, from, to)
+  trials <- lapply(trials, lambda_dframe)
+  class(trials) <- classes
+  trials
+  
+}
+
+
+#' @export
+TimeSlice.data.frame <- function(dframe, from = lwl_opts$get("timeslice_start"), 
+                                 to = lwl_opts$get("timeslice_end")) {
+  # Resolve what time (in ms.) is meant by `from` and `to`.
+  from <- from_time(from, dframe)
+  to <- from_time(to, dframe)
+  
+  # Convert the start and end times into the corresponding frame numbers.
+  start_index <- max(which(dframe$Time <= from))
+  end_index <- max(which(dframe$Time <= to))
+  
+  # Slice, then attach the number of frames as an attribute.
+  dframe <- dframe[seq(start_index, end_index), ] 
+  dframe %@% "NumberOfFrames" <- nrow(dframe)
+  dframe
+}
+
+
+from_time <- function(...) UseMethod("from_time")
+from_time.NULL <- function(from, frame) frame$Time[1]
+from_time.character <- function(from, frame) dframe %@% from
+from_time.numeric <- function(from, frame) from
+
+to_time <- function(...) UseMethod("to_time")
+to_time.NULL <- function(to, frame) frame$Time[nrow(frame)]
+to_time.character <- function(to, frame) dframe %@% to
+to_time.numeric <- function(to, frame) to

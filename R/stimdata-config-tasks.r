@@ -1,15 +1,11 @@
 
 GetDialectCode <- function(filename) {
   # Look for subject identifier substring
-  pattern <- "[0-9]{3}[CLPDE][0-9]{2}[MFX][SA][1-9]"
-  sub_id <- str_extract(filename, pattern)
+  sub_id <- str_extract(filename, lwl_constants$l2t_subject)
   # Pull the second to last character
   code <- str_sub(sub_id, nchar(sub_id) - 1, nchar(sub_id) - 1)
   ifelse(code == "S", "SAE", "AAE")
 }
-
-
-
 
 
 
@@ -53,14 +49,15 @@ GetDialectCode <- function(filename) {
 # some amount of delay between the end of the carrier phrase and the onset of
 # the target word, but these are recorded in the stimlog file. 
 
-ConfigureProtocol <- function(stimlog) {
-  # Determine the protocol
-  f_time <- .CheckForStimdataType(stimlog, 'Fixation.OnsetTime')
-  f_movs <- .CheckForStimdataType(stimlog, 'FixationMovie')
-  
-  protocol <- ifelse(!f_time, "NoFixations", 
-                     ifelse(f_movs, "WFF_Movie", "WFF_Area"))  
-  
+DetermineProtocol <- function (stimlog) {
+  time <- .CheckForStimdataType(stimlog, 'Fixation.OnsetTime')
+  movs <- .CheckForStimdataType(stimlog, 'FixationMovie')  
+  protocol <- if (movs) "WFF_Movie" else if (time) "WFF_Area" else "NoFixations"
+  protocol
+}
+
+# Get the appropriate stim from the protocol name.
+ConfigureProtocol <- function(protocol) {
   # We list the stim for the three protocols and choose the appropriate set.
   
   # Stim shared across all protocols in all experiments.
@@ -103,7 +100,7 @@ ConfigureProtocol <- function(stimlog) {
   config <- AddConstants(config, c(Protocol = protocol))
   
   # NoFixations: There is one audio file. We need to derived TargetOnset.
-  if(protocol == "NoFixations") {
+  if (protocol == "NoFixations") {
     # The "CarrierDur" and "TargetDur" constants are set later in the
     # DetermineStim function
     config <- AddNumericConstant(config, c(DelayTargetOnset = 0))
@@ -117,7 +114,7 @@ ConfigureProtocol <- function(stimlog) {
   }
   
   # Only AttentionOnset needs to be hard-coded for the WFF protocols
-  if(protocol == "WFF_Area" | protocol == "WFF_Movie") {
+  if (protocol == "WFF_Area" | protocol == "WFF_Movie") {
     derived <- c("TargetEnd <- TargetOnset + TargetDur", 
                  "CarrierEnd <- CarrierOnset + CarrierDur",
                  "FixationDur <- CarrierOnset - FixationOnset", 
@@ -143,11 +140,10 @@ DetermineStim.default <- function(stimlog) {
 
 DetermineStim.MP <- function(stimlog) {
   # Initialize the stim configuration from the protocol information
-  config <- ConfigureProtocol(stimlog)
-  
+  config <- ConfigureProtocol(DetermineProtocol(stimlog))
+   
   # Load the specific stimuli for this experiment
-  MP_stim <- c(ImageL = "ImageL", ImageR = "ImageR")
-  config <- AddStim(config, MP_stim)
+  config <- AddStim(config, c(ImageL = "ImageL", ImageR = "ImageR"))
   
   # Add Dialect, Task, Subject, Block constants
   basename <- attr(stimlog, "Basename")
@@ -163,7 +159,7 @@ DetermineStim.MP <- function(stimlog) {
   protocol <- config$Constants["Protocol"]
   
   # NoFixations: There is one audio file. We need to derived TargetOnset.
-  if(protocol == "NoFixations") {
+  if (protocol == "NoFixations") {
     # The SAE stim has variable target durations: 
     
     #      dog/tog/veif: 743 ms.
@@ -196,7 +192,7 @@ DetermineStim.MP <- function(stimlog) {
 
 DetermineStim.RWL <- function(stimlog) {
   # Initialize the stim configuration from the protocol information
-  config <- ConfigureProtocol(stimlog)
+  config <- ConfigureProtocol(DetermineProtocol(stimlog))
   
   # Load the specific stimuli for this experiment
   rwl_stim <- c(UpperLeftImage  = 'Image1', UpperRightImage = 'Image2', 
@@ -222,7 +218,7 @@ DetermineStim.RWL <- function(stimlog) {
   protocol <- config$Constants["Protocol"]
   
   # NoFixations: There is one audio file. We need to derived TargetOnset.
-  if(protocol == "NoFixations") {
+  if (protocol == "NoFixations") {
     carrier_duration <- ifelse(dialect == "SAE", 1496, 1149)
     target_duration <- ifelse(dialect == "SAE", 845, 706)  
     config <- AddNumericConstant(config, c(CarrierDur = carrier_duration, 
@@ -287,11 +283,7 @@ DetermineStim.Coartic <- function(stimlog) {
   
   version_2 <- .CheckForStimdataType(stimlog, 'Pitch')
   
-  config <- if(version_2) {
-    v2_config
-  } else {
-    v1_config
-  }
+  config <- if (version_2) v2_config else v1_config
   
 
   # Add Dialect, Task, Subject, Block constants

@@ -26,10 +26,6 @@ MakeStimdataConfig <- function(named_stim, numerics = NULL, constants = NULL, de
 
 
 
-
-
-
-
 #' Modify a \code{StimConfig} list
 #' 
 #' @param config a \code{StimConfig} list

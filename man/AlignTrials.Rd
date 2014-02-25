@@ -16,12 +16,14 @@ updated timing attributes.
 }
 \description{
 This function normalizes trials by length and by timing
-such that: * all trials have the same number of frames *
-the event specified as time 0 occurs in the same frame in
-each trial * frames at the same index have the same time
-(in ms.) across trials
+such that:
 }
 \details{
+\itemize{ \item all trials have the same number of frames
+\item the event specified as time 0 occurs in the same
+frame in each trial \item frames at the same index have the
+same time (in ms.) across trials }
+
 Because trials may vary in length, empty frames may be
 added to the beginning or end of a trial to normalize the
 frame-length of trials. These are filled with NA gaze

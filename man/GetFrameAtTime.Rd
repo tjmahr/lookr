@@ -18,4 +18,5 @@ time occurs in each `Trial`
 Get the frame number for a certain Time value in a list of
 Trials
 }
+\keyword{internal}
 

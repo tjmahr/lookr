@@ -13,4 +13,5 @@ a numeric vector with the number of frames in each `Trial`.
 \description{
 Get the lengths (in frames) of a list of trials
 }
+\keyword{internal}
 
