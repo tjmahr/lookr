@@ -93,7 +93,8 @@ merge_lists <- function(x, y) {
 
 #' @export
 lwl_opts <- OptionList(list(
-  interpolation_window = 100, 
+  alignment_event = "TargetOnset",
+  interpolation_window = 150, 
   timeslice_start = -200, 
   timeslice_end = 2000
 ))
