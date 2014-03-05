@@ -1,7 +1,6 @@
 
 
 
-
 #' Convert Trial and list of Trials into a long data-frame
 #' 
 #' @param trial a Trial object with AOI data added
@@ -26,7 +25,7 @@ MeltLooks.Trial <- function(trial) {
   # name, using the mapping `list(ColumnName = "AttributeName")`
   aliased <- list(Condition = "StimType", TargetLocation = "TargetImage", 
                   DistractorLocation = "DistractorImage")
-  unaliased <- c("WordGroup", "TargetWord", "ImageL", "ImageR", "Pitch", 
+  unaliased <- c("WordGroup", "TargetWord", "ImageL", "ImageR", "Pitch", "EmptyTarget",
                  "Carrier", "Audio", "CarrierOnset", "TargetEnd", "TrialNo")
   
   aliased <- aliased[is.element(aliased, names(attributes(trial)))]
