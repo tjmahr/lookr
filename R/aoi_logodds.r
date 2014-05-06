@@ -119,17 +119,14 @@
 #'   `floor(num.rows(dframe) / bin_width)`.
 .BinAndSumValues <- function(dframe, bin_width) {
   dframe <- as.data.frame(dframe)
-  # Get the number of rows and columns in the data-frame.
-  num_rows <- nrow(dframe)
-  num_cols <- ncol(dframe)
   
   # Determine the number of bins that can fit in the data-frame.
-  num_bins <- floor(num_rows / bin_width)
-  leftover <- num_rows %% bin_width
+  num_bins <- floor(nrow(dframe) / bin_width)
+  leftover <- nrow(dframe) %% bin_width
   
   # Drop the remainder rows **from the top of the data-frame**
   if (leftover != 0) {
-    dframe <- dframe[-seq_len(leftover), ]
+    dframe <- dframe[-seq_len(leftover), , drop = FALSE]
   }
   
   bin_indices <- sort(rep(seq(from = 1, to = num_bins), times = bin_width))
