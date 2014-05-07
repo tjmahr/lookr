@@ -64,3 +64,42 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
   names(looks)[which(names(looks) == "tracked")] <- "Elsewhere"
   transform(looks, Proportion = Target / (Others + Target))  
 }
+
+
+#' Assign bin numbers to a vector
+#' 
+#' The first step in binning/down-sampling some data is assigning items to bins.
+#' This function takes a vector and a bin size and returns the bin assignments.
+#' 
+#' @param xs a vector
+#' @param bin_width the number of items to put in each bin. Default is 3.
+#' @param na_location Where to assign `NA` bin numbers. `"head"` and `"tail"` 
+#'   respectively put the NA elements at the head and tail of the vector; 
+#'   `"split"` alternates between `"tail"` and `"head"`.
+#' @return a vector of bin-numbers. If `bin_width` does not evenly divide `xs`, 
+#'   the remainder elements are given a bin number of `NA`.
+#'   
+#' @examples
+#' AssignBins(1:14, bin_width = 3, "head")
+#' # [1] NA NA  1  1  1  2  2  2  3  3  3  4  4  4
+#' AssignBins(1:14, bin_width = 3, "tail")
+#' # [1]  1  1  1  2  2  2  3  3  3  4  4  4 NA NA
+#' AssignBins(1:7, bin_width = 5, "split")
+#' # [1] NA  1  1  1  1  1 NA
+#' AssignBins(1:8, bin_width = 5, "split")
+#' # [1] NA  1  1  1  1  1 NA NA
+AssignBins <- function(xs, bin_width = 3, na_location = "head") {
+  num_bins <- floor(length(xs) / bin_width)
+  leftover <- length(xs) %% bin_width
+  bin_indices <- sort(rep(seq_len(num_bins), times = bin_width))
+  if (na_location == "head") {
+    bin_indices <- c(rep(NA, leftover), bin_indices)
+  } else if (na_location == "tail") {
+    bin_indices <- c(bin_indices, rep(NA, leftover))
+  } else if (na_location == "split") {
+    first <- floor(leftover / 2)
+    last <- ceiling(leftover / 2)
+    bin_indices <-  c(rep(NA, first), bin_indices, rep(NA, last))
+  }
+  bin_indices
+}
