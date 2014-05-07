@@ -7,18 +7,17 @@ AlignTrials(trials, alignment_event = lwl_opts$get("alignment_event"))
 \arguments{
   \item{trials}{}
 
-  \item{alignment_event}{default is `"TargetOnset"`}
+  \item{alignment_event}{default is \code{"TargetOnset"}}
 }
 \value{
 the inputted set of trials with normalized lengths (in
-frame numbers), normalized `$Time` values (in ms.) and
+frame numbers), normalized \code{$Time} values (in ms.) and
 updated timing attributes.
 }
 \description{
 This function normalizes trials by length and by timing
 such that:
-}
-\details{
+
 \itemize{ \item all trials have the same number of frames
 \item the event specified as time 0 occurs in the same
 frame in each trial \item frames at the same index have the

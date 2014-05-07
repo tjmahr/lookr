@@ -5,15 +5,16 @@
 #' Compute the average duration of tracked gazes
 #' 
 #' To quantify "flicker" in eye-tracking data, Wass, Smith and Johnson (2013) 
-#' found the average duration of tracked segments of eye-tracking data. This
-#' function performs this calculation, updating trials with a new attribute
-#' `AvgGazeContact`. This value measures the average duration (ms) of each
+#' found the average duration of tracked segments of eye-tracking data. This 
+#' function performs this calculation, updating trials with a new attribute 
+#' \code{AvgGazeContact}. This value measures the average duration (ms) of each 
 #' segment of uninterrupted eye-tracking data in a trial.
 #' 
-#' @param trial a Trial object with a `GazeByImageAOI` column
-#' @param trials a list of Trial objects, each with a `GazeByImageAOI` column
+#' @param trial a Trial object with a \code{GazeByImageAOI} column
+#' @param trials a list of Trial objects, each with a \code{GazeByImageAOI}
+#'   column
 #' @return the Trial or list of Trials updated with a new attribute 
-#'   `AvgGazeContact`
+#'   \code{AvgGazeContact}
 #' @export
 ComputeGazeContact <- function(...) UseMethod("ComputeGazeContact")
 

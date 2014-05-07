@@ -5,6 +5,7 @@
 
 #' Align trial objects in a list
 #' 
+#' @description
 #' This function normalizes trials by length and by timing such that: 
 #' 
 #' \itemize{
@@ -14,13 +15,14 @@
 #' }
 #' 
 #' Because trials may vary in length, empty frames may be added to the beginning
-#' or end of a trial to normalize the frame-length of trials. These are filled
+#' or end of a trial to normalize the frame-length of trials. These are filled 
 #' with NA gaze values. Trials also have updated timing attributes.
 #' 
 #' @param trials
-#' @param alignment_event default is `"TargetOnset"`
-#' @return the inputted set of trials with normalized lengths (in frame
-#'   numbers), normalized `$Time` values (in ms.) and updated timing attributes.
+#' @param alignment_event default is \code{"TargetOnset"}
+#' @return the inputted set of trials with normalized lengths (in frame 
+#'   numbers), normalized \code{$Time} values (in ms.) and updated timing
+#'   attributes.
 #' @export
 AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event")) {
   # Find the times to set to 0 within each trial.
@@ -67,9 +69,9 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 #' If two frames are temporally equidistant from the given time, choose the 
 #' earlier frame.
 #' 
-#' @param trial a `Trial` object
-#' @param time a `numeric` value (in ms.)
-#' @return The number of the frame of the trial whose time is closest to the
+#' @param trial a \code{Trial} object
+#' @param time a \code{numeric} value (in ms.)
+#' @return The number of the frame of the trial whose time is closest to the 
 #'   time of the stimulus alignment event.
 .FindClosestFrame <- function(trial, time) {
   # Calculate the time distance between each frame and the alignment event.
@@ -90,12 +92,12 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 #' Make a function for padding a trial with empty frames
 #' 
 #' @param location the margin onto which we add the empty frames, either 
-#'   `"start"` or `"end`".
-#' @param trial in the returned function, the `Trial` onto which to add the 
+#'   \code{"start"} or \code{"end"}.
+#' @param trial in the returned function, the \code{Trial} onto which to add the
 #'   empty frames.
 #' @param add_frames in the returned function, the number of empty frames to add
-#'   onto `trial`
-#' @return a function for adding frames to the beginning or end of a set of
+#'   onto \code{trial}
+#' @return a function for adding frames to the beginning or end of a set of 
 #'   trials.
 #' @examples
 #' # Add frames at the beginning of each Trial in a list of Trial.
@@ -126,7 +128,7 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 #' Find number of frames in a trial that occur after a reference frame
 #' 
 #' @param trial
-#' @param align_frame an `integer` index of the reference frame to begin
+#' @param align_frame an \code{integer} index of the reference frame to begin 
 #'   counting after.
 #' @return the number of frames that occur after the reference frame
 .ComputeFramesAfterZero <- function(trial, align_frame) {
@@ -143,9 +145,10 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 #' Assign new times to a trial once it has been aligned at a reference frame
 #' 
 #' @param trial
-#' @param the index of the reference frame that will mark time = 0 in the
+#' @param the index of the reference frame that will mark time = 0 in the 
 #'   aligned trial
-#' @return the inputted trial object with updated values in its `Time` column
+#' @return the inputted trial object with updated values in its \code{Time}
+#'   column
 .AssignNewTimes <- function(trial, zero_frame) {
   # Add frames backwards from the zero frame
   neg_times <- seq(from = lwl_constants$ms_per_frame, 
@@ -190,19 +193,20 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 
 #' Align the zero-time frames and normalize lengths of a list of trials
 #' 
-#' Because of the possible `TargetOnsetDelay` in Wait-For-Fixation trials, a 
-#' list of a trials that have been time-aligned and time-sliced may have 
+#' @description
+#' Because of the possible \code{TargetOnsetDelay} in Wait-For-Fixation trials,
+#' a list of a trials that have been time-aligned and time-sliced may have 
 #' differing number of frames. This function truncates all trials so they have 
 #' the same number of frames and so that the frame at time = 0 occurs in the 
 #' same place across all the list of trials.
 #' 
 #' Two steps are involved in the alignment process: (1) Removing frames from the
-#' beginning of the trials so that zero frame occurs in the same frame across
-#' all the trials, then (2) removing frames from the end of the trials so that
+#' beginning of the trials so that zero frame occurs in the same frame across 
+#' all the trials, then (2) removing frames from the end of the trials so that 
 #' all they all have the same number of frames.
 #' 
-#' @param trials a `list` of `Trial` objects
-#' @return a truncated and zero-frame aligned `list` of `Trials`
+#' @param trials a \code{list} of \code{Trial} objects
+#' @return a truncated and zero-frame aligned \code{list} of \code{Trials}
 AlignZeroFrames <- function(trials) {
   # Preserve class names
   trial_classes <- class(trials)
@@ -224,17 +228,17 @@ AlignZeroFrames <- function(trials) {
 
 #' Normalize the number of frames before time zero in a Trial
 #' 
-#' This function supports the `AlignZeroFrame` function. It lops off frames from
-#' the beginning of a `Trial` if its `TargetOnset` (time = zero) frame occurs 
-#' later than the earliest `TargetOnset` frame index.
+#' This function supports the \code{AlignZeroFrame} function. It lops off frames
+#' from the beginning of a \code{Trial} if its \code{TargetOnset} (time = zero)
+#' frame occurs later than the earliest \code{TargetOnset} frame index.
 #' 
 #' A warning is printed when the truncation occurs.
 #' 
-#' @param trial a `Trial` object to be truncated.
+#' @param trial a \code{Trial} object to be truncated.
 #' @param earliest_onset the index of the frame where the zero-time frame should
 #'   go.
-#' @return a `Trial` object with a time = 0 occuring at the frame number
-#'   specified by `earliest_onset`.
+#' @return a \code{Trial} object with a time = 0 occuring at the frame number 
+#'   specified by \code{earliest_onset}.
 .AlignOnset <- function(trial, earliest_onset) {
   # Determine if the Trial needs to be truncated.
   trial_onset <- which(trial$Time == 0)
@@ -262,15 +266,15 @@ AlignZeroFrames <- function(trials) {
 
 #' Normalize the number of frames in a Trial
 #' 
-#' This function supports the `AlignZeroFrame` function. It lops off frames from
-#' the end of a `Trial` if its longer than the shortest trial.
+#' This function supports the \code{AlignZeroFrame} function. It lops off frames
+#' from the end of a \code{Trial} if its longer than the shortest trial.
 #' 
 #' A warning is printed when the truncation occurs.
 #' 
-#' @param trial a `Trial` object to be truncated.
-#' @param shortest_length the number of frames that the `Trial` should be in
-#'   length.
-#' @return the truncated `Trial`
+#' @param trial a \code{Trial} object to be truncated.
+#' @param shortest_length the number of frames that the \code{Trial} should be
+#'   in length.
+#' @return the truncated \code{Trial}
 .TruncateTrial <- function(trial, shortest_length) {
   # Determine if the Trial needs to be truncated.
   length_trial <- length(trial$Time)
@@ -296,23 +300,23 @@ AlignZeroFrames <- function(trials) {
 
 #' Extract a subset of trial data, congruent to bin size
 #' 
-#' We only really care about part of each trial, so we should extract that time
-#' interval from each trial and not worry about the rest of the trial. Our
-#' log-odds function however analyzes AOI data 3 bins at a time (or in 49.9638
-#' ms chunks), so we should make sure that our interval can be broken into bins
+#' We only really care about part of each trial, so we should extract that time 
+#' interval from each trial and not worry about the rest of the trial. Our 
+#' log-odds function however analyzes AOI data 3 bins at a time (or in 49.9638 
+#' ms chunks), so we should make sure that our interval can be broken into bins 
 #' (i.e., broken into 49.9638 ms chunks).
 #' 
-#' This function extends the time interval for extraction to the nearest bin.
-#' The result is that the number of time frames in the extracted interval is
+#' This function extends the time interval for extraction to the nearest bin. 
+#' The result is that the number of time frames in the extracted interval is 
 #' evenly divisible by the bin size.
 #' 
 #' @param trials a list of trials
 #' @param start_time the starting time (ms) of the interval
 #' @param end_time the end time (ms) of the interval
 #' @param bin_size the number of time frames per bin (default is 3)
-#' @return a list of `trial` objects with the desired interval extracted and
-#'   extended so that the number of time frames is evenly divisisble by the bin
-#'   size
+#' @return a list of \code{trial} objects with the desired interval extracted
+#'   and extended so that the number of time frames is evenly divisisble by the
+#'   bin size
 BinWiseTimeSlice <- function(trials, start_time, end_time, bin_size = 3) {
   difference <- end_time - start_time 
   bin_duration <- bin_size * lwl_constants$ms_per_frame
@@ -333,18 +337,18 @@ BinWiseTimeSlice <- function(trials, start_time, end_time, bin_size = 3) {
 #' Get the lengths (in frames) of a list of trials
 #' 
 #' @keywords internal
-#' @param trials a list of `Trial` objects.
-#' @return a numeric vector with the number of frames in each `Trial`.
+#' @param trials a list of \code{Trial} objects.
+#' @return a numeric vector with the number of frames in each \code{Trial}.
 GetTrialLengths <- function(trials) sapply(trials, nrow)
 
 
 #' Get the frame number for a certain Time value in a list of Trials
 #' 
 #' @keywords internal
-#' @param trials a list of `Trial` objects
+#' @param trials a list of \code{Trial} objects
 #' @param time_point a numeric value indicating the time to find in the Trial
-#' @return a numeric vector listing the frames at which the desired time occurs
-#'   in each `Trial`
+#' @return a numeric vector listing the frames at which the desired time occurs 
+#'   in each \code{Trial}
 GetFrameAtTime <- function(trials, time_point = 0) {
   # Helper function that returns the frame where a time occurs in a vector.
   which_time <- function(times, point = time_point) which(times == time_point)
@@ -376,20 +380,20 @@ GetFrameAtTime <- function(trials, time_point = 0) {
 
 #' Slice an interval of time in a Trial or dataframe
 #' 
-#' @param dframe a `data.frame` object (i.e., a `Trial` or a data-frame 
-#'   describing log-odds) with a column named `Time`.
+#' @param dframe a \code{data.frame} object (i.e., a \code{Trial} or a
+#'   data-frame describing log-odds) with a column named \code{Time}.
 #' @param trials a list of Trial objects
 #' @param from the time at which to start slicing. This value can be a 
-#'   `character` string naming a valid timing attribute of the data-frame or 
-#'   trial (e.g., `"TargetOnset"` for a `Trial`), a numeric value specifying a 
-#'   time-point in milliseconds, or `NULL` in which case the function slices 
-#'   from the first time frame.
+#'   \code{character} string naming a valid timing attribute of the data-frame
+#'   or trial (e.g., \code{"TargetOnset"} for a \code{Trial}), a numeric value
+#'   specifying a time-point in milliseconds, or \code{NULL} in which case the
+#'   function slices from the first time frame.
 #' @param to time to which to finish slicing. The parameter may be of the same 
-#'   classes as described above for `from`, but when `NULL` is passed a value, 
-#'   the final time frame is used for slicing.
-#' @return A time-sliced subset of the `dframe` or the `trials`. An attribute
-#'   called "NumberOfFrames" is attached to the updated objects, so the length
-#'   of the time-sliced dataframe maybe queried.
+#'   classes as described above for \code{from}, but when \code{NULL} is passed
+#'   a value, the final time frame is used for slicing.
+#' @return A time-sliced subset of the \code{dframe} or the \code{trials}. An
+#'   attribute called "NumberOfFrames" is attached to the updated objects, so
+#'   the length of the time-sliced dataframe maybe queried.
 #' @export
 TimeSlice <- function(...) UseMethod('TimeSlice')
 

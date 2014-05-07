@@ -77,8 +77,8 @@
 #' @param attr_name the name of attribute to filter by
 #' @param trials a list of Trial objects
 #' @param attr_value a vector of values to filter out
-#' @return a function `f(trials, attr_values)` that filters out trials with the
-#'   specified `attr_values` for the given `attr_name`.
+#' @return a function \code{f(trials, attr_values)} that filters out trials with
+#'   the specified \code{attr_values} for the given \code{attr_name}.
 MakeAttributeFilter <- function(attr_name) {
   function(trials, attr_value) {
     classes <- class(trials)

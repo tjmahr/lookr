@@ -1,21 +1,22 @@
 #' Load the sessions for an experimental task
 #' 
-#' `Block(...)` collects the trials for a single looking-while-listening 
-#' experiment. `Session(...)` combines blocks for a single subject. `Task(...)` 
-#' combines sessions over multiple subjects.
+#' \code{Block(...)} collects the trials for a single looking-while-listening 
+#' experiment. \code{Session(...)} combines blocks for a single subject.
+#' \code{Task(...)} combines sessions over multiple subjects.
 #' 
-#' A `Task` object is a list of `Trial` objects, which all have the same 
-#' `"Task"` attribute but do not have the same `"Subject"` attribute.
+#' A \code{Task} object is a list of \code{Trial} objects, which all have the
+#' same \code{"Task"} attribute but do not have the same \code{"Subject"}
+#' attribute.
 #' 
-#' @param task_path a task-level directory. The subdirectories of `task_path` 
-#'   should be subject directories, that begin with the pattern 
-#'   `[0-9]{3}[CLPX]`, and these subject directories should contain experimental
-#'   blocks.
+#' @param task_path a task-level directory. The subdirectories of
+#'   \code{task_path} should be subject directories, that begin with the pattern
+#'   \code{[0-9]{3}[CLPX]}, and these subject directories should contain
+#'   experimental blocks.
 #' @param partial a vector of integers used to select some of the 
 #'   subdirectories. Used to partially load the set of sessions for the task, in
-#'   order to prototype code or test the function. Default is `NA`.
+#'   order to prototype code or test the function. Default is \code{NA}.
 #' @param handler a function used to handle error messages. By default, an error
-#'   message is caught and printed as a `warning`.
+#'   message is caught and printed as a \code{warning}.
 #' @return a Task object containing all the trials from all the sessions that 
 #'   could be successfully loaded. If a block could not be loaded, its error 
 #'   message is handled using the specified handle function.
@@ -58,17 +59,17 @@ ListSubjectsInTaskDir <- function(gaze_dir) {
 
 #' Try to load an experimental block, failing gracefully if unsuccessful
 #' 
-#' `TryLoad(...)` tries to load the blocks in a subject directory. If it
-#' encounters an error, it catches the error and moves on to the next in the
+#' \code{TryLoad(...)} tries to load the blocks in a subject directory. If it 
+#' encounters an error, it catches the error and moves on to the next in the 
 #' subject directory.
 #' 
 #' @param subject_path a path to a subject's directory which may contain blocks 
 #'   from LWL tasks.
 #' @param handler a function to apply to the file-path of an experimental block 
-#'   hat raised an error. The default is to `print` the file-path.
-#' @return `NULL` if there are no loadable experimental blocks in 
-#'   `subject_path`, otherwise a `Session` containing the blocks that could be 
-#'   loaded from `subject_path`.
+#'   hat raised an error. The default is to \code{print} the file-path.
+#' @return \code{NULL} if there are no loadable experimental blocks in 
+#'   \code{subject_path}, otherwise a \code{Session} containing the blocks that
+#'   could be loaded from \code{subject_path}.
 #' @importFrom tools file_path_sans_ext
 TryLoad <- function(subject_path, handler = warning) {
   gaze_files <- dir(subject_path, pattern = 'gazedata', full.names = TRUE)

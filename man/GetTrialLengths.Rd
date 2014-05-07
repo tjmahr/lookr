@@ -5,10 +5,11 @@
 GetTrialLengths(trials)
 }
 \arguments{
-  \item{trials}{a list of `Trial` objects.}
+  \item{trials}{a list of \code{Trial} objects.}
 }
 \value{
-a numeric vector with the number of frames in each `Trial`.
+a numeric vector with the number of frames in each
+\code{Trial}.
 }
 \description{
 Get the lengths (in frames) of a list of trials

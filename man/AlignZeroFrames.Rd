@@ -5,20 +5,20 @@
 AlignZeroFrames(trials)
 }
 \arguments{
-  \item{trials}{a `list` of `Trial` objects}
+  \item{trials}{a \code{list} of \code{Trial} objects}
 }
 \value{
-a truncated and zero-frame aligned `list` of `Trials`
+a truncated and zero-frame aligned \code{list} of
+\code{Trials}
 }
 \description{
-Because of the possible `TargetOnsetDelay` in
+Because of the possible \code{TargetOnsetDelay} in
 Wait-For-Fixation trials, a list of a trials that have been
 time-aligned and time-sliced may have differing number of
 frames. This function truncates all trials so they have the
 same number of frames and so that the frame at time = 0
 occurs in the same place across all the list of trials.
-}
-\details{
+
 Two steps are involved in the alignment process: (1)
 Removing frames from the beginning of the trials so that
 zero frame occurs in the same frame across all the trials,

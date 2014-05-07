@@ -15,7 +15,7 @@ BinWiseTimeSlice(trials, start_time, end_time, bin_size = 3)
   (default is 3)}
 }
 \value{
-a list of `trial` objects with the desired interval
+a list of \code{trial} objects with the desired interval
 extracted and extended so that the number of time frames is
 evenly divisisble by the bin size
 }
