@@ -8,7 +8,7 @@ Data Structures and Abstractions
 In this doc, I discuss what makes up our eye-tracking data and the main levels of abstraction that we use to contain the data.
 
 
-Eye-tracking data
+Raw eye-tracking data
 -------------------------------------------------------------------------------
 
 Here are the files that make up a single subject's eye-tracking data. This participant received two blocks of the coarticulation experiment.
@@ -20,7 +20,7 @@ data_files
 
 Each experimental block produces a `.txt` file and a `.gazedata` file. These two files contain all the pertinent experimental data for an eye-tracking block. During an experiment, Eprime also produces an `.edat` file, but that file is unusable outside of Eprime so we ignore it.
 
-The `.txt` and `.gazedata` files for a block should have the same basename (i.e., the same filename, except for the file extension). When we truncate the file extensions, we see that we only have two unique filenames, one for each block of data.
+The `.txt` and `.gazedata` files for a block should have the same basename (i.e., the same filename except for the file extension). When we truncate the file extensions, we see that we only have two unique filenames, one for each block of data.
 
 ```{r}
 unique(tools::file_path_sans_ext(data_files))

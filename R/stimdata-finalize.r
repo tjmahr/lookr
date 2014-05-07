@@ -54,7 +54,7 @@ FinalizeStimdata.MP <- function(stimdata) {
     str_sub(stim, 1, -2)
   }
   
-  stimdata <- mutate(stimdata, Target = mapply(.GetStimImg, TrialNo, Target))  
+  stimdata <- transform(stimdata, Target = mapply(.GetStimImg, TrialNo, Target))  
   
   # Filenames for audio files separate stimuli information with underscores:
   # `SAE_Fin_cat_112_20`. We reduce the filename down to the target word by

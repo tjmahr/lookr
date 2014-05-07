@@ -21,6 +21,7 @@
 #' @param alignment_event default is `"TargetOnset"`
 #' @return the inputted set of trials with normalized lengths (in frame
 #'   numbers), normalized `$Time` values (in ms.) and updated timing attributes.
+#' @export
 AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event")) {
   # Find the times to set to 0 within each trial.
   alignment_times <- trials %@% alignment_event
