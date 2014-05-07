@@ -12,10 +12,10 @@ CheckLooksInBounds(xs, lower_bound, upper_bound)
   \item{upper_bound}{the upper bound of the range to check}
 }
 \value{
-a vector of boolean values indicating whether each x in xs
-falls between the lower bound and upper bound (inclusive).
-NA values in xs are missing looks so they are reported as
-FALSE.
+a vector of boolean values indicating whether each x in
+\code{xs} falls between the lower bound and upper bound
+(inclusive). \code{NA} values in \code{xs} are missing
+looks so they are reported as \code{FALSE}.
 }
 \description{
 Check whether values in a vector each fall between an upper

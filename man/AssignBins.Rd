@@ -10,15 +10,16 @@ AssignBins(xs, bin_width = 3, na_location = "head")
   \item{bin_width}{the number of items to put in each bin.
   Default is 3.}
 
-  \item{na_location}{Where to assign `NA` bin numbers.
-  `"head"` and `"tail"` respectively put the NA elements at
-  the head and tail of the vector; `"split"` alternates
-  between `"tail"` and `"head"`.}
+  \item{na_location}{Where to assign \code{NA} bin numbers.
+  \code{"head"} and \code{"tail"} respectively put the NA
+  elements at the head and tail of the vector;
+  \code{"split"} alternates between \code{"tail"} and
+  \code{"head"}.}
 }
 \value{
-a vector of bin-numbers. If `bin_width` does not evenly
-divide `xs`, the remainder elements are given a bin number
-of `NA`.
+a vector of bin-numbers. If \code{bin_width} does not
+evenly divide \code{xs}, the remainder elements are given a
+bin number of \code{NA}.
 }
 \description{
 The first step in binning/down-sampling some data is

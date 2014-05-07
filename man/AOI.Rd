@@ -12,11 +12,11 @@ AOI(x_pix, y_pix)
   the lower and upper boundaries of the image.}
 }
 \value{
-A list of the form `list(x = (left_prop, right_prop), y =
-(lower_prop, upper_prop))`, where `left_prop`,
-`right_prop`, `lower_prop`, and `upper_prop` are the screen
-proportion of the left, right, lower, and upper boundaries,
-respectively.
+A list of the form \code{list(x = (left_prop, right_prop),
+y = (lower_prop, upper_prop))}, where \code{left_prop},
+\code{right_prop}, \code{lower_prop}, and \code{upper_prop}
+are the screen proportion of the left, right, lower, and
+upper boundaries, respectively.
 }
 \description{
 AOI is a utility function for converting the pixel

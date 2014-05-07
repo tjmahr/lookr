@@ -174,10 +174,10 @@ ExtractStim <- function(stim_config, stimlog) {
 
 #' Extract values of a given type from a stimdata file
 #' 
-#' `.GetValuesOfStimdataType` is a utility function for extracting from a 
+#' \code{.GetValuesOfStimdataType} is a utility function for extracting from a 
 #' stimlog, the value of a given type of stimdata for each trial. This function 
-#' is curried so that `.GetValuesOfStimdataType(stimlog)` returns a function 
-#' that can be applied to a vector of the names of the stimdata types.
+#' is curried so that \code{.GetValuesOfStimdataType(stimlog)} returns a
+#' function that can be applied to a vector of the names of the stimdata types.
 #' 
 #' @keywords internal
 #' @param stimlog A character vector whose elements are the lines of the 

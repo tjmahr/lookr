@@ -3,21 +3,22 @@
 #' Transform gazedata coordinates into AOI data
 #' 
 #' AddAOIData() adds two new columns to the gazedata in a Trial object: (1) 
-#' `GazeByAOI`, the screen-location of the image where the gaze is fixated 
-#' (e.g., `ImageL` or `UpperLeftImage`) and (2) `GazeByImageAOI`, the stimulus 
-#' contained in the image where the gaze is fixated (e.g., `TargetImage` or 
-#' `PhonologicalFoil`).
+#' \code{GazeByAOI}, the screen-location of the image where the gaze is fixated 
+#' (e.g., \code{ImageL} or \code{UpperLeftImage}) and (2) \code{GazeByImageAOI},
+#' the stimulus contained in the image where the gaze is fixated (e.g.,
+#' \code{TargetImage} or \code{PhonologicalFoil}).
 #' 
-#' If the gaze is tracked but not fixated to a particular image on the screen,
-#' it gets the default value of `tracked`. If the gaze is missing during a
-#' particular frame, the value is `NA`.
+#' If the gaze is tracked but not fixated to a particular image on the screen, 
+#' it gets the default value of \code{tracked}. If the gaze is missing during a 
+#' particular frame, the value is \code{NA}.
 #' 
 #' "AOI" stands for Area of Interest.
 #' 
 #' @export
-#' @param trial A Trial object with a `Task` and `Protocol` attributes.
-#' @param trials a list of Trial objects, each with `Task` and `Protocol` 
+#' @param trial A Trial object with a \code{Task} and \code{Protocol}
 #'   attributes.
+#' @param trials a list of Trial objects, each with \code{Task} and
+#'   \code{Protocol} attributes.
 #' @return The Trial object with the AOI data attached as new columns.
 AddAOIData <- function(...) UseMethod('AddAOIData')
 
@@ -91,8 +92,8 @@ DetermineAOIStim <- function(trial) {
 #' Get frames with gazedata within an Area of interest
 #' 
 #' @keywords internal
-#' @param trial a Trial with `XMean` and `YMean` columns.
-#' @param img_AOI the coordinates of a rectangular Area of Interest given in
+#' @param trial a Trial with \code{XMean} and \code{YMean} columns.
+#' @param img_AOI the coordinates of a rectangular Area of Interest given in 
 #'   screen proportions.
 #' @return a vector of boolean values indicating whether the gaze values fall 
 #'   into the AOI at each time point in the trial.
@@ -117,9 +118,9 @@ GetFramesWithGazeInAOI <- function(trial, img_AOI) {
 #' @param xs a set of x or y gaze coordinates
 #' @param lower_bound the lower bound of the range to check
 #' @param upper_bound the upper bound of the range to check
-#' @return a vector of boolean values indicating whether each x in xs falls
-#'   between the lower bound and upper bound (inclusive). NA values in xs are
-#'   missing looks so they are reported as FALSE.
+#' @return a vector of boolean values indicating whether each x in \code{xs} 
+#'   falls between the lower bound and upper bound (inclusive). \code{NA} values
+#'   in \code{xs} are missing looks so they are reported as \code{FALSE}.
 CheckLooksInBounds <- function(xs, lower_bound, upper_bound) {
   gaze_in_bounds <- lower_bound <= xs & xs <= upper_bound
   gaze_in_bounds[is.na(gaze_in_bounds)] <- FALSE
@@ -130,9 +131,10 @@ CheckLooksInBounds <- function(xs, lower_bound, upper_bound) {
 #' Get the boundaries of an Area of Interest from its name
 #' 
 #' @keywords internal
-#' @param image_location a string naming an image location. It may be:
-#'   `UpperLeftImage`, `UpperRightImage`, `LowerRightImage`, `LowerLeftImage`,
-#'   `FixationImage`, `ImageL`, or `ImageR`.
+#' @param image_location a string naming an image location. It may be: 
+#'   \code{UpperLeftImage}, \code{UpperRightImage}, \code{LowerRightImage},
+#'   \code{LowerLeftImage}, \code{FixationImage}, \code{ImageL}, or
+#'   \code{ImageR}.
 #' @return a list specifying the boundaries of the named AOI
 GetImageAOI <- function(image_location) {
   # Stop on non-string input
@@ -162,8 +164,8 @@ GetImageAOI <- function(image_location) {
 
 #' Convert pixel locations of an image to proportion-on-screen location
 #' 
-#' AOI is a utility function for converting the pixel locations of the x- and
-#' y-boundaries of an image to screen proportions that can be passed to
+#' AOI is a utility function for converting the pixel locations of the x- and 
+#' y-boundaries of an image to screen proportions that can be passed to 
 #' functions like AddAOIData.
 #' 
 #' @keywords internal
@@ -171,10 +173,10 @@ GetImageAOI <- function(image_location) {
 #'   boundaries of the image.
 #' @param y_pix A numeric vector whose elements determine the lower and upper 
 #'   boundaries of the image.
-#' @return A list of the form `list(x = (left_prop, right_prop), y =
-#'   (lower_prop, upper_prop))`, where `left_prop`, `right_prop`, `lower_prop`,
-#'   and `upper_prop` are the screen proportion of the left, right, lower, and
-#'   upper boundaries, respectively.
+#' @return A list of the form \code{list(x = (left_prop, right_prop), y = 
+#'   (lower_prop, upper_prop))}, where \code{left_prop}, \code{right_prop}, 
+#'   \code{lower_prop}, and \code{upper_prop} are the screen proportion of the 
+#'   left, right, lower, and upper boundaries, respectively.
 AOI <- function(x_pix, y_pix) {
   width <- lwl_constants$screen_width
   height <- lwl_constants$screen_height

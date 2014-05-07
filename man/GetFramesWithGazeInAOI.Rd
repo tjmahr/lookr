@@ -5,7 +5,8 @@
 GetFramesWithGazeInAOI(trial, img_AOI)
 }
 \arguments{
-  \item{trial}{a Trial with `XMean` and `YMean` columns.}
+  \item{trial}{a Trial with \code{XMean} and \code{YMean}
+  columns.}
 
   \item{img_AOI}{the coordinates of a rectangular Area of
   Interest given in screen proportions.}

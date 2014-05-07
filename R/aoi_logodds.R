@@ -1,23 +1,23 @@
 
 
 #' Extract columns from a data-frame
-#'
-#' `.ExtractDataFrameCols` is a utility function for extracting columns from
-#' a data-frame. This function is curried so that a character vector of column
-#' names can be passed and the resulting function applied to each element of a
-#' `list` of `data.frames`.
-#'
-#' @param columnNames A character vector, whose elements each name a distinct
-#'   column in the `dframe` argument.
-#' @param copyAttributes: A boolean. If `TRUE`, then the attributes of
-#'   `dframe`, other than `$names`, `$class` and `$row.names` are copied over
-#'   to the `data.frame` that results from extracting columns from dframe. If
-#'   `FALSE`, then none of dframe's attributes are copied over to the
-#'   extracted columns.
-#' @param dframe A `data.frame` object.
-#' @return When passed the `columnNames` argument, a `function` that when
-#'   applied to a `data.frame` returns its columns whose names are found in
-#'   `columnNames`.
+#' 
+#' \code{.ExtractDataFrameCols} is a utility function for extracting columns
+#' from a data-frame. This function is curried so that a character vector of
+#' column names can be passed and the resulting function applied to each element
+#' of a \code{list} of \code{data.frames}.
+#' 
+#' @param columnNames A character vector, whose elements each name a distinct 
+#'   column in the \code{dframe} argument.
+#' @param copyAttributes: A boolean. If \code{TRUE}, then the attributes of 
+#'   \code{dframe}, other than \code{$names}, \code{$class} and
+#'   \code{$row.names} are copied over to the \code{data.frame} that results
+#'   from extracting columns from dframe. If \code{FALSE}, then none of dframe's
+#'   attributes are copied over to the extracted columns.
+#' @param dframe A \code{data.frame} object.
+#' @return When passed the \code{columnNames} argument, a \code{function} that
+#'   when applied to a \code{data.frame} returns its columns whose names are
+#'   found in \code{columnNames}.
 .ExtractDataFrameCols <- function(columnNames, copyAttributes = TRUE) {
   # The function that results from passing a `columnNames` argument.
   .LambdaDataFrame <- function(dframe) {
@@ -106,17 +106,17 @@
 
 
 #' Combine Rows in a Data-frame Together into Bins
-#'
-#' `.BinAndSumValues` is a utility function for repeatedly summing across a
-#' certain number of rows in a data-frame, in such a way that each row enters
+#' 
+#' \code{.BinAndSumValues} is a utility function for repeatedly summing across a
+#' certain number of rows in a data-frame, in such a way that each row enters 
 #' into only one sum.
-#'
-#' @param dframe A `data.frame` object with `numeric` data..
-#' @param bin_width An integer that determines how many rows of the `data.frame`
-#'   argument enter into each sum.
-#' @return A `data.frame` whose values represent the row sum of each bin.  The
-#'   number of rows in the returned `data.frame` is equal to:
-#'   `floor(num.rows(dframe) / bin_width)`.
+#' 
+#' @param dframe A \code{data.frame} object with \code{numeric} data..
+#' @param bin_width An integer that determines how many rows of the
+#'   \code{data.frame} argument enter into each sum.
+#' @return A \code{data.frame} whose values represent the row sum of each bin. 
+#'   The number of rows in the returned \code{data.frame} is equal to: 
+#'   \code{floor(num.rows(dframe) / bin_width)}.
 .BinAndSumValues <- function(dframe, bin_width) {
   dframe <- as.data.frame(dframe)
   
@@ -147,38 +147,43 @@
 
 #' Compute Log-Odds of Looking to Target versus Non-target Areas of Interest.
 #' 
+#' @details
 #' The value of the log-odds for each time-point is found by:
-#' 1. binning (down-sampling) the time-points in each trial;
-#' 2. summing all the looks to the "target" AOI in each bin across all trials in
-#'    `trials` (call this `target_sum`);
-#' 3. summing all the looks to the "distractor" AOI in each bin across all 
-#'    trials (call this `distract_sum`);
-#' 4. correcting zero values of `target_sum` and `distract_sum`;
-#' 5. computing `log(target_sum / distract_sum)` for each bin.
+#' 
+#' \enumerate{
+#'   \item binning (down-sampling) the time-points in each trial;
+#'   \item summing all the looks to the "target" AOI in each bin across all
+#'     trials in \code{trials} (call this \code{target_sum});
+#'   \item summing all the looks to the "distractor" AOI in each bin across all 
+#'     trials (call this \code{distract_sum});
+#'   \item correcting zero values of \code{target_sum} and \code{distract_sum};
+#'   \item computing \code{log(target_sum / distract_sum)} for each bin. 
+#' }
 #' 
 #' The times at which each log-odds is defined are found by taking the mean time
-#' value of each bin. The times and values of the log odds function(s) are
-#' collected into a `data.frame`. The first column of the `data.frame` is the
-#' times, each other column is a log-odds.
+#' value of each bin. The times and values of the log odds function(s) are 
+#' collected into a \code{data.frame}. The first column of the \code{data.frame}
+#' is the times, each other column is a log-odds.
 #' 
-#' @param trials A list of `Trial` objects that have been aligned (via 
-#'   `AlignTrials`) and had discretized AOI data added (via `AddAOIData`).
+#' @param trials A list of \code{Trial} objects that have been aligned (via 
+#'   \code{AlignTrials}) and had discretized AOI data added (via
+#'   \code{AddAOIData}).
 #' @param aoi_column A character vector whose elements each name a column of 
-#'   discretized AOI data in all the `Trial` objects in `trials`. Default is 
-#'   `GazeByImageAOI`.
+#'   discretized AOI data in all the \code{Trial} objects in \code{trials}.
+#'   Default is \code{GazeByImageAOI}.
 #' @param target_aoi A vector that specifies which AOI codes should be counted 
 #'   as looks to target---i.e., which AOI codes should be summed as the 
-#'   numerator of the log odds. Default is `Target`, which counts only the looks
-#'   to the target image in the `GazeByImageAOI` discretization.
-#' @param distractor_aoi Vector that specifies which AOIs should be counted as
+#'   numerator of the log odds. Default is \code{Target}, which counts only the
+#'   looks to the target image in the \code{GazeByImageAOI} discretization.
+#' @param distractor_aoi Vector that specifies which AOIs should be counted as 
 #'   looks to the "distractor" image, or perhaps more correctly, looks away from
-#'   target---i.e., which AOI codes should be summed as the denominator of the
+#'   target---i.e., which AOI codes should be summed as the denominator of the 
 #'   log odds.
 #' @param bin_width An integer specifying the number of adjacent frames that 
 #'   should be binned and used to compute the log odds of the discretized data.
-#' @return A 2--column `data.frame` of binned gaze data enumerating (1) the mean
-#'   time of each bin and (2) the log-odds of looks to each type of 
-#'   discretized AOI data specified by `aoi_column`.
+#' @return A 2--column \code{data.frame} of binned gaze data enumerating (1) the
+#'   mean time of each bin and (2) the log-odds of looks to each type of 
+#'   discretized AOI data specified by \code{aoi_column}.
 AOILogOdds <- function(trials, aoi_column = "GazeByImageAOI", target_aoi = c("Target"),
                        distractor_aoi = c("SemanticFoil", "PhonologicalFoil", "Unrelated"),
                        bin_width = 3) {

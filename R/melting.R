@@ -5,7 +5,7 @@
 #' 
 #' @param trial a Trial object with AOI data added
 #' @param trials a list of Trial objects
-#' @return a single data-frame containing the Time and GazeByImageAOi data from
+#' @return a single data-frame containing the Time and GazeByImageAOi data from 
 #'   the Trial(s) with columns for the attribute values of the Trial(s)
 #' @export
 MeltLooks <- function(...) UseMethod("MeltLooks")
@@ -43,15 +43,15 @@ MeltLooks.Trial <- function(trial) {
 #' Aggregate looks to target image
 #' 
 #' The returned dataframe has columns for the number of looks to the target 
-#' image (`Target`), looks to distractor image(s) (`Others`), number of missing 
-#' looks (`NAs`), number of tracked looks that don't fall in an AOI
-#' (`Elsewhere`), and the proportion of looks to target versus competing AOIs
-#' (`Proportion`).
+#' image (\code{Target}), looks to distractor image(s) (\code{Others}), number
+#' of missing looks (\code{NAs}), number of tracked looks that don't fall in an
+#' AOI (\code{Elsewhere}), and the proportion of looks to target versus
+#' competing AOIs (\code{Proportion}).
 #' 
 #' @param frame a dataframe of melted looking data, containing a 
-#'   `GazeByImageAOI` column.
-#' @param formula a `dcast` formula for aggregating the looking data. The 
-#'   default is `Subj + Condition + Time ~ GazeByImageAOI`
+#'   \code{GazeByImageAOI} column.
+#' @param formula a \code{dcast} formula for aggregating the looking data. The 
+#'   default is \code{Subj + Condition + Time ~ GazeByImageAOI}
 #' @return a dataframe with columns of aggregated looks.
 #' @importFrom reshape2 dcast
 #' @export
@@ -73,12 +73,12 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
 #' 
 #' @param xs a vector
 #' @param bin_width the number of items to put in each bin. Default is 3.
-#' @param na_location Where to assign `NA` bin numbers. `"head"` and `"tail"` 
-#'   respectively put the NA elements at the head and tail of the vector; 
-#'   `"split"` alternates between `"tail"` and `"head"`.
-#' @return a vector of bin-numbers. If `bin_width` does not evenly divide `xs`, 
-#'   the remainder elements are given a bin number of `NA`.
-#'   
+#' @param na_location Where to assign \code{NA} bin numbers. \code{"head"} and
+#'   \code{"tail"} respectively put the NA elements at the head and tail of the
+#'   vector; \code{"split"} alternates between \code{"tail"} and \code{"head"}.
+#' @return a vector of bin-numbers. If \code{bin_width} does not evenly divide
+#'   \code{xs}, the remainder elements are given a bin number of \code{NA}.
+#' @export
 #' @examples
 #' AssignBins(1:14, bin_width = 3, "head")
 #' # [1] NA NA  1  1  1  2  2  2  3  3  3  4  4  4

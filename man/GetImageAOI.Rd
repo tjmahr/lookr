@@ -6,9 +6,9 @@ GetImageAOI(image_location)
 }
 \arguments{
   \item{image_location}{a string naming an image location.
-  It may be: `UpperLeftImage`, `UpperRightImage`,
-  `LowerRightImage`, `LowerLeftImage`, `FixationImage`,
-  `ImageL`, or `ImageR`.}
+  It may be: \code{UpperLeftImage}, \code{UpperRightImage},
+  \code{LowerRightImage}, \code{LowerLeftImage},
+  \code{FixationImage}, \code{ImageL}, or \code{ImageR}.}
 }
 \value{
 a list specifying the boundaries of the named AOI
