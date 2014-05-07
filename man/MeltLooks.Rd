@@ -1,0 +1,20 @@
+\name{MeltLooks}
+\alias{MeltLooks}
+\title{Convert Trial and list of Trials into a long data-frame}
+\usage{
+MeltLooks(...)
+}
+\arguments{
+  \item{trial}{a Trial object with AOI data added}
+
+  \item{trials}{a list of Trial objects}
+}
+\value{
+a single data-frame containing the Time and GazeByImageAOi
+data from the Trial(s) with columns for the attribute
+values of the Trial(s)
+}
+\description{
+Convert Trial and list of Trials into a long data-frame
+}
+

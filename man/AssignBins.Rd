@@ -1,0 +1,38 @@
+\name{AssignBins}
+\alias{AssignBins}
+\title{Assign bin numbers to a vector}
+\usage{
+AssignBins(xs, bin_width = 3, na_location = "head")
+}
+\arguments{
+  \item{xs}{a vector}
+
+  \item{bin_width}{the number of items to put in each bin.
+  Default is 3.}
+
+  \item{na_location}{Where to assign `NA` bin numbers.
+  `"head"` and `"tail"` respectively put the NA elements at
+  the head and tail of the vector; `"split"` alternates
+  between `"tail"` and `"head"`.}
+}
+\value{
+a vector of bin-numbers. If `bin_width` does not evenly
+divide `xs`, the remainder elements are given a bin number
+of `NA`.
+}
+\description{
+The first step in binning/down-sampling some data is
+assigning items to bins. This function takes a vector and a
+bin size and returns the bin assignments.
+}
+\examples{
+AssignBins(1:14, bin_width = 3, "head")
+# [1] NA NA  1  1  1  2  2  2  3  3  3  4  4  4
+AssignBins(1:14, bin_width = 3, "tail")
+# [1]  1  1  1  2  2  2  3  3  3  4  4  4 NA NA
+AssignBins(1:7, bin_width = 5, "split")
+# [1] NA  1  1  1  1  1 NA
+AssignBins(1:8, bin_width = 5, "split")
+# [1] NA  1  1  1  1  1 NA NA
+}
+
