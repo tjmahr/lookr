@@ -50,18 +50,16 @@
 `%@%` <- function(x, attribute) UseMethod('%@%')
 
 #' @rdname attributes
-#' @export
 `%@%.default` <- function(x, attribute) attr(x, attribute)
 
 #' @rdname attributes
-#' @export
 `%@%.list` <- function(xs, attribute) {
   sapply(xs, function(x) attr(x, attribute))
 }
 
 #' @rdname attributes
 #' @usage x \%@@\% attribute <- value
-#' @export
+#' @export 
 `%@%<-` <- function(x, attribute, value) { 
   `attr<-`(x, attribute, value)
 }

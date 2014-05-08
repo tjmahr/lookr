@@ -50,23 +50,18 @@ UpdateConfig <- function(config, level, value) {
 }
 
 #' @rdname UpdateConfig
-#' @export
 AddStim <- function(config, value) UpdateConfig(config, "Stim", value)
 
 #' @rdname UpdateConfig
-#' @export
 AddNumerics <- function(config, value) UpdateConfig(config, "Numerics", value)
 
 #' @rdname UpdateConfig
-#' @export
 AddConstants <- function(config, value) UpdateConfig(config, "Constants", value)
 
 #' @rdname UpdateConfig
-#' @export
 AddDerived <- function(config, value) UpdateConfig(config, "Derived", value)
 
 #' @rdname UpdateConfig
-#' @export
 AddNumericConstant <- function(config, value) {
   config <- AddNumerics(config, names(value))
   config <- AddConstants(config, value)
