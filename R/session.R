@@ -189,8 +189,12 @@ CombineGazedataStimdata <- function(gazedata, stimdata) {
   stimdata[stimdata$TrialNo == trial_number, ] 
 }
 
+.GetStimdata.default <- .GetStimdata.Stimdata
+
 .GetTargetImage <- function(...) UseMethod(".GetTargetImage")
 
 .GetTargetImage.Stimdata <- function(stimdata, trial_number) {
-  .GetStimdata.Stimdata(stimdata, trial_number)$TargetImage
+  .GetStimdata(stimdata, trial_number)$TargetImage
 }
+
+.GetTargetImage.default <- .GetTargetImage.Stimdata
