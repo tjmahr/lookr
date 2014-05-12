@@ -50,9 +50,11 @@
 `%@%` <- function(x, attribute) UseMethod('%@%')
 
 #' @rdname attributes
+#' @export
 `%@%.default` <- function(x, attribute) attr(x, attribute)
 
 #' @rdname attributes
+#' @export
 `%@%.list` <- function(xs, attribute) {
   sapply(xs, function(x) attr(x, attribute))
 }
@@ -77,6 +79,7 @@
 #' @param attr_value a vector of values to filter out
 #' @return a function \code{f(trials, attr_values)} that filters out trials with
 #'   the specified \code{attr_values} for the given \code{attr_name}.
+#' @export
 MakeAttributeFilter <- function(attr_name) {
   function(trials, attr_value) {
     classes <- class(trials)
