@@ -33,7 +33,7 @@ MeltLooks.Trial <- function(trial) {
 
   unaliased <- c(
     "WordGroup", "TargetWord", "ImageL", "ImageR", "Pitch", "EmptyTarget",
-    "Carrier", "Audio", "CarrierOnset", "TargetEnd", "TrialNo",
+    "Carrier", "Audio", "CarrierOnset", "TargetEnd", "TrialNo", "DateTime",
     "UpperLeftImage", "UpperRightImage", "LowerRightImage", "LowerLeftImage",
     "Target", "SemanticFoil", "PhonologicalFoil", "Unrelated",
     "UpperLeftImageStimulus", "UpperRightImageStimulus",
