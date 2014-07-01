@@ -3,27 +3,22 @@
 \alias{CalculateMistrackings}
 \title{Calculate the amount of missing data in a list of Trials}
 \usage{
-CalculateMistrackings(trials, start = NULL, end = NULL,
-  column = "GazeByImageAOI")
+CalculateMistrackings(...)
 }
 \arguments{
-\item{trials}{A list of Trial objects.}
+\item{trial}{a Trial object with a \code{GazeByImageAOI} column}
 
-\item{start}{A time value or the name of a time attribute of a Trial. Default
-is to use the whole trial.}
-
-\item{end}{A time value or the name of a time attribute of a Trial. Default
-is to use the whole trial.}
+\item{trials}{a list of Trial objects, each with a \code{GazeByImageAOI}
+column}
 
 \item{column}{A character string that names one of the columns of Gazedata in
 the trial object. Default is `"GazeByImageAOI"`.}
 }
 \value{
-A list of Trial objects that has been updated to include attributes containing percentage of mistracked data.
+A list of Trial objects that has been updated to include attributes
+  containing percentage of mistracked data.
 }
 \description{
-`start` and `end` can use the following strings to pull time attributes such
-as `ImageOnset`, `CarrierOnset`, `CarrierEnd`, `TargetOnset`, `TargetEnd`,
-`AttentionOnset`, and `AttentionEnd`.
+Calculate the amount of missing data in a list of Trials
 }
 
