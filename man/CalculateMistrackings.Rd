@@ -6,11 +6,6 @@
 CalculateMistrackings(...)
 }
 \arguments{
-\item{trial}{a Trial object with a \code{GazeByImageAOI} column}
-
-\item{trials}{a list of Trial objects, each with a \code{GazeByImageAOI}
-column}
-
 \item{column}{A character string that names one of the columns of Gazedata in
 the trial object. Default is `"GazeByImageAOI"`.}
 }
