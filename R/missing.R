@@ -30,6 +30,50 @@ ComputeGazeContact.Trial <- function(trial) {
 
 
 
+#' Compute dwell times
+#'
+#' A "dwell" is an uninterrupted gaze. This function calculates the longest
+#' dwell time per image and the total time dwelling in each trial.
+#'
+#' @inheritParams ComputeGazeContact
+#' @return the Trial object(s) with a \code{DwellSummary} attribute which
+#'   contains a dataframe describing the maximum and total dwell times for each
+#'   image location and stimulus.
+#' @export
+GetDwellTimes <- function(...) UseMethod("GetDwellTimes")
+
+#' @export
+GetDwellTimes.list <- function(trials) trial_lapply(trials, GetDwellTimes)
+
+#' @export
+GetDwellTimes.Trial <- function(trial) {
+  # rle doesn't compute streaks for NAs so use fake NA values
+  use_soft_nas <- function(xs) ifelse(is.na(xs), "NA", xs)
+  use_hard_nas <- function(xs) ifelse(xs == "NA", NA, xs)
+  aoi_run <- rle(use_soft_nas(trial$GazeByAOI))
+  stim_run <-  rle(use_soft_nas(trial$GazeByImageAOI))
+
+  # Calculate dwell times
+  streaks <- data.frame(
+    Location = use_hard_nas(aoi_run$values),
+    Stimulus = use_hard_nas(stim_run$values),
+    DwellTime = stim_run$lengths * lwl_constants$ms_per_frame,
+    stringsAsFactors = FALSE)
+
+  # Determine max and proportion
+  dwell_summary <- ddply(streaks, .(Location, Stimulus), summarise,
+    LongestDwellTime = max(DwellTime),
+    TotalDwellTime = sum(DwellTime))
+  dwell_summary <- mutate(dwell_summary,
+    DwellProp = TotalDwellTime / sum(TotalDwellTime))
+  trial %@% "DwellSummary" <- dwell_summary
+  trial
+}
+
+
+
+
+
 #' Calculate the amount of missing data in a list of Trials
 #'
 #' @inheritParams ComputeGazeContact
