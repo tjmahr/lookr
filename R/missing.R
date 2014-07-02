@@ -52,21 +52,10 @@ CalculateMistrackings.Trial <- function(trial, column = "GazeByImageAOI") {
   trial %@% "MistrackedFrames" <- mistrackings
   trial %@% "NumberOfFrames" <- num_frames
   trial %@% "PercentNA" <- mistrackings / num_frames
+  trial %@% "PropNA" <- mistrackings / num_frames
+  trial %@% "PropTracked" <- 1 - (mistrackings / num_frames)
   trial
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -87,7 +76,6 @@ InterpolateMissingFrames.list <- function(trials, window = lwl_opts$get("interpo
 
 #' @export
 InterpolateMissingFrames.Trial <- function(trial, window = lwl_opts$get("interpolation_window")) {
-  message(trial %@% "TrialNo")
   trial %@% "InterpolatedPoints" <- 0
   trial %@% "CorrectedFrames" <- numeric(0)
   trial %@% "CorrectedTimes" <- numeric(0)
@@ -112,7 +100,6 @@ InterpolateMissingFrames.Trial <- function(trial, window = lwl_opts$get("interpo
   # Locations from `which` are not accurate because they don't take into account
   # earlier missing frames. Use the cumulative sum of missing frames to correct
   # these start locations.
-
   gap_start <- which(1 < differences)
   gap_size <- differences[gap_start] - 1
   total_gap_sizes <- cumsum(gap_size)
