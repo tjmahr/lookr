@@ -41,13 +41,19 @@ c.Task <- function(task, ...) c.Session(task, ...)
 
 #' @export
 as.Session <- function(x) {
-  if (!is.Session(x)) class(x) <- c("Session", "list")
+  if (!is.Session(x)) class(x) <- c("Session", "TrialList", "list")
   x
 }
 
 #' @export
 as.Task <- function(x) {
-  if (!is.Task(x)) class(x) <- c("Task", "list")
+  if (!is.Task(x)) class(x) <- c("Task", "TrialList", "list")
+  x
+}
+
+#' @export
+as.TrialList <- function(x) {
+  if (!is.TrialList(x)) class(x) <- c("TrialList", "list")
   x
 }
 
@@ -56,6 +62,9 @@ is.Session <- function(x) inherits(x, "Session")
 
 #' @export
 is.Task <- function(x) inherits(x, "Task")
+
+#' @export
+is.TrialList <- function(x) inherits(x, "TrialList")
 
 #' @export
 print.Trial <- function(trial, ...) str(trial, ...)
