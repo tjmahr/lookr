@@ -1,7 +1,8 @@
 
-# Shortcut for reduction
+#' Shortcut for reduction
+#' @export
 ReduceTrials <- function(trials) {
-  trials <- TimeSlice(AlignTrials(trials))  
+  trials <- TimeSlice(AdjustTimes(trials))
   trials <- InterpolateMissingFrames(AddAOIData(trials))
   CalculateMistrackings(trials)
 }
