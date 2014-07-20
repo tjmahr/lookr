@@ -99,10 +99,19 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
 #' # [1] NA  1  1  1  1  1 NA
 #' AssignBins(1:8, bin_width = 5, "split")
 #' # [1] NA  1  1  1  1  1 NA NA
-AssignBins <- function(xs, bin_width = 3, na_location = "head") {
+AssignBins <- function(xs, bin_width = 3, na_location = "tail") {
+  if (is.unsorted(xs)) {
+    warning("Elements to be binned are not sorted")
+  }
+
+  if (length(xs) != length(unique(xs))) {
+    warning("Elements to be binned are not unique")
+  }
+
   num_bins <- floor(length(xs) / bin_width)
   leftover <- length(xs) %% bin_width
   bin_indices <- sort(rep(seq_len(num_bins), times = bin_width))
+
   if (na_location == "head") {
     bin_indices <- c(rep(NA, leftover), bin_indices)
   } else if (na_location == "tail") {
@@ -112,5 +121,13 @@ AssignBins <- function(xs, bin_width = 3, na_location = "head") {
     last <- ceiling(leftover / 2)
     bin_indices <-  c(rep(NA, first), bin_indices, rep(NA, last))
   }
+
+  lost_values <- xs[which(is.na(bin_indices))]
+
+  if (length(lost_values) > 0) {
+    listed_values <- paste0(lost_values, collapse = (", "))
+    warning("Some values were not assigned to a bin: ", listed_values)
+  }
+
   bin_indices
 }
