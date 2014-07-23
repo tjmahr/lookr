@@ -5,21 +5,38 @@
 #'
 #' @param trial a Trial object with AOI data added
 #' @param trials a list of Trial objects
-#' @return a single data-frame containing the Time and GazeByImageAOi data from
-#'   the Trial(s) with columns for the attribute values of the Trial(s)
+#' @param other_cols additional data-frame columns to extract from each Trial
+#' @param other_attrs additional attributes to pull from each Trial
+#' @return a single data-frame containing the Time and GazeByImageAOI data from
+#'   the Trial(s) with columns for other attribute values of the Trial(s)
 #' @export
 MeltLooks <- function(...) UseMethod("MeltLooks")
 
 #' @export
-MeltLooks.list <- function(trials) ldply(trials, MeltLooks)
+MeltLooks.list <- function(trials, ...) ldply(trials, MeltLooks, ...)
 
 #' @export
-MeltLooks.Trial <- function(trial) {
+MeltLooks.Trial <- function(trial, other_cols = NULL, other_attrs = NULL) {
   # Use the TrialNo attribute rather than the column
   trial$Subj <- substr(trial %@% "Subject", 1, 4)
   trial$TrialNo <- NULL
-  columns_to_keep <- c("Task", "Subject", "Subj", "BlockNo", "Basename", "Time",
-                       "GazeByAOI", "GazeByImageAOI")
+  expected_cols <- c("Task", "Subject", "Subj", "BlockNo", "Basename", "Time",
+                     "GazeByAOI", "GazeByImageAOI", other_cols)
+  cols <- intersect(expected_cols, names(trial))
+
+  # Column check
+  missing_cols <- setdiff(expected_cols, names(trial))
+  if (length(missing_cols) > 0) {
+    flat_list <- paste0(missing_cols, collapse = ", ")
+    warning("Following columns were expected but not found: ", flat_list)
+  }
+
+  # Attribute check
+  missing_attrs <- setdiff(other_attrs, names(attributes(trial)))
+  if (length(missing_attrs) > 0) {
+    flat_list <- paste0(missing_attrs, collapse = ", ")
+    warning("Following attributes were expected but not found: ", flat_list)
+  }
 
   # `aliased` is used when we want the column name to differ from the attribute
   # name, using the mapping `list(ColumnName = "AttributeName")`
@@ -37,16 +54,19 @@ MeltLooks.Trial <- function(trial) {
     "UpperLeftImage", "UpperRightImage", "LowerRightImage", "LowerLeftImage",
     "Target", "SemanticFoil", "PhonologicalFoil", "Unrelated",
     "UpperLeftImageStimulus", "UpperRightImageStimulus",
-    "LowerRightImageStimulus", "LowerLeftImageStimulus")
+    "LowerRightImageStimulus", "LowerLeftImageStimulus", other_attrs)
 
+  # Combine available attributes into a list of named attributes
   aliased <- aliased[is.element(aliased, names(attributes(trial)))]
   unaliased <- unaliased[is.element(unaliased, names(attributes(trial)))]
+  names(unaliased) <- unaliased
+  attrs <- c(aliased, as.list(unaliased))
 
   # Bind attributes as columns
-  for (x in names(aliased)) trial[x] <- trial %@% unlist(aliased[x])
-  for (x in unaliased) trial[x] <- trial %@% x
+  for (x in names(attrs)) trial[[x]] <- trial %@% attrs[[x]]
+
   # Drop other columns
-  id_vars <- c(columns_to_keep, names(aliased), unaliased)
+  id_vars <- unique(c(cols, names(attrs)))
   trial[id_vars]
 }
 

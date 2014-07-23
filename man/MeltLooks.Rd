@@ -9,10 +9,14 @@ MeltLooks(...)
 \item{trial}{a Trial object with AOI data added}
 
 \item{trials}{a list of Trial objects}
+
+\item{other_cols}{additional data-frame columns to extract from each Trial}
+
+\item{other_attrs}{additional attributes to pull from each Trial}
 }
 \value{
-a single data-frame containing the Time and GazeByImageAOi data from
-  the Trial(s) with columns for the attribute values of the Trial(s)
+a single data-frame containing the Time and GazeByImageAOI data from
+  the Trial(s) with columns for other attribute values of the Trial(s)
 }
 \description{
 Convert Trial and list of Trials into a long data-frame

@@ -3,7 +3,7 @@
 \alias{AssignBins}
 \title{Assign bin numbers to a vector}
 \usage{
-AssignBins(xs, bin_width = 3, na_location = "head")
+AssignBins(xs, bin_width = 3, na_location = "tail")
 }
 \arguments{
 \item{xs}{a vector}
