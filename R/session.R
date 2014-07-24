@@ -45,8 +45,7 @@ Session.list <- function(blocks) {
   # Update the trial numbers
   updated_blocks <- Map(IncrementTrialNosInBlock, blocks, trials_before_block)
   # Create a Session object by concatenating all of the blocks.
-  session <- do.call(c, updated_blocks)
-  as.Session(session)
+  do.call(c, updated_blocks)
 }
 
 
@@ -110,7 +109,6 @@ Block <- function(...) UseMethod('Block')
 Block.character <- function(block_path) {
   gazedata <- Gazedata(paste0(block_path, '.gazedata'))
   stimdata <- Stimdata(paste0(block_path, '.txt'))
-  # Call Block.Gazedata
   Block(gazedata, stimdata)
 }
 
@@ -118,8 +116,7 @@ Block.character <- function(block_path) {
 Block.Gazedata <- function(gazedata, stimdata) {
   # For each trial in the block, combine the gazedata and stimdata.
   trials <- lapply(stimdata$TrialNo, CombineGazedataStimdata(gazedata, stimdata))
-  class(trials) <- c('Block', 'list')
-  trials
+  as.Block(trials)
 }
 
 

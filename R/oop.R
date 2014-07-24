@@ -22,22 +22,37 @@ trial_lapply <- function(trials, trial_func, ...) {
 
 # Combine lists of Trials.
 #' @export
-c.Session <- function(session, ...) {
-  # Coerce session to a list and then call the c.list method on session and ...
-  class(session) <- 'list'
-  trials <- c(session, ...)
+c.TrialList <- function(trial_list, ...) {
+  # Coerce trial_list to a list, so it doesn't infinitely recurse
+  class(trial_list) <- 'list'
+  trials <- c(trial_list, ...)
 
-  # If there are multiple subjects, return a "Task".
-  if (unique_task(trials)) {
-    if (unique_subject(trials)) as.Session(trials) else as.Task(trials)
+  # Single subject, single task: Session
+  # Multi subjects, single task: Task
+  # Otherwise: TrialList
+  if (!unique_task(trials)) {
+    as.TrialList(trials)
+  } else if (unique_subject(trials)) {
+    as.Session(trials)
+  } else {
+    as.Task(trials)
   }
-  # WE may need "else trials" if we ever want to combine trials with different
-  # tasks.
 }
 
-# The checks inside c.Session should work for combining Task objects.
+
+# Check whether trials should be a Task or Session object.
+unique_attr_checker <- function(attr_name) {
+  function(trials) n_distinct(trials %@% attr_name) == 1
+}
+unique_task <- unique_attr_checker("Task")
+unique_subject <- unique_attr_checker("Subject")
+n_distinct <- function(xs) length(unique(xs))
+
 #' @export
-c.Task <- function(task, ...) c.Session(task, ...)
+as.Task <- function(x) {
+  if (!is.Task(x)) class(x) <- c("Task", "TrialList", "list")
+  x
+}
 
 #' @export
 as.Session <- function(x) {
@@ -46,8 +61,8 @@ as.Session <- function(x) {
 }
 
 #' @export
-as.Task <- function(x) {
-  if (!is.Task(x)) class(x) <- c("Task", "TrialList", "list")
+as.Block <- function(x) {
+  if (!is.Block(x)) class(x) <- c("Block", "TrialList", "list")
   x
 }
 
@@ -57,11 +72,15 @@ as.TrialList <- function(x) {
   x
 }
 
+
+#' @export
+is.Task <- function(x) inherits(x, "Task")
+
 #' @export
 is.Session <- function(x) inherits(x, "Session")
 
 #' @export
-is.Task <- function(x) inherits(x, "Task")
+is.Block <- function(x) inherits(x, "Block")
 
 #' @export
 is.TrialList <- function(x) inherits(x, "TrialList")
@@ -75,12 +94,3 @@ print.Gazedata <- function(...) str(...)
 #' @export
 print.Stimdata <- function(...) str(...)
 
-
-# Check whether trials should be a Task or Session object.
-unique_attr_checker <- function(attr_name) {
-  function(trials) n_distinct(trials %@% attr_name) == 1
-}
-unique_task <- unique_attr_checker("Task")
-unique_subject <- unique_attr_checker("Subject")
-
-n_distinct <- function(xs) length(unique(xs))
