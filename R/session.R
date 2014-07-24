@@ -137,18 +137,16 @@ Block.Gazedata <- function(gazedata, stimdata) {
 #'   stimdata.
 #' @usage CombineGazedataStimdata(gazedata, stimdata)(trial_number)
 CombineGazedataStimdata <- function(gazedata, stimdata) {
-  is.image_on_left <- function(image) grepl("Left", image) | image == "ImageL"
-  is.image_on_bottom <- function(image) grepl("Lower", image)
-
   # A function that when applied to a trial number returns the combined
   # gazedata and stimdata (in the manner described above) for the trial.
   function(trial_number) {
-    trial <- subset(gazedata, TrialNo == trial_number)
+    trial <- gazedata[gazedata$TrialNo == trial_number, ]
     target_image <- .GetTargetImage(stimdata, trial_number)
+
     trial <- within(trial, {
       # If the target image was on the left half of the screen, then the
       # X__ToTarget gazedata is the inverse of the corresponding X__ gazedata.
-      if (is.image_on_left(target_image)) {
+      if (is_image_on_left(target_image)) {
         XLeftToTarget  <- 1 - XLeft
         XRightToTarget <- 1 - XRight
         XMeanToTarget  <- 1 - XMean
@@ -159,7 +157,7 @@ CombineGazedataStimdata <- function(gazedata, stimdata) {
       }
       # If the target image was on the lower half of the screen, then the
       # Y__ToTarget gazedata is the inverse of the corresponding Y__ gazedata.
-      if (is.image_on_bottom(target_image)) {
+      if (is_image_on_bottom(target_image)) {
         YLeftToTarget  <- 1 - YLeft
         YRightToTarget <- 1 - YRight
         YMeanToTarget  <- 1 - YMean
@@ -171,10 +169,12 @@ CombineGazedataStimdata <- function(gazedata, stimdata) {
     })
     # Add the stimdata attributes. Create Trial.
     attributes(trial) <- c(attributes(trial), .GetStimdata(stimdata, trial_number))
-    class(trial) <- c('Trial', 'data.frame')
-    trial
+    as.Trial(trial)
   }
 }
+
+is_image_on_left <- function(image) grepl("Left", image) | image == "ImageL"
+is_image_on_bottom <- function(image) grepl("Lower", image)
 
 
 # Tell, don't ask.

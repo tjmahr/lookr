@@ -48,27 +48,34 @@ unique_task <- unique_attr_checker("Task")
 unique_subject <- unique_attr_checker("Subject")
 n_distinct <- function(xs) length(unique(xs))
 
+
 #' @export
 as.Task <- function(x) {
-  if (!is.Task(x)) class(x) <- c("Task", "TrialList", "list")
+  class(x) <- c("Task", "TrialList", "list")
   x
 }
 
 #' @export
 as.Session <- function(x) {
-  if (!is.Session(x)) class(x) <- c("Session", "TrialList", "list")
+  class(x) <- c("Session", "TrialList", "list")
   x
 }
 
 #' @export
 as.Block <- function(x) {
-  if (!is.Block(x)) class(x) <- c("Block", "TrialList", "list")
+  class(x) <- c("Block", "TrialList", "list")
   x
 }
 
 #' @export
 as.TrialList <- function(x) {
-  if (!is.TrialList(x)) class(x) <- c("TrialList", "list")
+  class(x) <- c("TrialList", "list")
+  x
+}
+
+#' @export
+as.Trial <- function(x) {
+  class(x) <- c("Trial", "data.frame")
   x
 }
 
