@@ -93,6 +93,9 @@ is.Block <- function(x) inherits(x, "Block")
 is.TrialList <- function(x) inherits(x, "TrialList")
 
 #' @export
+is.Trial <- function(x) inherits(x, "Trial")
+
+#' @export
 print.Trial <- function(trial, ...) str(trial, ...)
 
 #' @export
@@ -101,3 +104,23 @@ print.Gazedata <- function(...) str(...)
 #' @export
 print.Stimdata <- function(...) str(...)
 
+#' @export
+print.TrialList <- function(trials, ...) {
+  # Count trials
+  d <- data.frame(
+    Task = trials %@% "Task",
+    SubjectID = trials %@% "Subject",
+    BlockNo = trials %@% "Block",
+    TrialNo = trials %@% "TrialNo")
+  trial_summary <- count(d, c("Task", "SubjectID", "BlockNo"))
+  names(trial_summary)[names(trial_summary) == "freq"] <- "Trials"
+
+  # Prepare header
+  n_subjects <- length(unique(trial_summary$SubjectID))
+  n_trials <- sum(trial_summary$Trials)
+  header <- sprintf("%s object with %s Subject IDs and %s trials: ",
+                    class(trials)[1], n_subjects, n_trials)
+
+  cat(header, "\n")
+  print(trial_summary)
+}
