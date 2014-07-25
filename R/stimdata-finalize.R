@@ -26,6 +26,7 @@ FinalizeStimdata.default <- function(stimdata) stimdata
 
 
 FinalizeStimdata.MP <- function(stimdata) {
+  classes <- class(stimdata)
   # In our analyses for MP task, the "target" image corresponds to the
   # "familiar" image. In the data, however, this is not the case, so we need to
   # flip the target-image location label for mispronounced and nonsense word
@@ -39,12 +40,12 @@ FinalizeStimdata.MP <- function(stimdata) {
   # ```
   targets <- stimdata$Target
   flip_me <- stimdata$StimType %in% c("MP", "nonsense")
-  targets <- ifelse(!flip_me, targets,
-                    ifelse(targets == "ImageL", "ImageR", "ImageL"))
+  targets <- ifelse(flip_me, flip_image(targets), targets)
   stimdata$TargetImage <- targets
+  stimdata$DistractorImage <- flip_image(stimdata$TargetImage)
 
-  # Create a field for the Distractor Image
-  stimdata$DistractorImage <- ifelse(targets == "ImageL", "ImageR", "ImageL")
+  stopifnot(all(stimdata$DistractorImage != stimdata$TargetImage),
+            all(flip_me == (stimdata$Target != stimdata$TargetImage)))
 
   # Use the image filenames and the target image location to determine the
   # targeted word.
@@ -69,11 +70,10 @@ FinalizeStimdata.MP <- function(stimdata) {
   target_stim <- c("TargetWord")
   place_stim <- c("ImageL", "ImageR")
   img_stim <- c("Target", "DistractorImage")
-  names(stimdata)
 
   ordering <- c(first, target_stim, place_stim, img_stim)
   stimdata <- ReorderStimdata(stimdata, ordering)
-
+  class(stimdata) <- classes
   stimdata
 }
 
@@ -203,7 +203,7 @@ FinalizeStimdata.RWL <- function(stimdata) {
 
 FinalizeStimdata.Coartic <- function(stimdata) {
   # Create a field for the Distractor Image
-  stimdata$DistractorImage <- ifelse(stimdata$TargetImage == "ImageL", "ImageR", "ImageL")
+  stimdata$DistractorImage <- flip_image(stimdata$TargetImage)
 
   # Reorder the stimdata
   first <- c("Task", "DateTime", "Subject", "Block", "TrialNo")
@@ -218,3 +218,5 @@ FinalizeStimdata.Coartic <- function(stimdata) {
 }
 
 
+flip_image <- function(xs) ifelse(xs == "ImageL", "ImageR", "ImageL")
+# flip_image(c("ImageL", "ImageR"))
