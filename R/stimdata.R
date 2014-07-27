@@ -190,27 +190,21 @@ ExtractStim <- function(stim_config, stimlog) {
 #' # image_values <- Map(.GetValuesOfStimdataType(stimlog), image_names)
 #'
 .GetValuesOfStimdataType <- function(stimlog) {
-  # Define the function that is returned once a stimlog argument is passed to
-  # `.GetValuesOfStimdataType.`
-  .LambdaStimdataType <- function(stimdata_type) {
+  function(stimdata_type) {
+    stopifnot(length(stimdata_type) <= 1)
     # The stimdata for each trial is logged using the following pattern:
-    # `\t\t{stimdataType}: {value}`. Create a regular expression that can
-    # be used to find the line in each trial where `stimdataType` is logged.
-    stim_pattern <- sprintf('\t*%s: ', stimdata_type)
-
-    # Extract the lines of the stimlog where `stimdataType` is logged.
+    # `\t*{key}: {value}`.
+    stim_pattern <- sprintf("\t*%s: ", stimdata_type)
+    # Find the lines matching the pattern, then extract the {value}s
     stimlog_lines <- grep(stim_pattern, stimlog, value = TRUE)
-    values <- sub(stim_pattern, '', stimlog_lines)
-    return(values)
+    str_replace(stimlog_lines, stim_pattern, "")
   }
-  return(.LambdaStimdataType)
 }
 
+#' Wrapper for `.GetValuesOfStimdataType` that returns whether a value is
+#' present in `stimlog`
 #' @keywords internal
 .CheckForStimdataType <- function(stimlog, stimdataType) {
-  # Wrapper for `.GetValuesOfStimdataType` that returns whether a value is
-  # present in `stimlog`
   values <- .GetValuesOfStimdataType(stimlog)(stimdataType)
-  found <- length(values) != 0
-  return(found)
+  length(values) != 0
 }

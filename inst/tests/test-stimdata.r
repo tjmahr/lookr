@@ -1,3 +1,40 @@
+
+context("Fetching values from Eprime files")
+
+stimdata_path <- "data/MP_NoFixations_CS1/001P00XA1/MP_Block2_001P00XA1.txt"
+stimlog <- suppressMessages(LoadStimdataFile(stimdata_path))
+
+test_that("Get Values", {
+  # Input validation
+  expect_error(.GetValuesOfStimdataType(stimlog)(c("TrialList", "StimType")))
+
+  # Works as expected
+  trials <- as.numeric(.GetValuesOfStimdataType(stimlog)("TrialList"))
+  expect_equivalent(trials, seq_along(trials))
+
+  stim_types <- .GetValuesOfStimdataType(stimlog)("StimType")
+  expect_equivalent(stim_types[1:3], c("FAM", "FAM", "real"))
+
+  # Missing fields return empty vectors
+  fake_field <- .GetValuesOfStimdataType(stimlog)("FakeField")
+  expect_equal(length(fake_field), 0)
+
+  # Mapped application
+  multiple <- c("TrialList", "StimType")
+  values <- Map(.GetValuesOfStimdataType(stimlog), multiple)
+  expect_equal(values[["TrialList"]][1], "1")
+  expect_equal(values[["StimType"]][1], "FAM")
+})
+
+test_that("Check Values", {
+  expect_error(.CheckForStimdataType(stimlog, c("TrialList", "StimType")))
+  expect_true(.CheckForStimdataType(stimlog, "TrialList"))
+  expect_false(.CheckForStimdataType(stimlog, "FakeField"))
+
+})
+
+
+
 # This scripts performs a number of tests against the `Stimdata` function, which
 # loads and extracts relevant information from an Eprime-outputted text file.
 #

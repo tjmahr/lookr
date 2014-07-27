@@ -2,8 +2,7 @@
 #'
 #' @docType package
 #' @name lookr
-#' @import stringr
-#' @import plyr
+#' @import stringr plyr
 NULL
 
 require("tools")
