@@ -79,6 +79,12 @@ as.Trial <- function(x) {
   x
 }
 
+#' @export
+as.Gazedata<- function(x) {
+  class(x) <- c("Gazedata", "data.frame")
+  x
+}
+
 
 #' @export
 is.Task <- function(x) inherits(x, "Task")

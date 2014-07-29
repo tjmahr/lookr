@@ -31,10 +31,13 @@
 #' gazedata.
 #'
 #' \enumerate{
-#'   \item Gaze values are defined in screen proportions. Values that fall
+#'   \item Gaze measurements with \code{Validity} codes greater than or equal to
+#'   1 are replaced with NA values.
+#'
+#'   \item X,Y gaze values are defined in screen proportions. Values that fall
 #'   outside [0,1] are outside of the boundaries of the screen and therefore are
 #'   nonsensical. Replace them with \code{NA}. We perform a similar correction
-#'   on negative pupil diameters and eye-distances by replacing those negative
+#'   on pupil diameters and eye-distances by replacing negative
 #'   values with \code{NA}.
 #'
 #'   \item The origin of the screen is the upper-left-hand corner of the screen.
@@ -68,55 +71,61 @@
 #'   Description & User Guide}
 #' @export
 Gazedata <- function(gazedata_path) {
-  # Read in the .gazedata file.
   gazedata <- read.delim(gazedata_path, na.strings = c('-1.#INF', '1.#INF'),
                          stringsAsFactors = FALSE)
 
-  # The only data that needs to be kept from the .gazedata file are those data
-  # that log the trial number of the frame, the time of the frame, and the gaze
-  # location for that frame. We also capture pupil diameter, in case future
-  # experiments use this information, as well as the distance of each from the
-  # screen. Therefore:
-  columns_to_keep <- c('TrialId', 'RTTime',
-                       'XGazePosLeftEye', 'XGazePosRightEye',
-                       'YGazePosLeftEye', 'YGazePosRightEye',
-                       'DistanceLeftEye', 'DistanceRightEye',
-                       'DiameterPupilLeftEye', 'DiameterPupilRightEye')
-  gazedata <- gazedata[, columns_to_keep]
-  # "Z" denotes the distance of the eye from the screen in mm.
-  names(gazedata) <- c('TrialNo', 'Time', 'XLeft', 'XRight', 'YLeft', 'YRight',
-                       'ZLeft', 'ZRight', 'DiameterLeft', 'DiameterRight')
+  # Select/rename columns with experiment information (timing and trial
+  # number) and gaze measurements from each eye
+  cols_to_keep <- list(
+    TrialNo = "TrialId", Time = "RTTime",
+    XLeft = "XGazePosLeftEye", XRight = "XGazePosRightEye",
+    YLeft = "YGazePosLeftEye", YRight = "YGazePosRightEye",
+    ZLeft = "DistanceLeftEye", ZRight = "DistanceRightEye",
+    ValidityLeft = "ValidityLeftEye", ValidityRight = "ValidityRightEye",
+    DiameterLeft = "DiameterPupilLeftEye",
+    DiameterRight = "DiameterPupilRightEye")
+  gazedata <- gazedata[unlist(cols_to_keep)]
+  names(gazedata) <- names(cols_to_keep)
 
-  # Replace all values of gazedata that fall outside of [0, 1] with NA.
-  .CorrectInvalidGazes <- function(gaze) {
-    gaze[(gaze < 0) | (gaze > 1)] <- NA
-    gaze
+  # Set some shortcuts
+  measures <- c("X", "Y", "Z", "Diameter")
+  measures_L <- paste0(measures, "Left")
+  measures_R <- paste0(measures, "Right")
+
+  # From the Tobii manual, "Validity codes should be used for data filtering to
+  # remove data points that are obviously incorrect. If you export the raw data
+  # file, we recommend removing all data points with a validity code of 2 or
+  # higher."
+  invalid_L <- which(2 <= gazedata$ValidityLeft)
+  invalid_R <- which(2 <= gazedata$ValidityRight)
+  gazedata[invalid_L, measures_L] <- NA
+  gazedata[invalid_R, measures_R] <- NA
+
+  # Replace all values of gazedata that fall beyond [0, 1] (offscreen) with NA.
+  CorrectOffscreenGazes <- function(gaze) {
+    ifelse(gaze < 0 | gaze > 1, NA, gaze)
   }
+  screen_cols <- c("XLeft", "XRight", "YLeft", "YRight")
+  gazedata[screen_cols] <- colwise(CorrectOffscreenGazes)(gazedata[screen_cols])
 
-  gazedata <- within(gazedata, {
-    XLeft  <- .CorrectInvalidGazes(XLeft)
-    XRight <- .CorrectInvalidGazes(XRight)
-    YLeft  <- .CorrectInvalidGazes(YLeft)
-    YRight <- .CorrectInvalidGazes(YRight)
-    # Correct negative distances
-    ZLeft[ZLeft < 0] <- NA
-    ZRight[ZRight < 0] <- NA
-    # Correct negative pupil diameters
-    DiameterLeft[DiameterLeft < 0] <- NA
-    DiameterRight[DiameterRight < 0] <- NA
-  })
+  # Correct values of gazedata that cannot be negative (distances, diameters)
+  CorrectDistances <- function(gaze) {
+    ifelse(gaze < 0, NA, gaze)
+  }
+  distances <- c("ZLeft", "ZRight", "DiameterLeft", "DiameterRight")
+  gazedata[distances] <- colwise(CorrectDistances)(gazedata[distances])
 
   # Flip the y values.
-  gazedata <- transform(gazedata, YLeft = 1 - YLeft, YRight = 1 - YRight)
+  gazedata <- mutate(gazedata, YLeft = 1 - YLeft, YRight = 1 - YRight)
 
-  # Compute the mean gaze values.
+  # Compute the monocular mean gaze values.
   ComputePairMeans <- function(x1, x2) rowMeans(cbind(x1, x2), na.rm = TRUE)
-  gazedata <- within(gazedata, {
-    XMean <- ComputePairMeans(XLeft, XRight)
-    YMean <- ComputePairMeans(YLeft, YRight)
-    ZMean <- ComputePairMeans(ZLeft, ZRight)
-    DiameterMean <- ComputePairMeans(DiameterLeft, DiameterRight)
-  })
+  gazedata <- mutate(gazedata,
+    XMean = ComputePairMeans(XLeft, XRight),
+    YMean = ComputePairMeans(YLeft, YRight),
+    ZMean = ComputePairMeans(ZLeft, ZRight),
+    DiameterMean = ComputePairMeans(DiameterLeft, DiameterRight)
+  )
 
   # Add informative columns from the gazedata filename
   file_info <- ParseFilename(gazedata_path)
@@ -126,15 +135,12 @@ Gazedata <- function(gazedata_path) {
   gazedata$Basename <- file_info$Basename
 
   # Re-order the columns of gazedata.
-  columns_in_order <- c('Task', 'Subject', 'BlockNo', 'Basename', 'TrialNo', 'Time',
-                        'XLeft', 'XRight', 'XMean', 'YLeft', 'YRight', 'YMean',
-                        'ZLeft', 'ZRight', 'ZMean', 'DiameterLeft',
-                        'DiameterRight', 'DiameterMean')
-  gazedata <- gazedata[, columns_in_order]
-
-  # Augment the class of gazedata.
-  class(gazedata) <- c('Gazedata', 'data.frame')
-  gazedata
+  cols_in_order <- c("Task", "Subject", "BlockNo", "Basename", "TrialNo",
+                     "Time", "XLeft", "XRight", "XMean", "YLeft", "YRight",
+                     "YMean", "ZLeft", "ZRight", "ZMean", "DiameterLeft",
+                     "DiameterRight", "DiameterMean")
+  gazedata <- gazedata[cols_in_order]
+  as.Gazedata(gazedata)
 }
 
 
