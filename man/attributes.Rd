@@ -14,22 +14,18 @@ x \%@\% attribute
 
 \method{\%@\%}{default}(x, attribute)
 
-\method{\%@\%}{list}(xs, attribute)
+\method{\%@\%}{list}(x, attribute)
 
-SetAttribute(...)
+SetAttribute(x, attribute, value)
 
-\method{SetAttribute}{default}(x, attribute, value, ...)
+\method{SetAttribute}{default}(x, attribute, value)
 
-\method{SetAttribute}{TrialList}(trials, attribute, value, ...)
+\method{SetAttribute}{TrialList}(x, attribute, value)
 
 x \%@\% attribute <- value
 }
 \arguments{
 \item{x}{An object with attributes}
-
-\item{xs}{A list of objects (with attributes).}
-
-\item{trials}{a \code{TrialList} object}
 
 \item{attribute}{A character string that names an attribute of the object.}
 

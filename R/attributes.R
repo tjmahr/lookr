@@ -26,8 +26,6 @@
 #' \code{value} (which is recycled as needed).
 #'
 #' @param x An object with attributes
-#' @param xs A list of objects (with attributes).
-#' @param trials a \code{TrialList} object
 #' @param attribute A character string that names an attribute of the object.
 #' @param value a new value for an attribute
 #' @return The value in the attribute slot of object, or the values of the
@@ -63,24 +61,25 @@
 
 #' @rdname attributes
 #' @export
-`%@%.list` <- function(xs, attribute) {
-  sapply(xs, function(x) attr(x, attribute))
+`%@%.list` <- function(x, attribute) {
+  sapply(x, function(y) attr(y, attribute))
 }
 
 
 #' @rdname attributes
 #' @export
-SetAttribute <- function(...) UseMethod("SetAttribute")
+SetAttribute <- function(x, attribute, value) UseMethod("SetAttribute")
 
 #' @rdname attributes
 #' @export
-SetAttribute.default <- function(x, attribute, value, ...) {
+SetAttribute.default <- function(x, attribute, value) {
   `attr<-`(x, attribute, value)
 }
 
 #' @rdname attributes
 #' @export
-SetAttribute.TrialList <- function(trials, attribute, value, ...) {
+SetAttribute.TrialList <- function(x, attribute, value) {
+  trials <- x
   classes <- class(trials)
   trials <- Map(SetAttribute, trials, attribute = attribute, value = value)
   class(trials) <- classes
