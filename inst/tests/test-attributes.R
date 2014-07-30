@@ -1,51 +1,53 @@
-
-library("testthat")
-
 context("Attributes functions")
 
 trials <- suppressMessages(Session("data/RWL_WFFArea_Long/001P00XA1/"))
 trial <- trials[[1]]
 
-test_that("Attribute getters", {
-  # Correct number of items
-  expect_equal(length(trial %@% "Subject"), 1)
-  expect_more_than(length(trials %@% "Subject"), 1)
 
-  # Attributes that don't exist are NULL or a list of NULLs
+test_that("Get correct number of items", {
+  expect_equal(length(trial %@% "Subject"), 1)
+  expect_equal(length(trial %@% "FakeAttribute"), 0)
+  expect_equal(length(trials %@% "Subject"), length(trials))
+  expect_equal(length(trials %@% "FakeAttribute"), length(trials))
+})
+
+
+test_that("Attributes that don't exist are NULL or a list of NULLs", {
   expect_null(trial %@% "Visited")
   expect_null(unlist(trials %@% "Visited"))
   expect_is((trials %@% "Visited"), "list")
   expect_null((trials %@% "Visited")[[1]])
 })
 
-test_that("Attribute setters", {
-  # Single item assignment
+
+test_that("Single item assignment", {
   trial %@% "Visited" <- TRUE
   expect_true(trial %@% "Visited")
-
   trial <- SetAttribute(trial, "Visited", FALSE)
   expect_false(trial %@% "Visited")
+})
 
-  # Multiple assignment for TrialLists: Infix form
+
+test_that("Multiple assignment for TrialLists", {
+  # Infix form
   trials %@% "Visited" <- TRUE
   expect_true(all(trials %@% "Visited"))
-
-  # Preserves classes
   expect_is(trials, "Session")
 
-  # Multiple assignment for TrialLists: Function form
+  # Function form
   trials <- SetAttribute(trials, "Visited", FALSE)
   expect_false(any(trials %@% "Visited"))
-
-  # Preserves classes
   expect_is(trials, "Session")
+})
 
+
+test_that("Values are recycled in multiple assignment", {
   # No recycling needed
   expect_equivalent(trials %@% "TrialNo", 1:48)
   trials %@% "TrialNo" <- 48:1
   expect_equivalent(trials %@% "TrialNo", 48:1)
 
-  # Neat recycling
+  # Even recycling
   trials %@% "TrialNo" <- 1:24
   expect_equivalent(trials %@% "TrialNo", rep(1:24, 2))
 
@@ -81,5 +83,4 @@ test_that("Non TrialList getter/setter behaviors", {
   # Instead, the attribute is given to the whole list
   expect_match(attr(cats, "FavoriteOwner"), "TJM")
 })
-
 
