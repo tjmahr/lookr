@@ -74,13 +74,13 @@ SetAttribute <- function(...) UseMethod("SetAttribute")
 
 #' @rdname attributes
 #' @export
-SetAttribute.default <- function(x, attribute, value) {
+SetAttribute.default <- function(x, attribute, value, ...) {
   `attr<-`(x, attribute, value)
 }
 
 #' @rdname attributes
 #' @export
-SetAttribute.TrialList <- function(trials, attribute, value) {
+SetAttribute.TrialList <- function(trials, attribute, value, ...) {
   classes <- class(trials)
   trials <- Map(SetAttribute, trials, attribute = attribute, value = value)
   class(trials) <- classes
@@ -90,7 +90,7 @@ SetAttribute.TrialList <- function(trials, attribute, value) {
 #' @rdname attributes
 #' @usage x \%@@\% attribute <- value
 #' @export
-`%@%<-` <- function(...) {
+`%@%<-` <- function(x, attribute, value) {
   UseMethod("SetAttribute")
 }
 

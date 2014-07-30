@@ -1,10 +1,18 @@
 Package: lookr
 Title: Tools to analyze looking-while-listening eyetracking experiments
-Description: 
 Version: 0.1
+Description: A set of functions for loading, reducing and analyzing
+    eye-tracking data.
 Author: Tristan Mahr
 Maintainer: Tristan Mahr <mahr@wisc.edu>
+URL: https://github.com/tjmahr/lookr
 Depends:
     R (>= 3.0.1)
 License: MIT
 LazyData: true
+Imports:
+    lubridate,
+    plyr,
+    reshape2,
+    stringr,
+    tools

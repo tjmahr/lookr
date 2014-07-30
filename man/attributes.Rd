@@ -18,9 +18,9 @@ x \%@\% attribute
 
 SetAttribute(...)
 
-\method{SetAttribute}{default}(x, attribute, value)
+\method{SetAttribute}{default}(x, attribute, value, ...)
 
-\method{SetAttribute}{TrialList}(trials, attribute, value)
+\method{SetAttribute}{TrialList}(trials, attribute, value, ...)
 
 x \%@\% attribute <- value
 }
