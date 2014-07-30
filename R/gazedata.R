@@ -57,16 +57,6 @@
 #' Information about the stimuli for each trial is extracted from the associated
 #' \code{.txt} file that is output by E-prime. These values are handled by the
 #' \code{Stimdata} function.
-#'
-#' @examples
-#' gaze_path <- file.path("inst", "tests", "data", "Coartic_WFFArea_1a",
-#'                        "302P22MS1", "Coartic_Block1_302P22MS1.gazedata")
-#' gaze <- Gazedata(gaze_path)
-#' names(gaze)
-#' # [1] "Task"          "Subject"       "BlockNo"       "TrialNo"       "Time"
-#' # [6] "XLeft"         "XRight"        "XMean"         "YLeft"         "YRight"
-#' #[11] "YMean"         "ZLeft"         "ZRight"        "ZMean"         "DiameterLeft"
-#' #[16] "DiameterRight" "DiameterMean"
 #' @references \href{http://bit.ly/1AtKyhR}{Tobii Toolbox for Matlab: Product
 #'   Description & User Guide}
 #' @export
