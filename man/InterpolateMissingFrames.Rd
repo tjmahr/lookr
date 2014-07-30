@@ -3,13 +3,16 @@
 \alias{InterpolateMissingFrames}
 \title{Interpolate missing gaze data}
 \usage{
-InterpolateMissingFrames(...)
+InterpolateMissingFrames(x, window = lwl_opts$get("interpolation_window"))
 }
 \arguments{
 \item{window}{the time window (in ms.) to interpolate over}
+
+\item{x}{a Trial with a \code{GazeByImageAOI} column or a TrialList where
+each Trial has a \code{GazeByImageAOI} column}
 }
 \value{
-the list of Trials with missing data interpolated
+the Trial object(s) with missing data interpolated
 }
 \description{
 Interpolate missing gaze data

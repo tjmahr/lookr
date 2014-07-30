@@ -6,21 +6,19 @@
 #' \code{AvgGazeContact}. This value measures the average duration (ms) of each
 #' segment of uninterrupted eye-tracking data in a trial.
 #'
-#' @param trial a Trial object with a \code{GazeByImageAOI} column
-#' @param trials a list of Trial objects, each with a \code{GazeByImageAOI}
-#'   column
-#' @return the Trial or list of Trials updated with a new attribute
+#' @param x a Trial with a \code{GazeByImageAOI} column or a TrialList where
+#'   each Trial has a \code{GazeByImageAOI} column
+#' @return the Trial object(s) updated to include the attribute
 #'   \code{AvgGazeContact}
 #' @export
-ComputeGazeContact <- function(...) UseMethod("ComputeGazeContact")
+ComputeGazeContact <- function(x) UseMethod("ComputeGazeContact")
 
 #' @export
-ComputeGazeContact.list <- function(trials) {
-  trial_lapply(trials, ComputeGazeContact)
-}
+ComputeGazeContact.TrialList <- function(x) trial_lapply(x, ComputeGazeContact)
 
 #' @export
-ComputeGazeContact.Trial <- function(trial) {
+ComputeGazeContact.Trial <- function(x) {
+  trial <- x
   looks <- rle(trial$GazeByImageAOI)
   uninterrupted <- looks$lengths[!is.na(looks$values)]
   contact <- round(mean(uninterrupted) * lwl_constants$ms_per_frame)
@@ -30,23 +28,25 @@ ComputeGazeContact.Trial <- function(trial) {
 
 
 
+
 #' Compute dwell times
 #'
 #' A "dwell" is an uninterrupted gaze. This function calculates the longest
 #' dwell time per image and the total time dwelling in each trial.
 #'
 #' @inheritParams ComputeGazeContact
-#' @return the Trial object(s) with a \code{DwellSummary} attribute which
-#'   contains a dataframe describing the maximum and total dwell times for each
-#'   image location and stimulus.
+#' @return the Trial object(s) updated to include a \code{DwellSummary}
+#'   attribute which contains a dataframe describing the maximum and total dwell
+#'   times for each image location and stimulus.
 #' @export
-GetDwellTimes <- function(...) UseMethod("GetDwellTimes")
+GetDwellTimes <- function(x) UseMethod("GetDwellTimes")
 
 #' @export
-GetDwellTimes.list <- function(trials) trial_lapply(trials, GetDwellTimes)
+GetDwellTimes.TrialList <- function(x) trial_lapply(x, GetDwellTimes)
 
 #' @export
-GetDwellTimes.Trial <- function(trial) {
+GetDwellTimes.Trial <- function(x) {
+  trial <- x
   # rle doesn't compute streaks for NAs so use fake NA values
   use_soft_nas <- function(xs) ifelse(is.na(xs), "NA", xs)
   use_hard_nas <- function(xs) ifelse(xs == "NA", NA, xs)
@@ -73,24 +73,26 @@ GetDwellTimes.Trial <- function(trial) {
 
 
 
-
 #' Calculate the amount of missing data in a list of Trials
 #'
 #' @inheritParams ComputeGazeContact
 #' @param column A character string that names one of the columns of Gazedata in
 #'   the trial object. Default is `"GazeByImageAOI"`.
-#' @return A list of Trial objects that has been updated to include attributes
-#'   containing percentage of mistracked data.
+#' @return the Trial object(s) updated to include attributes about the amount of
+#'   missing data
 #' @export
-CalculateMistrackings <- function(...) UseMethod("CalculateMistrackings")
-
-#' @export
-CalculateMistrackings.list <- function(trials, column = "GazeByImageAOI") {
-  trial_lapply(trials, CalculateMistrackings, column)
+CalculateMistrackings <- function(x, column = "GazeByImageAOI") {
+  UseMethod("CalculateMistrackings")
 }
 
 #' @export
-CalculateMistrackings.Trial <- function(trial, column = "GazeByImageAOI") {
+CalculateMistrackings.TrialList <- function(x, column = "GazeByImageAOI") {
+  trial_lapply(x, CalculateMistrackings, column)
+}
+
+#' @export
+CalculateMistrackings.Trial <- function(x, column = "GazeByImageAOI") {
+  trial <- x
   mistrackings <- sum(is.na(trial[[column]]))
   num_frames <- length(trial[[column]])
   trial %@% "MistrackedFrames" <- mistrackings
@@ -109,17 +111,20 @@ CalculateMistrackings.Trial <- function(trial, column = "GazeByImageAOI") {
 #'
 #' @inheritParams ComputeGazeContact
 #' @param window the time window (in ms.) to interpolate over
-#' @return the list of Trials with missing data interpolated
+#' @return the Trial object(s) with missing data interpolated
 #' @export
-InterpolateMissingFrames <- function(...) UseMethod('InterpolateMissingFrames')
-
-#' @export
-InterpolateMissingFrames.list <- function(trials, window = lwl_opts$get("interpolation_window")) {
-  trial_lapply(trials, InterpolateMissingFrames, window)
+InterpolateMissingFrames <- function(x,  window = lwl_opts$get("interpolation_window")) {
+  UseMethod("InterpolateMissingFrames")
 }
 
 #' @export
-InterpolateMissingFrames.Trial <- function(trial, window = lwl_opts$get("interpolation_window")) {
+InterpolateMissingFrames.TrialList <- function(x, window = lwl_opts$get("interpolation_window")) {
+  trial_lapply(x, InterpolateMissingFrames, window)
+}
+
+#' @export
+InterpolateMissingFrames.Trial <- function(x, window = lwl_opts$get("interpolation_window")) {
+  trial <- x
   trial %@% "InterpolatedPoints" <- 0
   trial %@% "CorrectedFrames" <- numeric(0)
   trial %@% "CorrectedTimes" <- numeric(0)

@@ -3,12 +3,16 @@
 \alias{GetDwellTimes}
 \title{Compute dwell times}
 \usage{
-GetDwellTimes(...)
+GetDwellTimes(x)
+}
+\arguments{
+\item{x}{a Trial with a \code{GazeByImageAOI} column or a TrialList where
+each Trial has a \code{GazeByImageAOI} column}
 }
 \value{
-the Trial object(s) with a \code{DwellSummary} attribute which
-  contains a dataframe describing the maximum and total dwell times for each
-  image location and stimulus.
+the Trial object(s) updated to include a \code{DwellSummary}
+  attribute which contains a dataframe describing the maximum and total dwell
+  times for each image location and stimulus.
 }
 \description{
 A "dwell" is an uninterrupted gaze. This function calculates the longest

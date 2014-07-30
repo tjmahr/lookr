@@ -3,15 +3,18 @@
 \alias{CalculateMistrackings}
 \title{Calculate the amount of missing data in a list of Trials}
 \usage{
-CalculateMistrackings(...)
+CalculateMistrackings(x, column = "GazeByImageAOI")
 }
 \arguments{
 \item{column}{A character string that names one of the columns of Gazedata in
 the trial object. Default is `"GazeByImageAOI"`.}
+
+\item{x}{a Trial with a \code{GazeByImageAOI} column or a TrialList where
+each Trial has a \code{GazeByImageAOI} column}
 }
 \value{
-A list of Trial objects that has been updated to include attributes
-  containing percentage of mistracked data.
+the Trial object(s) updated to include attributes about the amount of
+  missing data
 }
 \description{
 Calculate the amount of missing data in a list of Trials

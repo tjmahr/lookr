@@ -3,16 +3,14 @@
 \alias{ComputeGazeContact}
 \title{Compute the average duration of tracked gazes}
 \usage{
-ComputeGazeContact(...)
+ComputeGazeContact(x)
 }
 \arguments{
-\item{trial}{a Trial object with a \code{GazeByImageAOI} column}
-
-\item{trials}{a list of Trial objects, each with a \code{GazeByImageAOI}
-column}
+\item{x}{a Trial with a \code{GazeByImageAOI} column or a TrialList where
+each Trial has a \code{GazeByImageAOI} column}
 }
 \value{
-the Trial or list of Trials updated with a new attribute
+the Trial object(s) updated to include the attribute
   \code{AvgGazeContact}
 }
 \description{
