@@ -156,8 +156,6 @@ Gazedata <- function(gazedata_path) {
 #' @return a list with \code{Task}, \code{Block},\code{Subject} and
 #'   \code{Basename} fields.
 #'
-#' @importFrom tools file_path_sans_ext
-#' @import stringr
 #' @export
 ParseFilename <- function(filename) {
   file_basename <- file_path_sans_ext(basename(filename))

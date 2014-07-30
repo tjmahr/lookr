@@ -23,7 +23,6 @@
 #' extracting the stimdata are dispatched based on that class value. Valid task
 #' names include "RWL", "MP", "Coartic" and "VisWorld".
 #'
-#' @importFrom tools file_path_sans_ext
 #' @export
 Stimdata <- function(stimdata_path, outputFile = NULL) {
   # Extract experiment information from the input file name
