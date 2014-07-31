@@ -19,6 +19,7 @@ ComputeGazeContact.TrialList <- function(x) trial_lapply(x, ComputeGazeContact)
 #' @export
 ComputeGazeContact.Trial <- function(x) {
   trial <- x
+  stopifnot("GazeByImageAOI" %in% names(trial))
   looks <- rle(trial$GazeByImageAOI)
   uninterrupted <- looks$lengths[!is.na(looks$values)]
   contact <- round(mean(uninterrupted) * lwl_constants$ms_per_frame)
@@ -47,6 +48,7 @@ GetDwellTimes.TrialList <- function(x) trial_lapply(x, GetDwellTimes)
 #' @export
 GetDwellTimes.Trial <- function(x) {
   trial <- x
+  stopifnot("GazeByImageAOI" %in% names(trial), "GazeByAOI" %in% names(trial))
   # rle doesn't compute streaks for NAs so use fake NA values
   use_soft_nas <- function(xs) ifelse(is.na(xs), "NA", xs)
   use_hard_nas <- function(xs) ifelse(xs == "NA", NA, xs)
@@ -93,6 +95,8 @@ CalculateMistrackings.TrialList <- function(x, column = "GazeByImageAOI") {
 #' @export
 CalculateMistrackings.Trial <- function(x, column = "GazeByImageAOI") {
   trial <- x
+  # Eval/substitute so that the value of `column` is printed in the error msg
+  eval(substitute(stopifnot(n %in% names(trial)), list(n = column)))
   mistrackings <- sum(is.na(trial[[column]]))
   num_frames <- length(trial[[column]])
   trial %@% "MistrackedFrames" <- mistrackings
