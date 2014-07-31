@@ -4,28 +4,31 @@
 
 #' Adjust trial times using a trial attribute
 #'
-#' @param trial a Trial object
-#' @param trials a list of Trial objects
-#' @param alignment_event the name of the trial attribute to be used as time 0.
-#'   The default is \code{"TargetOnset"}.
-#' @return the Time column of each Trial is updated so that time 0 occurs at the
-#'   time given by attribute. For example, if \code{attr(trial, "TargetOnset")}
-#'   equals 1000 then the frame in the Time column that is closest to 1000ms
-#'   gets the new value 0ms and all other frames and time-related attributes are
-#'   updated relative to this value.
+#' @param x a Trial or a TrialList object
+#' @param event the name of the Trial attribute to be used as time 0. The
+#'   default is \code{"TargetOnset"}.
+#' @return the Time column of the Trial(s) is updated so that time 0 occurs at
+#'   the time given by attribute. For example, if \code{attr(trial,
+#'   "TargetOnset")} is 1000 (ms), then the frame in the Time column that is
+#'   closest to 1000 gets the new value 0 and all other frames and time-related
+#'   attributes are updated relative to this value.
 #' @export
-AdjustTimes <- function(...) UseMethod("AdjustTimes")
-
-#' @export
-AdjustTimes.list <- function(trials, alignment_event = lwl_opts$get("alignment_event")) {
-  trial_lapply(trials, AdjustTimes, alignment_event)
+AdjustTimes <- function(x, event = lwl_opts$get("alignment_event")) {
+  UseMethod("AdjustTimes")
 }
 
 #' @export
-AdjustTimes.Trial <- function(trial, alignment_event = lwl_opts$get("alignment_event")) {
-  zero_frame <- FindClosestFrame(trial, trial %@% alignment_event)
+AdjustTimes.TrialList <- function(x, event = lwl_opts$get("alignment_event")) {
+  trial_lapply(x, AdjustTimes, event)
+}
+
+#' @export
+AdjustTimes.Trial <- function(x, event = lwl_opts$get("alignment_event")) {
+  trial <- x
+  stopifnot(event %in% names(attributes(trial)))
+  zero_frame <- FindClosestFrame(trial, trial %@% event)
   trial <- AssignNewTimes(trial, zero_frame = zero_frame)
-  trial <- AdjustTimingMarks(trial, alignment_event)
+  trial <- AdjustTimingMarks(trial, event)
   trial
 }
 
@@ -100,13 +103,13 @@ AlignTrials <- function(trials, alignment_event = lwl_opts$get("alignment_event"
 #'   given time.
 FindClosestFrame <- function(trial, time) {
   time_distance <- abs(trial$Time - time)
-  # Return index of the (first) frame with the smallest distance from `time`
-  which.min(time_distance)
+  closest_rows <- which(time_distance == min(time_distance))
+  # Break ties: Select the (first) row that contains the smallest Time value
+  closest_rows[which.min(trial$Time[closest_rows])]
 }
 
-# expect_equal(FindClosestFrame(data.frame(Time = c(-3, -1, 0, 1, 3)), 2), 4)
-# expect_equal(FindClosestFrame(data.frame(Time = c(-3, -1, 0, 1, 3)), -2), 1)
-# expect_equal(FindClosestFrame(data.frame(Time = c(-3, -1, 1, 3)), 0), 2)
+
+
 
 #' Make a function for padding a trial with empty frames
 #'
@@ -380,62 +383,49 @@ GetFrameAtTime <- function(trials, time_point = 0) {
 #### Timeslicing --------------------------------------------------------------
 
 
-#' Slice an interval of time in a Trial or dataframe
+#' Extract an interval of time in a Trial
 #'
-#' @param dframe a \code{data.frame} object (i.e., a \code{Trial} or a
-#'   data-frame describing log-odds) with a column named \code{Time}.
-#' @param trials a list of Trial objects
+#' @param x a Trial or a TrialList object
 #' @param from the time at which to start slicing. This value can be a
-#'   \code{character} string naming a valid timing attribute of the data-frame
-#'   or trial (e.g., \code{"TargetOnset"} for a \code{Trial}), a numeric value
-#'   specifying a time-point in milliseconds, or \code{NULL} in which case the
-#'   function slices from the first time frame.
+#'   \code{character} string naming a valid timing attribute of the Trial (e.g.,
+#'   \code{"TargetOnset"}), a numeric value specifying a particular time, or
+#'   \code{NULL} in which case the function slices from the first frame of time.
 #' @param to time to which to finish slicing. The parameter may be of the same
 #'   classes as described above for \code{from}, but when \code{NULL} is passed
 #'   a value, the final time frame is used for slicing.
-#' @return A time-sliced subset of the \code{dframe} or the \code{trials}. An
-#'   attribute called "NumberOfFrames" is attached to the updated objects, so
-#'   the length of the time-sliced dataframe maybe queried.
+#' @return the Time column of the Trial(s) is updated so that minimum time is
+#'   within one frame of \code{from} and the maximum time is within one frame of
+#'   {to}. The updated Trial(s) also has the added attribute
+#'   \code{"NumberOfFrames"}.
 #' @export
-TimeSlice <- function(...) UseMethod('TimeSlice')
-
-#' @export
-TimeSlice.list <- function(trials, from = lwl_opts$get("timeslice_start"),
-                           to = lwl_opts$get("timeslice_end")) {
-  classes <- class(trials)
-  # Apply the dataframe function onto each dataframe in trials
-  lambda_dframe <- function(dframe) TimeSlice(dframe, from, to)
-  trials <- lapply(trials, lambda_dframe)
-  class(trials) <- classes
-  trials
-
+TimeSlice <- function(x, from = lwl_opts$get("timeslice_start"),
+                      to = lwl_opts$get("timeslice_end")) {
+  UseMethod('TimeSlice')
 }
 
+#' @export
+TimeSlice.TrialList <- function(x, from = lwl_opts$get("timeslice_start"),
+                                to = lwl_opts$get("timeslice_end")) {
+  trial_lapply(x, TimeSlice, from, to)
+}
 
 #' @export
-TimeSlice.data.frame <- function(dframe, from = lwl_opts$get("timeslice_start"),
-                                 to = lwl_opts$get("timeslice_end")) {
-  # Resolve what time (in ms.) is meant by `from` and `to`.
-  from <- from_time(from, dframe)
-  to <- from_time(to, dframe)
+TimeSlice.Trial <- function(x, from = lwl_opts$get("timeslice_start"),
+                            to = lwl_opts$get("timeslice_end")) {
+  trial <- x
+  # Resolve what times are meant by `from` and `to`.
+  from <- switch(class(from), `character` = trial %@% from, `numeric` = from,
+                 min(trial$Time))
+  to <- switch(class(to), `character` = trial %@% to, `numeric` = to,
+               max(trial$Time))
+  stopifnot(min(trial$Time) <= from, to <= max(trial$Time), from < to)
 
   # Convert the start and end times into the corresponding frame numbers.
-  start_index <- max(which(dframe$Time <= from))
-  end_index <- max(which(dframe$Time <= to))
+  start_index <- max(which(trial$Time <= from))
+  end_index <- max(which(trial$Time <= to))
 
   # Slice, then attach the number of frames as an attribute.
-  dframe <- dframe[seq(start_index, end_index), ]
-  dframe %@% "NumberOfFrames" <- nrow(dframe)
-  dframe
+  trial <- trial[seq(start_index, end_index), ]
+  trial %@% "NumberOfFrames" <- nrow(trial)
+  trial
 }
-
-
-from_time <- function(...) UseMethod("from_time")
-from_time.NULL <- function(from, frame) frame$Time[1]
-from_time.character <- function(from, frame) dframe %@% from
-from_time.numeric <- function(from, frame) from
-
-to_time <- function(...) UseMethod("to_time")
-to_time.NULL <- function(to, frame) frame$Time[nrow(frame)]
-to_time.character <- function(to, frame) dframe %@% to
-to_time.numeric <- function(to, frame) to
