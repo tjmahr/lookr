@@ -102,16 +102,17 @@ is.TrialList <- function(x) inherits(x, "TrialList")
 is.Trial <- function(x) inherits(x, "Trial")
 
 #' @export
-print.Trial <- function(trial, ...) str(trial, ...)
+print.Trial <- function(x, ...) str(x, ...)
 
 #' @export
-print.Gazedata <- function(...) str(...)
+print.Gazedata <- function(x, ...) str(x, ...)
 
 #' @export
-print.Stimdata <- function(...) str(...)
+print.Stimdata <- function(x, ...) str(x, ...)
 
 #' @export
-print.TrialList <- function(trials, ...) {
+print.TrialList <- function(x, ...) {
+  trials <- x
   # Count trials
   d <- data.frame(
     Task = trials %@% "Task",
