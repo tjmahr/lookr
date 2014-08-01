@@ -14,19 +14,18 @@
 #'
 #' "AOI" stands for Area of Interest.
 #'
+#' @param x a Trial with \code{Task} or \code{Protocol} attributes or a
+#'   TrialList where each Trial has these attributes
+#' @return the Trial object(s) with the AOI data attached as new columns.
 #' @export
-#' @param trial A Trial object with a \code{Task} and \code{Protocol}
-#'   attributes.
-#' @param trials a list of Trial objects, each with \code{Task} and
-#'   \code{Protocol} attributes.
-#' @return The Trial object with the AOI data attached as new columns.
-AddAOIData <- function(...) UseMethod('AddAOIData')
+AddAOIData <- function(x) UseMethod("AddAOIData")
 
 #' @export
-AddAOIData.list <- function(trials) trial_lapply(trials, AddAOIData)
+AddAOIData.TrialList <- function(x) trial_lapply(x, AddAOIData)
 
 #' @export
-AddAOIData.Trial <- function(trial) {
+AddAOIData.Trial <- function(x) {
+  trial <- x
   stim <- LookUpAOIs(trial)
 
   # By default we set all values as `tracked`.
