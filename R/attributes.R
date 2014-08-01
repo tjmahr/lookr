@@ -31,10 +31,6 @@
 #' @return The value in the attribute slot of object, or the values of the
 #'   attribute for each element element in a list.
 #'
-#' @name attributes
-#' @rdname attributes
-#' @export
-#'
 #' @examples
 #' Cat <- function(name, owner) {
 #'  structure(list(Name = name), Owner = owner, class = "cat")
@@ -53,15 +49,16 @@
 #' nooper %@@% "Owner" <- NA
 #' list(nooper, kiki) %@@% "Owner"
 #' # [1] NA    "AML"
+#' @name attributes
+#' @rdname attributes
+#' @export
 `%@%` <- function(x, attribute) UseMethod('%@%')
 
-#' @rdname attributes
 #' @export
-`%@%.default` <- function(x, attribute) attr(x, attribute)
+`%@%.default` <- function(x, attribute) attr(x, attribute, exact = TRUE)
 
-#' @rdname attributes
 #' @export
-`%@%.list` <- function(x, attribute) {
+`%@%.list` <- function(x, attribute, exact = TRUE) {
   sapply(x, function(y) attr(y, attribute))
 }
 
@@ -70,13 +67,11 @@
 #' @export
 SetAttribute <- function(x, attribute, value) UseMethod("SetAttribute")
 
-#' @rdname attributes
 #' @export
 SetAttribute.default <- function(x, attribute, value) {
   `attr<-`(x, attribute, value)
 }
 
-#' @rdname attributes
 #' @export
 SetAttribute.TrialList <- function(x, attribute, value) {
   trials <- x
