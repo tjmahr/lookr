@@ -3,22 +3,20 @@
 \alias{AdjustTimes}
 \title{Adjust trial times using a trial attribute}
 \usage{
-AdjustTimes(...)
+AdjustTimes(x, event = lwl_opts$get("alignment_event"))
 }
 \arguments{
-\item{trial}{a Trial object}
+\item{x}{a Trial or a TrialList object}
 
-\item{trials}{a list of Trial objects}
-
-\item{alignment_event}{the name of the trial attribute to be used as time 0.
-The default is \code{"TargetOnset"}.}
+\item{event}{the name of the Trial attribute to be used as time 0. The
+default is \code{"TargetOnset"}.}
 }
 \value{
-the Time column of each Trial is updated so that time 0 occurs at the
-  time given by attribute. For example, if \code{attr(trial, "TargetOnset")}
-  equals 1000 then the frame in the Time column that is closest to 1000ms
-  gets the new value 0ms and all other frames and time-related attributes are
-  updated relative to this value.
+the Time column of the Trial(s) is updated so that time 0 occurs at
+  the time given by attribute. For example, if \code{attr(trial,
+  "TargetOnset")} is 1000 (ms), then the frame in the Time column that is
+  closest to 1000 gets the new value 0 and all other frames and time-related
+  attributes are updated relative to this value.
 }
 \description{
 Adjust trial times using a trial attribute
