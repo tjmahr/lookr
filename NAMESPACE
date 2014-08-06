@@ -3,7 +3,7 @@
 S3method("%@%",default)
 S3method("%@%",list)
 S3method(AddAOIData,Trial)
-S3method(AddAOIData,list)
+S3method(AddAOIData,TrialList)
 S3method(AdjustTimes,Trial)
 S3method(AdjustTimes,TrialList)
 S3method(Block,Gazedata)

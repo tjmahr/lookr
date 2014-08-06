@@ -164,11 +164,14 @@ FindClosestFrame <- function(trial, time) {
 #' @param trial a Trial object
 #' @param the index of the reference frame that will mark time = 0 in the
 #'   aligned trial
+#' @param frame_rate the eye-tracker sampling rate. Defaults to
+#'   \code{lwl_constants$ms_per_frame} which is 16.6546ms.
 #' @return the inputted trial object with updated values in its \code{Time}
-#'   column
-AssignNewTimes <- function(trial, zero_frame) {
+#'   column and an added \code{FrameRate} attribute
+AssignNewTimes <- function(trial, zero_frame, frame_rate = lwl_constants$ms_per_frame) {
   centered_frames <- seq_along(along.with = trial$Time) - zero_frame
-  trial$Time <- centered_frames * lwl_constants$ms_per_frame
+  trial$Time <- centered_frames * frame_rate
+  trial %@% "FrameRate" <- frame_rate
   trial
 }
 
@@ -422,7 +425,7 @@ TimeSlice.Trial <- function(x, from = lwl_opts$get("timeslice_start"),
 
   # Convert the start and end times into the corresponding frame numbers.
   start_index <- max(which(trial$Time <= from))
-  end_index <- max(which(trial$Time <= to))
+  end_index <- min(which(to <= trial$Time))
 
   # Slice, then attach the number of frames as an attribute.
   trial <- trial[seq(start_index, end_index), ]

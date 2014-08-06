@@ -3,17 +3,20 @@
 \alias{AssignNewTimes}
 \title{Assign new times to a trial once it has been aligned at a reference frame}
 \usage{
-AssignNewTimes(trial, zero_frame)
+AssignNewTimes(trial, zero_frame, frame_rate = lwl_constants$ms_per_frame)
 }
 \arguments{
 \item{trial}{a Trial object}
 
 \item{the}{index of the reference frame that will mark time = 0 in the
 aligned trial}
+
+\item{frame_rate}{the eye-tracker sampling rate. Defaults to
+\code{lwl_constants$ms_per_frame} which is 16.6546ms.}
 }
 \value{
 the inputted trial object with updated values in its \code{Time}
-  column
+  column and an added \code{FrameRate} attribute
 }
 \description{
 Assign new times to a trial once it has been aligned at a reference frame

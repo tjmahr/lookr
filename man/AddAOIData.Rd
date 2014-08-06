@@ -3,17 +3,14 @@
 \alias{AddAOIData}
 \title{Transform gazedata coordinates into AOI data}
 \usage{
-AddAOIData(...)
+AddAOIData(x)
 }
 \arguments{
-\item{trial}{A Trial object with a \code{Task} and \code{Protocol}
-attributes.}
-
-\item{trials}{a list of Trial objects, each with \code{Task} and
-\code{Protocol} attributes.}
+\item{x}{a Trial with \code{Task} or \code{Protocol} attributes or a
+TrialList where each Trial has these attributes}
 }
 \value{
-The Trial object with the AOI data attached as new columns.
+the Trial object(s) with the AOI data attached as new columns.
 }
 \description{
 AddAOIData() adds two new columns to the gazedata in a Trial object: (1)
