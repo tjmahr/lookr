@@ -16,3 +16,5 @@ Imports:
     reshape2,
     stringr,
     tools
+Suggests:
+    testthat
