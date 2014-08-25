@@ -107,6 +107,8 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
 #' @param na_location Where to assign \code{NA} bin numbers. \code{"head"} and
 #'   \code{"tail"} respectively put the NA elements at the head and tail of the
 #'   vector; \code{"split"} alternates between \code{"tail"} and \code{"head"}.
+#' @param partial whether to exclude values that don't fit evenly into bins.
+#'   Defaults to FALSE, so that the user is warned if a bin is incomplete.
 #' @return a vector of bin-numbers. If \code{bin_width} does not evenly divide
 #'   \code{xs}, the remainder elements are given a bin number of \code{NA}.
 #' @export
@@ -119,7 +121,7 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
 #' # [1] NA  1  1  1  1  1 NA
 #' AssignBins(1:8, bin_width = 5, "split")
 #' # [1] NA  1  1  1  1  1 NA NA
-AssignBins <- function(xs, bin_width = 3, na_location = "tail") {
+AssignBins <- function(xs, bin_width = 3, na_location = "tail", partial = FALSE) {
   if (is.unsorted(xs)) {
     warning("Elements to be binned are not sorted")
   }
@@ -131,6 +133,12 @@ AssignBins <- function(xs, bin_width = 3, na_location = "tail") {
   num_bins <- floor(length(xs) / bin_width)
   leftover <- length(xs) %% bin_width
   bin_indices <- sort(rep(seq_len(num_bins), times = bin_width))
+
+  if (partial) {
+    partial_bin <- rep(max(bin_indices) + 1, leftover)
+    bin_indices <- c(bin_indices, partial_bin)
+    leftover <- 0
+  }
 
   if (na_location == "head") {
     bin_indices <- c(rep(NA, leftover), bin_indices)

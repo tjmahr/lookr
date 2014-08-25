@@ -3,7 +3,7 @@
 \alias{AssignBins}
 \title{Assign bin numbers to a vector}
 \usage{
-AssignBins(xs, bin_width = 3, na_location = "tail")
+AssignBins(xs, bin_width = 3, na_location = "tail", partial = FALSE)
 }
 \arguments{
 \item{xs}{a vector}
@@ -13,6 +13,9 @@ AssignBins(xs, bin_width = 3, na_location = "tail")
 \item{na_location}{Where to assign \code{NA} bin numbers. \code{"head"} and
 \code{"tail"} respectively put the NA elements at the head and tail of the
 vector; \code{"split"} alternates between \code{"tail"} and \code{"head"}.}
+
+\item{partial}{whether to exclude values that don't fit evenly into bins.
+Defaults to FALSE, so that the user is warned if a bin is incomplete.}
 }
 \value{
 a vector of bin-numbers. If \code{bin_width} does not evenly divide
