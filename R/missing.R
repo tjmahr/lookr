@@ -30,6 +30,79 @@ ComputeGazeContact.Trial <- function(x) {
 
 
 
+
+
+#' Calculate image bias within a window of time
+#'
+#' Bias answers the question, "Which image was this subject viewing during a
+#' certain window of time?" For this calculation, we count the number of frames
+#' spent on each AOI and multiply the frame-counts by the duration of the
+#' window. Over a 100ms (6 frame) window, 3 frames on one AOI would receive a
+#' weight of 300. Ties are broken by choosing the image with the earliest
+#' fixation. In that same 6 frame window, if 3 frames are spent each on 2 AOIs,
+#' the weights would be tied, so the AOI that was fixated on first would be
+#' chosen.
+#'
+#' @param x a Trial with a \code{GazeByImageAOI} column or a TrialList where
+#'   each Trial has a \code{GazeByImageAOI} column
+#' @param window a twq-element vector specifying the window of time within which
+#'   to calculate the image bias.
+#' @return the Trial object(s) updated to include two new attributes:
+#'   \code{Bias}, the name of the AOI with the highest bias or \code{NA} if
+#'   there are no looks to the AOIs during the time window; and
+#'   \code{BiasSummary}, a data-frame detailing the bias calculation.
+#' @export
+CalculateBias <- function(x, window) UseMethod("CalculateBias")
+
+#' @export
+CalculateBias.TrialList <- function(x, window) {
+  trial_lapply(x, CalculateBias, window)
+}
+
+#' @export
+CalculateBias.Trial <- function(x, window) {
+  trial <- x
+  # Make a copy of the trial for modification
+  subtrial <- ExtractWindow(trial, window)
+
+  # Calculate the bias by weighting each frame using the longest possible
+  # fixation duration in the window and break ties by using the earliest image.
+  subtrial$WindowDur <- nrow(subtrial) * lwl_constants$ms_per_frame
+  subtrial$LastPossible <- max(subtrial$Time)
+
+  bias_summary <- ddply(subtrial, "GazeByImageAOI", summarize,
+                        Frames = length(Time),
+                        Weight = Frames * unique(WindowDur),
+                        # Break ties by choosing the earlier viewed AOI
+                        FirstLook = min(Time),
+                        Earliness = unique(LastPossible) - FirstLook,
+                        Bias = Weight + Earliness
+  )
+
+  # We only care about looks to real AOIs
+  valid_aois <- !is.element(bias_summary$GazeByImageAOI, c(NA, "tracked"))
+  bias_summary <- bias_summary[valid_aois, ]
+
+  # Use NA as a place-holder attribute if there are no looks to the AOIs
+  if (nrow(bias_summary) == 0) {
+    winner <- NA_character_
+  } else {
+    winner <- bias_summary[which.max(bias_summary$Bias), "GazeByImageAOI"]
+  }
+
+  # Update the trial
+  trial %@% "Bias" <- winner
+  trial %@% "BiasSummary" <- bias_summary
+  trial
+}
+
+ExtractWindow <- function(trial, window) {
+  window <- sort(window)
+  trial[window[1] <= trial$Time & trial$Time <= window[2], ]
+  trial
+}
+
+
 #' Compute dwell times
 #'
 #' A "dwell" is an uninterrupted gaze. This function calculates the longest
