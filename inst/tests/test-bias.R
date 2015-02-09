@@ -2,20 +2,19 @@ context("Bias calculation")
 
 # Create an 8-frame Trial for testing bias calculations
 DummyTrial <- function(...) {
-  # Make sure negative times are included.
   dots <- c(...)
+  # Make sure negative times are included.
   frames <- seq_len(length(dots)) - 4
   times <- frames * lwl_constants$ms_per_frame
   # Convert the numbers in the dots to AOI values
-  names <- c("Target", "SemanticFoil", "tracked", NA)
-  aois <- names[dots]
+  aoi_names <- c("Target", "SemanticFoil", "tracked", NA)
+  aois <- aoi_names[dots]
   # Package as a trial
   trial <- data.frame(Time = times, GazeByImageAOI = aois,
                       row.names = NULL, stringsAsFactors = FALSE)
   trial$Subject <- "001L"
   structure(as.Trial(trial), Subject = "001L", Task = "RWL")
 }
-
 
 
 test_that("Bias only considers looks inside the timing window", {
@@ -28,14 +27,6 @@ test_that("Bias only considers looks inside the timing window", {
   expect_equal(early %@% "Bias", "Target")
   expect_equal(whole %@% "Bias", "SemanticFoil")
 })
-
-
-
-
-
-
-
-
 
 
 test_that("Bias assigned to most viewed AOI", {
@@ -73,9 +64,8 @@ test_that("Bias breaks ties with first image", {
   expect_equal(tied1 %@% "Bias", "Target")
   expect_equal(tied2 %@% "Bias", "Target")
   expect_equal(tied3 %@% "Bias", "Target")
-
-
 })
+
 
 test_that("NA bias values", {
   # Trial where there is no valid winner
@@ -87,5 +77,3 @@ test_that("NA bias values", {
   expect_equal(no_aois %@% "Bias", NA_character_)
   expect_equal(nrow(no_aois %@% "BiasSummary"), 0)
 })
-
-
