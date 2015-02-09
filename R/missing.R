@@ -98,7 +98,7 @@ CalculateBias.Trial <- function(x, window) {
 
 ExtractWindow <- function(trial, window) {
   window <- sort(window)
-  trial[window[1] <= trial$Time & trial$Time <= window[2], ]
+  trial <- trial[window[1] <= trial$Time & trial$Time <= window[2], ]
   trial
 }
 

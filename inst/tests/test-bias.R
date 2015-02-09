@@ -3,16 +3,40 @@ context("Bias calculation")
 # Create an 8-frame Trial for testing bias calculations
 DummyTrial <- function(...) {
   # Make sure negative times are included.
-  times <- seq(-3, 4) * lwl_constants$ms_per_frame
+  dots <- c(...)
+  frames <- seq_len(length(dots)) - 4
+  times <- frames * lwl_constants$ms_per_frame
   # Convert the numbers in the dots to AOI values
   names <- c("Target", "SemanticFoil", "tracked", NA)
-  aois <- names[c(...)]
+  aois <- names[dots]
   # Package as a trial
   trial <- data.frame(Time = times, GazeByImageAOI = aois,
                       row.names = NULL, stringsAsFactors = FALSE)
   trial$Subject <- "001L"
   structure(as.Trial(trial), Subject = "001L", Task = "RWL")
 }
+
+
+
+test_that("Bias only considers looks inside the timing window", {
+  trial <- DummyTrial(1, 1, 1, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2)
+  # Trial where the target is the bias, only in the first 8 frames
+  early <- CalculateBias(trial, window = c(-50, 75))
+  # SemanticFoil dominates when trial is whole window
+  whole <- CalculateBias(trial, window = c(-50, 200))
+
+  expect_equal(early %@% "Bias", "Target")
+  expect_equal(whole %@% "Bias", "SemanticFoil")
+})
+
+
+
+
+
+
+
+
+
 
 test_that("Bias assigned to most viewed AOI", {
   # Trials where the clear winner is the Target and it's viewed first or second
