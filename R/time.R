@@ -418,9 +418,9 @@ TimeSlice.Trial <- function(x, from = lwl_opts$get("timeslice_start"),
   trial <- x
   # Resolve what times are meant by `from` and `to`.
   from <- switch(class(from), `character` = trial %@% from, `numeric` = from,
-                 min(trial$Time))
+                 `integer` = from, min(trial$Time))
   to <- switch(class(to), `character` = trial %@% to, `numeric` = to,
-               max(trial$Time))
+               `integer` = to, max(trial$Time))
   stopifnot(min(trial$Time) <= from, to <= max(trial$Time), from < to)
 
   # Convert the start and end times into the corresponding frame numbers.

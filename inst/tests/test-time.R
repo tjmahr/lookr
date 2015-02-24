@@ -10,18 +10,22 @@ test_that("TimeSlice works on correctly for different input types", {
   expect_equivalent(range(trial$Time), range(weird_times$Time))
 
   # When slicing by events, time values are within one frame of the event times
-  sample_rate <- trial %@% "FrameRate"
+  rate <- trial %@% "FrameRate"
   event_times <- TimeSlice(trial, "CarrierOnset", "AttentionOnset")
   onsets <- c(trial %@% "CarrierOnset", trial %@% "AttentionOnset")
-  expect_equal(onsets, range(event_times$Time), tol = sample_rate)
+  expect_equal(onsets, range(event_times$Time), tol = rate, scale = 1)
 
   # Same thing for numeric arguments
   num_times <- TimeSlice(trial, -200, 2000)
-  expect_equal(c(-200, 2000), range(num_times$Time), tol = sample_rate)
+  expect_equal(c(-200, 2000), range(num_times$Time), tol = rate, scale = 1)
+
+  # Same thing for integer arguments
+  int_times <- TimeSlice(trial, -200L, 2000L)
+  expect_equal(c(-200, 2000), range(int_times$Time), tol = rate, scale = 1)
 
   # Repeated Timeslicing is stable
   rep_num_times <- TimeSlice(num_times, -200, 2000)
-  expect_equal(c(-200, 2000), range(rep_num_times$Time), tol = sample_rate)
+  expect_equal(c(-200, 2000), range(rep_num_times$Time), tol = rate, scale = 1)
 })
 
 
