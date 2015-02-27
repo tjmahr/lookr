@@ -1,0 +1,27 @@
+---
+Task: "Coartic"
+
+Display:
+  type: "Tobii60XL"
+  frames_per_sec: 60.0
+  width_pix: 1920
+  height_pix: 1200
+  pixels_per_mm: 3.71
+
+AOIs:
+  ImageL:
+    x_pix: [100, 700]
+    y_pix: [300, 900]
+    # Name of stimdata column with image filename
+    stim_name: "ImageL"
+  ImageR:
+    x_pix: [1220, 1820]
+    y_pix: [300, 900]
+    stim_name: "ImageR"
+
+# Names of the stimdata columns that say where each image is
+Locations:
+  # i.e., the TargetImage column says whether Target is in ImageL or ImageR.
+  Target: "TargetImage"
+  Distractor: "DistractorImage"
+...
