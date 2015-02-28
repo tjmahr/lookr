@@ -77,7 +77,9 @@
 
 #' @rdname attributes
 #' @export
-SetAttribute <- function(x, attribute, value) UseMethod("SetAttribute")
+SetAttribute <- function(x, attribute, value) {
+  UseMethod("SetAttribute")
+}
 
 #' @export
 SetAttribute.default <- function(x, attribute, value) {
@@ -119,4 +121,46 @@ MakeAttributeFilter <- function(attr_name) {
     class(trials) <- classes
     trials
   }
+}
+
+
+#' Create a data-frame of attributes
+#'
+#' This function is intended to abstract over the pattern of writing code like
+#' \code{data.frame(x = trials \%@@\% "x", ZName = trials \%@@\% "z")} by
+#' instead allowing us to write \code{gather_attributes(trials, c("x", ZName =
+#' z))}.
+#'
+#' @param x a list of objects with attributes
+#' @param attrs a character vector. If an element in the vector is named, the
+#'   name is used as the new (column) name for that attribute's column in the
+#'   resulting data-frame.
+#' @param omit_na whether to drop columns with all \code{NA} values
+#' @return a data-frame with a column for each of the attributes in
+#'   \code{attrs}. By default, non-existent attributes will be stored with NA
+#'   values and strings are not factors.
+#' @export
+gather_attributes <- function(x, attrs, omit_na = FALSE) {
+  # Set names of unnamed attributes
+  if (is.null(names(attrs))) names(attrs) <- attrs
+  names(attrs) <- ifelse(names(attrs) == "", attrs, names(attrs))
+
+  # Get each attribute
+  get_this_attr <- function(this_attr) x %try@% this_attr
+  attr_list <- lapply(attrs, get_this_attr)
+
+  # List names are inherited from the names of the attrs
+  stopifnot(names(attr_list) == names(attrs))
+  attr_table <- as.data.frame(attr_list, stringsAsFactors = FALSE)
+
+  if (omit_na) {
+    # Which columns have all NA values
+    all_nas <- unlist(colwise(is_all_na)(attr_table))
+    to_drop <- names(attr_table)[all_nas]
+
+    # Null them
+    attr_table[, to_drop] <- list(NULL)
+  }
+
+  attr_table
 }

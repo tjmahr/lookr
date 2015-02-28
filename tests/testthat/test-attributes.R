@@ -64,6 +64,33 @@ test_that("Values are recycled in multiple assignment", {
 })
 
 
+test_that("gathering attributes into dataframes", {
+  # Input with some named attributes
+  attrs <- c(Subj = "Subject", "TrialNo", "Fake")
+  results <- gather_attributes(trials, attrs)
+
+  # Values stored correctly
+  expect_equal(results$TrialNo, trials %@% "TrialNo")
+  expect_equal(results$Subj, trials %@% "Subject")
+
+  # Column names
+  expect_equal(names(results), c("Subj", "TrialNo", "Fake"))
+  attrs <- c(Subj = "Subject", "TrialNo", "Fake")
+
+  # Input with one unnamed string
+  results2 <- gather_attributes(trials, "Fake")
+  expect_equal(names(results2), c("Fake"))
+
+  # NA dropping
+  results3 <- gather_attributes(trials, c("TrialNo", "Fake"), omit_na = TRUE)
+  expect_equal(dim(results3), c(length(trials), 1))
+  results4 <- gather_attributes(trials, "Fake", omit_na = TRUE)
+  expect_equal(dim(results4), c(length(trials), 0))
+
+})
+
+
+
 test_that("Non TrialList getter/setter behaviors", {
   Cat <- function(name, owner) {
     structure(list(Name = name), Owner = owner, class = "cat")
