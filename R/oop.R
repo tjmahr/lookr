@@ -115,10 +115,10 @@ print.TrialList <- function(x, ...) {
   trials <- x
   # Count trials
   d <- data.frame(
-    Task = trials %@% "Task",
-    SubjectID = trials %@% "Subject",
-    BlockNo = trials %@% "Block",
-    TrialNo = trials %@% "TrialNo")
+    Task = trials %try@% "Task",
+    SubjectID = trials %try@% "Subject",
+    BlockNo = trials %try@% "Block",
+    TrialNo = trials %try@% "TrialNo")
   trial_summary <- count(d, c("Task", "SubjectID", "BlockNo"))
   names(trial_summary)[names(trial_summary) == "freq"] <- "Trials"
 
