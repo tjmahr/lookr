@@ -19,6 +19,13 @@ test_that("Attributes that don't exist are NULL or a list of NULLs", {
   expect_null((trials %@% "Visited")[[1]])
 })
 
+test_that("try-getter handle normal and missing data", {
+  expect_equal(length(trial %try@% "Subject"), 1)
+  expect_equal(length(trial %try@% "FakeAttribute"), 1)
+  expect_equal(length(trials %try@% "Subject"), length(trials))
+  expect_equal(length(trials %try@% "FakeAttribute"), length(trials))
+})
+
 
 test_that("Single item assignment", {
   trial %@% "Visited" <- TRUE

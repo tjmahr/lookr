@@ -1,12 +1,11 @@
-#' Get or set attributes of an object
+#' Get or set attributes of an object (vectorized)
 #'
 #' \code{\%@@\%} is an infix-form wrapper for the \code{attr} function.
 #'
-#' @details
-#' A \code{Trial} object is a data-frame of looking data, and metadata about the
-#' trial like the images onscreen or duration of the carrier phrase are stored
-#' in attributes attached to the data-frame. The functions described below
-#' making working with attributes a little easier.
+#' @details A \code{Trial} object is a data-frame of looking data, and metadata
+#' about the trial like the images onscreen or duration of the carrier phrase
+#' are stored in attributes attached to the data-frame. The functions described
+#' below making working with attributes a little easier.
 #'
 #' \code{\%@@\%} is a utility function for getting the value of an attribute
 #' from an R object. This is a wrapper for the built-in function \code{attr}.
@@ -17,13 +16,15 @@
 #' Attributes can be set two ways:
 #'
 #' \enumerate{
-#'  \item \code{x <- SetAttribute(x, attribute, value)}
-#'  \item \code{x \%@@\% attribute <- value}
-#' }
+#'     \item \code{x <- SetAttribute(x, attribute, value)}
+#'     \item \code{x \%@@\% attribute <- value}}
 #'
 #' If the object is a \code{TrialList} then then assignment is vectorized,
 #' meaning that each object (i.e., \code{Trial}) is updated with the
 #' \code{value} (which is recycled as needed).
+#'
+#' \code{\%try@@\%} replaces \code{NULL} values with \code{NA} if the attribute is
+#' missing.
 #'
 #' @param x An object with attributes
 #' @param attribute A character string that names an attribute of the object.
@@ -58,8 +59,19 @@
 `%@%.default` <- function(x, attribute) attr(x, attribute, exact = TRUE)
 
 #' @export
-`%@%.list` <- function(x, attribute, exact = TRUE) {
-  sapply(x, function(y) attr(y, attribute))
+`%@%.list` <- function(x, attribute) {
+  sapply(x, function(y) attr(y, attribute, exact = TRUE))
+}
+
+#' @export
+#' @describeIn attributes
+`%try@%` <- function(x, attribute) {
+  values <- x %@% attribute
+  # If just NULL, one NA
+  if (length(values) == 0) values <- NA
+  # If many NULLS, many NAs
+  values <- ifelse(sapply(values, is.null), NA, values)
+  values
 }
 
 

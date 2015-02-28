@@ -4,10 +4,13 @@
 \alias{SetAttribute}
 \alias{\%@\%}
 \alias{\%@\%<-}
+\alias{\%try@\%}
 \alias{attributes}
-\title{Get or set attributes of an object}
+\title{Get or set attributes of an object (vectorized)}
 \usage{
 x \%@\% attribute
+
+x \%try@\% attribute
 
 SetAttribute(x, attribute, value)
 
@@ -28,10 +31,10 @@ The value in the attribute slot of object, or the values of the
 \code{\%@\%} is an infix-form wrapper for the \code{attr} function.
 }
 \details{
-A \code{Trial} object is a data-frame of looking data, and metadata about the
-trial like the images onscreen or duration of the carrier phrase are stored
-in attributes attached to the data-frame. The functions described below
-making working with attributes a little easier.
+A \code{Trial} object is a data-frame of looking data, and metadata
+about the trial like the images onscreen or duration of the carrier phrase
+are stored in attributes attached to the data-frame. The functions described
+below making working with attributes a little easier.
 
 \code{\%@\%} is a utility function for getting the value of an attribute
 from an R object. This is a wrapper for the built-in function \code{attr}.
@@ -42,14 +45,20 @@ they are lists within lists. This is weird; maybe I should fix this.
 Attributes can be set two ways:
 
 \enumerate{
- \item \code{x <- SetAttribute(x, attribute, value)}
- \item \code{x \%@\% attribute <- value}
-}
+    \item \code{x <- SetAttribute(x, attribute, value)}
+    \item \code{x \%@\% attribute <- value}}
 
 If the object is a \code{TrialList} then then assignment is vectorized,
 meaning that each object (i.e., \code{Trial}) is updated with the
 \code{value} (which is recycled as needed).
+
+\code{\%try@\%} replaces \code{NULL} values with \code{NA} if the attribute is
+missing.
 }
+\section{Functions}{
+\itemize{
+\item \code{%try@%}: 
+}}
 \examples{
 Cat <- function(name, owner) {
  structure(list(Name = name), Owner = owner, class = "cat")
