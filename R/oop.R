@@ -112,22 +112,18 @@ print.Stimdata <- function(x, ...) str(x, ...)
 
 #' @export
 print.TrialList <- function(x, ...) {
-  trials <- x
   # Count trials
-  d <- data.frame(
-    Task = trials %try@% "Task",
-    SubjectID = trials %try@% "Subject",
-    BlockNo = trials %try@% "Block",
-    TrialNo = trials %try@% "TrialNo")
-  trial_summary <- count(d, c("Task", "SubjectID", "BlockNo"))
-  names(trial_summary)[names(trial_summary) == "freq"] <- "Trials"
+  trials <- x
+  d <- gather_attributes(trials, c("Subject", "Basename", "TrialNo"))
+  trial_summary <- count(d, c("Subject", "Basename"))
+  names(trial_summary) <- c("SubjectID", "Basename", "Trials")
 
   # Prepare header
   n_subjects <- length(unique(trial_summary$SubjectID))
   n_trials <- sum(trial_summary$Trials)
-  header <- sprintf("%s object with %s Subject IDs and %s trials: ",
+  header <- sprintf("%s object with %s Subject IDs and %s trials: \n",
                     class(trials)[1], n_subjects, n_trials)
 
-  cat(header, "\n")
+  cat(header)
   print(trial_summary)
 }
