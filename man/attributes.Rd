@@ -46,7 +46,8 @@ Attributes can be set two ways:
 
 \enumerate{
     \item \code{x <- SetAttribute(x, attribute, value)}
-    \item \code{x \%@\% attribute <- value}}
+    \item \code{x \%@\% attribute <- value}
+ }
 
 If the object is a \code{TrialList} then then assignment is vectorized,
 meaning that each object (i.e., \code{Trial}) is updated with the
@@ -55,10 +56,6 @@ meaning that each object (i.e., \code{Trial}) is updated with the
 \code{\%try@\%} replaces \code{NULL} values with \code{NA} if the attribute is
 missing.
 }
-\section{Functions}{
-\itemize{
-\item \code{%try@%}: 
-}}
 \examples{
 Cat <- function(name, owner) {
  structure(list(Name = name), Owner = owner, class = "cat")

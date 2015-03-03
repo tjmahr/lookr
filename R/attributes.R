@@ -17,7 +17,8 @@
 #'
 #' \enumerate{
 #'     \item \code{x <- SetAttribute(x, attribute, value)}
-#'     \item \code{x \%@@\% attribute <- value}}
+#'     \item \code{x \%@@\% attribute <- value}
+#'  }
 #'
 #' If the object is a \code{TrialList} then then assignment is vectorized,
 #' meaning that each object (i.e., \code{Trial}) is updated with the
@@ -63,8 +64,8 @@
   sapply(x, function(y) attr(y, attribute, exact = TRUE))
 }
 
+#' @rdname attributes
 #' @export
-#' @describeIn attributes
 `%try@%` <- function(x, attribute) {
   values <- x %@% attribute
   # If just NULL, one NA
