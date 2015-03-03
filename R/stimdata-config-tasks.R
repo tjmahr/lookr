@@ -24,20 +24,7 @@ GetDialectCode <- function(filename) {
 #   stimdata fields used in the protocol
 #
 
-# Determine the protocol described in the raw stimdata file.
-#
-# As of Oct 2012, we have 3 different protocols/versions each of the RWL and
-# MP tasks, each with different stimdata files that need to be handled in
-# slightly different ways. By checking if the stimdata contains a Fixation
-# Onset field and/or a Fixation Movie field, we can figure out which specific
-# version of the RWL or MP protocol is represented in the stimdata file. Here
-# is the cheatsheet:
-# ```
-#   PROTOCOL      DATE        Fixations?    Fixation Movies?
-#   NoFixations   Mar 2012    No            No
-#   WFF_Movie     Jul 2012    Yes           Yes
-#   WFF_Area      Oct 2012    Yes           No
-# ```
+
 
 # #### Adding timing attributes based on experimental protocol
 
@@ -90,11 +77,19 @@ ConfigureProtocol <- function(protocol, stimlog) {
                      "WFF_Area" = wff_area,
                      "NoFixations" = no_fixation)
 
+
+  # Some experiments include an Attention.Onset field. (noticed Mar. 2015)
+  attention_onset <- .CheckForStimdataType(stimlog, 'Attention.OnsetTime')
+
+  if (attention_onset) {
+    stim_set <- c(stim_set, AttentionOnset = 'Attention.OnsetTime')
+  }
+
   # Make a stimdata configuration description with the available stimdata info
   config <- MakeStimdataConfig(stim_set)
   num_stim <- c('AttentionDur', 'CarrierDur', 'TargetDur', 'ImageOnset',
                 'FixationOnset', 'CarrierOnset', 'DelayTargetOnset',
-                'TargetOnset')
+                'TargetOnset', 'AttentionOnset')
   current_num_stim <- num_stim[num_stim %in% names(config$Stim)]
   config <- AddNumerics(config, current_num_stim)
   config <- AddConstants(config, c(Protocol = protocol))
@@ -110,6 +105,7 @@ ConfigureProtocol <- function(protocol, stimlog) {
                  # Attention-getter starts ~1000 ms after TargetEnd
                  "AttentionOnset <- TargetEnd + 1000",
                  "AttentionEnd <- AttentionOnset + AttentionDur")
+    if (attention_onset) derived <- derived[-4]
     config <- AddDerived(config, derived)
   }
 
@@ -121,6 +117,7 @@ ConfigureProtocol <- function(protocol, stimlog) {
                  # Attention-getter starts ~1000 ms after TargetEnd
                  "AttentionOnset <- TargetEnd + 1000",
                  "AttentionEnd <- AttentionOnset + AttentionDur")
+    if (attention_onset) derived <- derived[-4]
     config <- AddDerived(config, derived)
   }
 
