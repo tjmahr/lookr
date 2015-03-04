@@ -1,0 +1,32 @@
+---
+Task: "MP"
+
+Display:
+  type: "Tobii60XL"
+  frames_per_sec: 60.0
+  width_pix: 1920
+  height_pix: 1200
+  pixels_per_mm: 3.71
+
+AOIs:
+  # x_pix, y_pix: x, y boundaries of AOI
+  # stim_name: name of the stimdata column that represents this image
+  ImageL:
+    x_pix: [100, 700]
+    y_pix: [300, 900]
+    stim_name: "ImageL"
+  ImageR:
+    x_pix: [1220, 1820]
+    y_pix: [300, 900]
+    stim_name: "ImageR"
+  FixationImage:
+	  x_pix: [885, 1035]
+	  y_pix: [525, 675]
+	  stim_name: "FixationMovie"
+
+# Names of the stimdata columns that say where each image is.
+# i.e., the TargetImage column says whether Target is in ImageL or ImageR.
+Locations:
+  Target: "TargetImage"
+  Distractor: "DistractorImage"
+...

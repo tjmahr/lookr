@@ -1,0 +1,39 @@
+---
+Task: "RWL"
+
+Display:
+  type: "Tobii60XL"
+  frames_per_sec: 60.0
+  width_pix: 1920
+  height_pix: 1200
+  pixels_per_mm: 3.71
+
+# Descriptions of the Areas of Interest
+# x_pix, y_pix: x, y boundaries of AOI
+# stim_name: name of the stimdata column that represents this image
+AOIs:
+  UpperLeftImage:
+    x_pix: [410, 860]
+    y_pix: [700, 1150]
+    stim_name: "UpperLeftImage"
+  LowerLeftImage:
+    x_pix: [410, 860]
+    y_pix: [50, 500]
+    stim_name: "LowerLeftImage"
+  UpperRightImage:
+    x_pix: [1060, 1510]
+    y_pix: [700, 1150]
+    stim_name: "UpperRightImage"
+  LowerRightImage:
+    x_pix: [1060, 1510]
+    y_pix: [50, 500]
+    stim_name: "LowerRightImage"
+
+# Names of the stimdata columns that say where each image is.
+# i.e., the TargetImage column says whether Target is in UpperLeftImage etc.
+Locations:
+  Target: "TargetImage"
+  SemanticFoil: "SemanticFoilImage"
+  PhonologicalFoil: "PhonologicalFoilImage"
+  Unrelated: "UnrelatedImage"
+...
