@@ -60,33 +60,9 @@ names(stimdata) <- names(stimdata) %>%
 non_column_values$Protocol <- determine_protocol(stimdata)
 
 
-
-
-
-
-
-# In our analyses for MP task, the "target" image corresponds to the
-# "familiar" image. In the data, however, this is not the case, so we need to
-# flip the target-image location label for mispronounced and nonsense word
-# trials. In cheatsheet form:
-# ```
-#               Before correction:            After correction:
-#   StimType    Target        Distractor      Target        Distractor
-#   'real'      familiar      unfamiliar      familiar      unfamiliar
-#   'MP'        unfamiliar    familiar        familiar      unfamiliar
-#   'nonsense'  unfamiliar    familiar        familiar      unfamiliar
-# ```
-
-targets <- stimdata$Target
-flip_me <- is.element(stimdata$StimType, c("MP", "nonsense"))
-targets <- ifelse(flip_me, flip_image(targets), targets)
-stimdata$TargetImage <- targets
-stimdata$DistractorImage <- flip_image(stimdata$TargetImage)
-
-
+stimdata <- set_mp_targets(stimdata)
 
 glimpse(stimdata)
-stopifnot(all(stimdata$DistractorImage != stimdata$TargetImage))
 
 stimdata$Target <-
   teleport_by_column(stimdata, "TargetImage") %>%
@@ -125,56 +101,30 @@ for (x in names(stimdata)) {
   if (!check) warning(x)
 }
 
-str_filter <- function(xs, pattern) {
-  xs[str_detect(xs, pattern)]
+
+if (is.element("CarrierDur", names(stimdata))) {
+  stimdata <- rename(stimdata, TargetDur = AudioDur)
 }
 
+# Add [EVENT]End columns. These are made by adding [EVENT]Onset to[Event]Dur.
 
-
-
+# Get the [EVENT]Dur columns and possible [EVENT]Onset columns
 durs <- str_filter(names(stimdata), "Dur$")
-onsets <- str_replace(durs, "Dur", "Onset")
+maybe_onsets <- str_replace(durs, "Dur", "Onset")
 
-if ()
+# Keep only [EVENT]Onset values that are columns in stimdata.
+onsets <- maybe_onsets[is.element(maybe_onsets, names(stimdata))]
+events_names <- str_replace(onsets, "Onset$", "")
 
-stimdata$AudioDur
-
-is.element(onsets, names(stimdata))
-
-
-stimdata$AttentionOnset
-ref_stimdata$TargetEnd
-ref_stimdata$AttentionOnset
-
+# Do each EventEnd calculation.
+for (event in events_names) {
+  levels <- c("End", "Onset", "Dur")
+  events <- structure(as.list(paste0(event, levels)), names = levels)
+  stimdata[[events$End]] <- stimdata[[events$Onset]] + stimdata[[events$Dur]]
+}
 
 setdiff(names(ref_stimdata), names(stimdata))
-# [1] "Protocol"         "xxxx"       "xxxx" "TargetDur"
-# [5] "Dialect"          "AttentionEnd"     "AttentionOnset"   "FixationDur"
-# [9] "CarrierEnd"       "TargetEnd"
-
-stimdata %>%
-  mutate(
-    AttentionEnd = AttentionOnset + AttentionDur,
-    )
-
-stimdata$FixationDur
-
-
-
-
-
-
-
-
-
-
-
-
-ParseFilename()
-
-
-
-
+# [1] "DelayTargetOnset" "Dialect"          "FixationDur"      "TargetWord"
 
 
 

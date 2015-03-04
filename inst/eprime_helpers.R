@@ -53,7 +53,9 @@ try_numeric <- function(xs) {
 
 try_all_numerics <- . %>% lapply(., try_numeric) %>% as_data_frame
 
-
+str_filter <- function(xs, pattern) {
+  xs[str_detect(xs, pattern)]
+}
 
 
 
@@ -99,4 +101,31 @@ determine_protocol <- function(stimdata_df) {
   movs <- any(str_detect("FixationMovie", names(stimdata_df)))
   time <- any(str_detect("FixationOnset", names(stimdata_df)))
   if (movs) "WFF_Movie" else if (time) "WFF_Area" else "NoFixations"
+}
+
+
+
+
+
+# In our analyses for MP task, the "target" image corresponds to the
+# "familiar" image. In the data, however, this is not the case, so we need to
+# flip the target-image location label for mispronounced and nonsense word
+# trials. In cheatsheet form:
+# ```
+#               Before correction:            After correction:
+#   StimType    Target        Distractor      Target        Distractor
+#   'real'      familiar      unfamiliar      familiar      unfamiliar
+#   'MP'        unfamiliar    familiar        familiar      unfamiliar
+#   'nonsense'  unfamiliar    familiar        familiar      unfamiliar
+# ```
+set_mp_targets <- function(stimdata_df) {
+  targets <- stimdata_df$Target
+  flip_me <- is.element(stimdata_df$StimType, c("MP", "nonsense"))
+  targets <- ifelse(flip_me, flip_image(targets), targets)
+  stimdata_df$TargetImage <- targets
+  stimdata_df$DistractorImage <- flip_image(stimdata_df$TargetImage)
+
+  stopifnot(all(stimdata_df$DistractorImage != stimdata_df$TargetImage))
+
+  stimdata_df
 }
