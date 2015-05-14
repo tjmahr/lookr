@@ -78,7 +78,7 @@ MeltLooks.Trial <- function(trial, other_cols = NULL, other_attrs = NULL) {
 #' of missing looks (\code{NAs}), number of tracked looks that don't fall in an
 #' AOI (\code{Elsewhere}), number of looks total (\code{Looks}), proportion of
 #' looks to target versus competing AOIs (\code{Proportion}), and proportion of
-#' looks that are NA (\code{PropMissing})
+#' looks that are NA (\code{PropNA})
 #'
 #' @param frame a dataframe of melted looking data, containing a
 #'   \code{GazeByImageAOI} column.
