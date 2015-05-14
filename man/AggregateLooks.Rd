@@ -20,7 +20,8 @@ a dataframe with columns of aggregated looks.
 The returned dataframe has columns for the number of looks to the target
 image (\code{Target}), looks to distractor image(s) (\code{Others}), number
 of missing looks (\code{NAs}), number of tracked looks that don't fall in an
-AOI (\code{Elsewhere}), and the proportion of looks to target versus
-competing AOIs (\code{Proportion}).
+AOI (\code{Elsewhere}), number of looks total (\code{Looks}), proportion of
+looks to target versus competing AOIs (\code{Proportion}), and proportion of
+looks that are NA (\code{PropMissing})
 }
 
