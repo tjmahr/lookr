@@ -246,10 +246,12 @@ InterpolateMissingFrames.Trial <- function(x, window = lwl_opts$get("interpolati
   has_legal_length <- function(gap) gap$na_size <= frames_in_window
   is_not_first_frame <- function(gap) gap$start != 0
   is_fillable <- function(gap) gazes[gap$start] == gazes[gap$end]
+  has_legal_aois <- function(gap) gazes[gap$start] != "tracked"
 
   gaps <- Filter(has_legal_length, gaps)
   gaps <- Filter(is_not_first_frame, gaps)
   gaps <- Filter(is_fillable, gaps)
+  gaps <- Filter(has_legal_aois, gaps)
 
   # Fill each gap
   for (gap in gaps) {
