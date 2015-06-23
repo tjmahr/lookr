@@ -9,8 +9,8 @@
  $ screen_width   : num 1920
  $ screen_height  : num 1200
  $ pixels_per_mm  : num 3.71
- $ l2t_subject_dir: chr "^[0-9]\{3\}[CDELPXcdelpx]"
- $ l2t_subject    : chr "[0-9]\{3\}[CDELPX][0-9]\{2\}[MFX][SA][1-9]"
+ $ l2t_subject_dir: chr "^[0-9]\{3\}[CDELMPTXcdelmptx]"
+ $ l2t_subject    : chr "[0-9]\{3\}[CDELMPTX][0-9]\{2\}[MFX][SA][1-9]"
 }}
 \usage{
 lwl_constants

@@ -6,5 +6,5 @@ lwl_constants <-
        screen_width = 1920,
        screen_height = 1200,
        pixels_per_mm = 3.71,
-       l2t_subject_dir = "^[0-9]{3}[CDELPXcdelpx]",
-       l2t_subject = "[0-9]{3}[CDELPX][0-9]{2}[MFX][SA][1-9]")
+       l2t_subject_dir = "^[0-9]{3}[CDELMPTXcdelmptx]",
+       l2t_subject = "[0-9]{3}[CDELMPTX][0-9]{2}[MFX][SA][1-9]")

@@ -159,7 +159,7 @@ ParseFilename <- function(filename) {
   block <- as.integer(str_extract(block_name, pattern = "[1-9]"))
 
   # The [MFX] field includes X to match the files in the dummy/test data
-  subject <- str_extract(file_basename, "[0-9]{3}[CLPD][0-9]{2}[MFX][AS][1-9]{1}")
+  subject <- str_extract(file_basename, lwl_constants$l2t_subject)
 
   # Bundle these four data together
   file_info <- list(Task = task, Block = block, Subject = subject, Basename = file_basename)
