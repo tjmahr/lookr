@@ -149,9 +149,6 @@ ExtractStim <- function(stim_config, stimlog) {
       rm(ex)})
   }
 
-  # Add trial numbers
-  stimdata$TrialNo <- seq_len(nrow(stimdata))
-
   # Include the date and time of the block. `unique` because the date and time
   # are recorded twice (at the beginning and end of the experiment).
   date <- unique(.GetValuesOfStimdataType(stimlog)("SessionDate"))

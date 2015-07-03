@@ -48,7 +48,8 @@ ConfigureProtocol <- function(protocol, stimlog) {
   # We list the stim for the three protocols and choose the appropriate set.
 
   # Stim shared across all protocols in all experiments.
-  shared <- c(Target = 'Target',
+  shared <- c(TrialNo = 'TrialList',
+              Target = 'Target',
               WordGroup = 'WordGroup',
               StimType = 'StimType',
               ImageOnset = 'Image2sec.OnsetTime',
@@ -89,7 +90,7 @@ ConfigureProtocol <- function(protocol, stimlog) {
   config <- MakeStimdataConfig(stim_set)
   num_stim <- c('AttentionDur', 'CarrierDur', 'TargetDur', 'ImageOnset',
                 'FixationOnset', 'CarrierOnset', 'DelayTargetOnset',
-                'TargetOnset', 'AttentionOnset')
+                'TargetOnset', 'AttentionOnset', 'TrialNo')
   current_num_stim <- num_stim[num_stim %in% names(config$Stim)]
   config <- AddNumerics(config, current_num_stim)
   config <- AddConstants(config, c(Protocol = protocol))
@@ -257,7 +258,8 @@ DetermineStim.Coartic <- function(stimlog) {
 
   shared_num <- c(AttentionDur = 'AttentionDur',
                   ImageOnset = 'Image2sec.OnsetTime',
-                  FixationOnset = 'Fixation.OnsetTime')
+                  FixationOnset = 'Fixation.OnsetTime',
+                  TrialNo = 'TrialList')
 
   v1_num <- c(CarrierOnset = 'CarrierStim.OnsetTime',
               CarrierDur = 'CarrierDur',

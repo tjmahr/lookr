@@ -11,19 +11,9 @@ ReorderStimdata.default <- function(stimdata, ordering = NULL) {
   stimdata
 }
 
-
-
-
-
-
-
-
 # By default just return the stimdata.
 FinalizeStimdata <- function(...) UseMethod("FinalizeStimdata")
 FinalizeStimdata.default <- function(stimdata) stimdata
-
-
-
 
 FinalizeStimdata.MP <- function(stimdata) {
   classes <- class(stimdata)
