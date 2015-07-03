@@ -26,6 +26,16 @@ test_that("TimeSlice works on correctly for different input types", {
   # Repeated Timeslicing is stable
   rep_num_times <- TimeSlice(num_times, -200, 2000)
   expect_equal(c(-200, 2000), range(rep_num_times$Time), tol = rate, scale = 1)
+
+  # Warn when window is too big
+  expect_warning(TimeSlice(num_times, -300, 2000), "Using new window -216:2000")
+  expect_warning(TimeSlice(num_times, 0, 3000), "Using new window 0:2015")
+
+  # Accommodate oversized window
+  too_early <- TimeSlice(num_times, -500, 2000)
+  expect_equal(min(too_early$Time), min(num_times$Time))
+  too_late <- TimeSlice(num_times, -500, 20000)
+  expect_equal(max(too_early$Time), max(num_times$Time))
 })
 
 

@@ -33,7 +33,22 @@ TimeSlice.Trial <- function(x, from = lwl_opts$get("timeslice_start"),
                  `integer` = from, min(trial$Time))
   to <- switch(class(to), `character` = trial %@% to, `numeric` = to,
                `integer` = to, max(trial$Time))
-  stopifnot(min(trial$Time) <= from, to <= max(trial$Time), from < to)
+  stopifnot(from < to)
+
+  # Warn if TimeSlice window bigger than available data
+  if (from < min(trial$Time) | max(trial$Time) < to) {
+    l1 <- sprintf("Trial %s in %s is smaller than TimeSlice window",
+                  trial %@% "TrialNo", trial %@% "Basename")
+    l2 <- sprintf(".. TimeSlice window: %s:%s. Times in trial: %s:%s",
+                  from, to, ceiling(min(trial$Time)), floor(max(trial$Time)))
+
+    # Update window
+    from <- ceiling(max(from, min(trial$Time)))
+    to <- floor(min(to, max(trial$Time)))
+    l3 <- sprintf(".. Using new window %s:%s", from, to)
+
+    warning(paste(l1, l2, l3, sep = "\n"))
+  }
 
   # Convert the start and end times into the corresponding frame numbers.
   start_index <- max(which(trial$Time <= from))
