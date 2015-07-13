@@ -204,6 +204,7 @@ InterpolateMissingFrames.Trial <- function(x, window = lwl_opts$get("interpolati
   trial %@% "InterpolatedPoints" <- 0
   trial %@% "CorrectedFrames" <- numeric(0)
   trial %@% "CorrectedTimes" <- numeric(0)
+  trial %@% "InterpolationWindow" <- window
 
   # Convert window duration (ms) into the number of frames, rounded down.
   frames_in_window <- floor(window / lwl_constants$ms_per_frame)
