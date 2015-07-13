@@ -38,42 +38,9 @@ Session.character <- function(session_path) {
 
 #' @export
 Session.list <- function(blocks) {
-  # Get number of trials before each block. Drop extraneous sum of all lengths
-  trials_per_block <- sapply(blocks, length)
-  trials_before_block <- Reduce(`+`, trials_per_block, init = 0, accumulate = TRUE)
-  trials_before_block <- trials_before_block[seq_along(trials_per_block)]
-  # Update the trial numbers
-  updated_blocks <- Map(IncrementTrialNosInBlock, blocks, trials_before_block)
   # Create a Session object by concatenating all of the blocks.
-  do.call(c, updated_blocks)
+  do.call(c, blocks)
 }
-
-
-#' Increment trial numbers for a whole block of Trials
-#'
-#' IncrementTrialNosInBlock is a utility function for incrementing by a fixed
-#' number, the trial number of each Trial object in a Block.
-#'
-#' @keywords internal
-#' @param block A Block object
-#' @param increment An integer that will be added to the TrialNo attribute of
-#'   each Trial in block.
-#' @return A Block object that is identical to block, except that the TrialNo
-#'   attributes of the Trials in it have been modified.
-IncrementTrialNosInBlock <- function(block, increment) {
-  MakeTrialIncrementer <- function(increment) {
-    function(trial) {
-      # Modify the TrialNo attribute of trial with the enclosed increment value
-      trial %@% 'TrialNo' <- (trial %@% 'TrialNo') + increment
-      trial
-    }
-  }
-  incremented_block <- lapply(block, MakeTrialIncrementer(increment))
-  class(incremented_block) <- class(block)
-  incremented_block
-}
-
-
 
 
 #' Combine gaze- and stimdata for an experimental Block
@@ -85,10 +52,6 @@ IncrementTrialNosInBlock <- function(block, increment) {
 #'
 #' Block.Gazedata is a method for initializing a Block object from a Gazedata
 #' object and a Stimdata object.
-#'
-#' Block.Stimdata is a method for initializing a Block object from a Stimdata
-#' object and a Gazedata object. It's just Block.Gazedata with the gazedata and
-#' stimdata parameters reversed.
 #'
 #' Block.character is a function for initializing a Block object from the full
 #' file path of the block, excluding its extension (since the extension is

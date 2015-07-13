@@ -30,10 +30,6 @@ stimdata. The Block object is a list of trials.
 Block.Gazedata is a method for initializing a Block object from a Gazedata
 object and a Stimdata object.
 
-Block.Stimdata is a method for initializing a Block object from a Stimdata
-object and a Gazedata object. It's just Block.Gazedata with the gazedata and
-stimdata parameters reversed.
-
 Block.character is a function for initializing a Block object from the full
 file path of the block, excluding its extension (since the extension is
 different for the stimdata and gazedata files).

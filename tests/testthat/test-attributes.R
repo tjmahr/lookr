@@ -50,7 +50,7 @@ test_that("Multiple assignment for TrialLists", {
 
 test_that("Values are recycled in multiple assignment", {
   # No recycling needed
-  expect_equivalent(trials %@% "TrialNo", 1:48)
+  expect_equivalent(trials %@% "TrialNo", c(1:24, 1:24))
   trials %@% "TrialNo" <- 48:1
   expect_equivalent(trials %@% "TrialNo", 48:1)
 
