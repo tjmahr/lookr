@@ -174,7 +174,6 @@ CalculateMistrackings.Trial <- function(x, column = "GazeByImageAOI") {
   num_frames <- length(trial[[column]])
   trial %@% "MistrackedFrames" <- mistrackings
   trial %@% "NumberOfFrames" <- num_frames
-  trial %@% "PercentNA" <- mistrackings / num_frames
   trial %@% "PropNA" <- mistrackings / num_frames
   trial %@% "PropTracked" <- 1 - (mistrackings / num_frames)
   trial
