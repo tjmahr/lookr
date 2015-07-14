@@ -1,7 +1,6 @@
-# github.com/tjmahr/rprime
 library("tools")
 library("rprime")
-# library("lookr")
+library("lookr")
 library("magrittr")
 library("stringr")
 library("dplyr")
@@ -17,18 +16,8 @@ df <- data.frame(
 teleport_by_column(df, "Location")
 # [1] "l1" "r2" "r3" "l4"
 
-
-
-
 # Try to replicate the results of stimdata for the MP task
-trials <- Session("inst/docs/data/MP_WFFArea_Long/001P00XS1/")
-trials %@% "AttentionOnset" - trials %@% "TargetEnd"
-
-trials <- Session("tests/testthat/data/MP_WFFMovie_CS2b/001P00XS2/")
-trials %@% "AttentionOnset" - trials %@% "TargetEnd"
-
-stimpath <- "inst/docs/data/MP_WFFArea_Long/001P00XS1/MP_Block1_001P00XS1.txt"
-stimpath <- "tests/testthat/data/MP_WFFMovie_CS2b/001P00XS2/MP_Block1_001P00XS2.txt"
+stimpath <- "tests/testthat/data/MP_WFFArea_Long/001P00XS1/MP_Block1_001P00XS1.txt"
 stimdata <- stimpath %>% read_eprime %>% FrameList
 
 # Get non-column values
@@ -57,33 +46,36 @@ names(stimdata) <- names(stimdata) %>%
   str_replace("Eprime.Basename", "Basename") %>%
   str_replace("AudioStim", "Audio")
 
-non_column_values$Protocol <- determine_protocol(stimdata)
+data_frame(
+  Condition = stimdata$StimType,
+  Target = teleport_by_column(stimdata, "Target"))
 
-
+# Set the target to the familiar image in the MP and nonsense trials
 stimdata <- set_mp_targets(stimdata)
 
-glimpse(stimdata)
+data_frame(
+  Condition = stimdata$StimType,
+  Target = teleport_by_column(stimdata, "TargetImage"))
 
 stimdata$Target <-
   teleport_by_column(stimdata, "TargetImage") %>%
   # Convert image-filename to word-label
   str_replace("\\d$", "")
 
-lefts <- which(stimdata$TargetImage == "ImageL")
-right <- which(stimdata$TargetImage == "ImageR")
-stimdata[lefts, "Target"]
-stimdata[right, "Target"]
+# lefts <- which(stimdata$TargetImage == "ImageL")
+# right <- which(stimdata$TargetImage == "ImageR")
+# stimdata[lefts, "Target"]
+# stimdata[right, "Target"]
 
 # Make number-ful columns into numeric values
 stimdata <- stimdata %>% lapply(try_numeric) %>% as_data_frame
 
+# Attach single value columns
+non_column_values$Protocol <- determine_protocol(stimdata)
+
 for (x in names(non_column_values)) {
   stimdata[[x]] <- non_column_values[[x]]
 }
-
-
-
-
 
 
 
@@ -100,6 +92,10 @@ for (x in names(stimdata)) {
   check <- all(stimdata[[x]] == ref_stimdata[[x]])
   if (!check) warning(x)
 }
+
+stimdata$Target
+ref_stimdata$Target
+
 
 
 if (is.element("CarrierDur", names(stimdata))) {
@@ -143,6 +139,17 @@ trials[[1]] %>% attributes %>% names
 # [25] "TargetDur"        "CarrierDur"       "Dialect"          "AttentionEnd"
 # [29] "AttentionOnset"   "FixationDur"      "CarrierEnd"       "TargetEnd"
 # [33] "TargetImage"      "Basename"
+
+
+
+
+
+
+
+
+
+
+
 
 gazedata <- Gazedata(paste0(tools::file_path_sans_ext(stimpath), ".gazedata"))
 
