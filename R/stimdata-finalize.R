@@ -39,13 +39,11 @@ FinalizeStimdata.MP <- function(stimdata) {
 
   # Use the image filenames and the target image location to determine the
   # targeted word.
-  .GetStimImg <- function(trial_num, col_name) {
-    stim <- stimdata[trial_num, col_name]
-    # Drop of the number at the end of the filename
-    str_sub(stim, 1, -2)
-  }
+  stimdata$FamiliarImage <- teleport_by_column(stimdata, "TargetImage")
+  stimdata$UnfamiliarImage <- teleport_by_column(stimdata, "DistractorImage")
 
-  stimdata <- transform(stimdata, Target = mapply(.GetStimImg, TrialNo, Target))
+  stimdata$Target <- teleport_by_column(stimdata, "Target")
+  stimdata$Target <- str_replace(stimdata$Target, "\\d$", "")
 
   # Filenames for audio files separate stimuli information with underscores:
   # `SAE_Fin_cat_112_20`. We reduce the filename down to the target word by
@@ -59,7 +57,7 @@ FinalizeStimdata.MP <- function(stimdata) {
   first <- c("Task", "Protocol", "DateTime", "Subject", "Block", "TrialNo")
   target_stim <- c("TargetWord")
   place_stim <- c("ImageL", "ImageR")
-  img_stim <- c("Target", "DistractorImage")
+  img_stim <- c("Target", "DistractorImage", "FamiliarImage", "UnfamiliarImage")
 
   ordering <- c(first, target_stim, place_stim, img_stim)
   stimdata <- ReorderStimdata(stimdata, ordering)
@@ -121,26 +119,23 @@ FinalizeStimdata.RWL <- function(stimdata) {
   #   LowerLeftImagePlace : chr  "PhonologicalFoil" "PhonologicalFoil" ...
   # ```
 
-  # (1) Convert location numbers into location names.
-  .GetImagePlace <- function(image) {
-    switch(image,
-           'Image1' = 'UpperLeftImage',
-           'Image2' = 'UpperRightImage',
-           'Image3' = 'LowerRightImage',
-           'Image4' = 'LowerLeftImage')
-  }
-  # Vectorized version of the above function
-  .GetImagePlaces <- function(col) sapply(col, .GetImagePlace)
+  # (1) Convert location numbers into location names using a lookup vector
+  image_codes <- c(
+    Image1 = "UpperLeftImage",
+    Image2 = "UpperRightImage",
+    Image3 = "LowerRightImage",
+    Image4 = "LowerLeftImage"
+  )
   sub_stim <- within(sub_stim, {
-    # TargetImage preserves the location of the Target Image
-    TargetImage           <- .GetImagePlaces(Target)
-    SemanticFoilImage     <- .GetImagePlaces(SemanticFoil)
-    PhonologicalFoilImage <- .GetImagePlaces(PhonologicalFoil)
-    UnrelatedImage        <- .GetImagePlaces(Unrelated)
-    Target           <- .GetImagePlaces(Target)
-    Unrelated        <- .GetImagePlaces(Unrelated)
-    SemanticFoil     <- .GetImagePlaces(SemanticFoil)
-    PhonologicalFoil <- .GetImagePlaces(PhonologicalFoil)
+    # First four columns preserve the location of the Target/etc Image
+    TargetImage           <- image_codes[Target]
+    SemanticFoilImage     <- image_codes[SemanticFoil]
+    PhonologicalFoilImage <- image_codes[PhonologicalFoil]
+    UnrelatedImage        <- image_codes[Unrelated]
+    Target           <- image_codes[Target]
+    Unrelated        <- image_codes[Unrelated]
+    SemanticFoil     <- image_codes[SemanticFoil]
+    PhonologicalFoil <- image_codes[PhonologicalFoil]
   })
 
   # (2) Record the type of stimulus that falls in each image location.
@@ -161,27 +156,22 @@ FinalizeStimdata.RWL <- function(stimdata) {
   sub_stim[place_cols] <- Map(.GetStimForPlace, FOUR_PLACES)
 
   # (3) Assign image names onto stimulus types.
-  .GetStimImg <- function(i, j) {
-    stim <- sub_stim[i, j]
-    str_sub(stim, 1, -2)
+  .GetStimImg <- function(j, df = sub_stim) {
+    mapped <- teleport_by_column(df, j)
+    str_replace(mapped, "\\d$", "")
   }
 
-  sub_stim <- within(sub_stim, {
-    Target           <- mapply(.GetStimImg, TrialNo, Target)
-    SemanticFoil     <- mapply(.GetStimImg, TrialNo, SemanticFoil)
-    PhonologicalFoil <- mapply(.GetStimImg, TrialNo, PhonologicalFoil)
-    Unrelated        <- mapply(.GetStimImg, TrialNo, Unrelated)
-  })
+  sub_stim$Target <- .GetStimImg("Target")
+  sub_stim$SemanticFoil <- .GetStimImg("SemanticFoil")
+  sub_stim$PhonologicalFoil <- .GetStimImg("PhonologicalFoil")
+  sub_stim$Unrelated <- .GetStimImg("Unrelated")
 
   # Merge these results back into the stimdata
   stimdata[names(sub_stim)] <- sub_stim
 
   # Specify the most important stimuli and combine them into the ordering
   first <- c("Task", "Protocol", "DateTime", "Subject", "Block", "TrialNo")
-  img_stim <- c("UpperLeftImageStimulus", "UpperRightImageStimulus",
-                "LowerRightImageStimulus", "LowerLeftImageStimulus")
-
-  ordering <- c(first, FOUR_PLACES, FOUR_TYPES, img_stim)
+  ordering <- c(first, FOUR_PLACES, FOUR_TYPES, place_cols)
 
   stimdata <- ReorderStimdata(stimdata, ordering)
 
