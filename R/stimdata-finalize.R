@@ -41,9 +41,7 @@ FinalizeStimdata.MP <- function(stimdata) {
   # targeted word.
   stimdata$FamiliarImage <- teleport_by_column(stimdata, "TargetImage")
   stimdata$UnfamiliarImage <- teleport_by_column(stimdata, "DistractorImage")
-
-  stimdata$Target <- teleport_by_column(stimdata, "Target")
-  stimdata$Target <- str_replace(stimdata$Target, "\\d$", "")
+  stimdata$Target <- NULL
 
   # Filenames for audio files separate stimuli information with underscores:
   # `SAE_Fin_cat_112_20`. We reduce the filename down to the target word by
@@ -57,7 +55,7 @@ FinalizeStimdata.MP <- function(stimdata) {
   first <- c("Task", "Protocol", "DateTime", "Subject", "Block", "TrialNo")
   target_stim <- c("TargetWord")
   place_stim <- c("ImageL", "ImageR")
-  img_stim <- c("Target", "DistractorImage", "FamiliarImage", "UnfamiliarImage")
+  img_stim <- c("TargetImage", "DistractorImage", "FamiliarImage", "UnfamiliarImage")
 
   ordering <- c(first, target_stim, place_stim, img_stim)
   stimdata <- ReorderStimdata(stimdata, ordering)
