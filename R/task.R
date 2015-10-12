@@ -17,6 +17,7 @@
 #'   order to prototype code or test the function. Default is \code{NA}.
 #' @param handler a function used to handle error messages. By default, an error
 #'   message is caught and printed as a \code{warning}.
+#' @param ... Additional arguments passed onto S3 methods. Currently ignored.
 #' @return a Task object containing all the trials from all the sessions that
 #'   could be successfully loaded. If a block could not be loaded, its error
 #'   message is handled using the specified handle function.
@@ -24,7 +25,7 @@
 Task <- function(...) UseMethod('Task')
 
 #' @export
-Task.character <-  function(task_path, partial = NA, handler = warning) {
+Task.character <-  function(task_path, partial = NA, handler = warning, ...) {
   # Find subject subdirectories
   paths <- ListSubjectsInTaskDir(task_path)
   if (!all(is.na(partial))) {

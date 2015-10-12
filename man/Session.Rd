@@ -7,6 +7,8 @@
 Session(...)
 }
 \arguments{
+\item{...}{Additional arguments passed onto S3 methods. Currently ignored.}
+
 \item{session_path}{The directory path of both pairs of .gazedata and .txt
 files for the session---one pair for each block.}
 

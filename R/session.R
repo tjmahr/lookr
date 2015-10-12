@@ -18,12 +18,13 @@
 #'   the same experimental session. The Block objects in list_of_blocks should
 #'   be ordered as they were presented during the experiment. That is, Block 1
 #'   of the experiment should be the first element of list_of_blocks, etc.
+#' @param ... Additional arguments passed onto S3 methods. Currently ignored.
 #' @return A Session object.
 #' @export
 Session <- function(...) UseMethod('Session')
 
 #' @export
-Session.character <- function(session_path) {
+Session.character <- function(session_path, ...) {
   # Get all the .gazedata files that are in the session directory.
   gazedata_files <- dir(session_path, pattern = 'gazedata', full.names = TRUE)
   if (length(gazedata_files) == 0) {
@@ -37,7 +38,7 @@ Session.character <- function(session_path) {
 }
 
 #' @export
-Session.list <- function(blocks) {
+Session.list <- function(blocks, ...) {
   # Create a Session object by concatenating all of the blocks.
   do.call(c, blocks)
 }
@@ -62,6 +63,7 @@ Session.list <- function(blocks) {
 #'   without the file extensions.
 #' @param gazedata A Gazedata object.
 #' @param stimdata A Stimdata object.
+#' @param ... Additional arguments passed onto S3 methods. Currently ignored.
 #' @return A Block object---i.e., a list of trials, where each trial is
 #'   represented as a data.frame of its gazedata, augmented with attributes for
 #'   the stimdata.
@@ -69,14 +71,14 @@ Session.list <- function(blocks) {
 Block <- function(...) UseMethod('Block')
 
 #' @export
-Block.character <- function(block_path) {
+Block.character <- function(block_path, ...) {
   gazedata <- Gazedata(paste0(block_path, '.gazedata'))
   stimdata <- Stimdata(paste0(block_path, '.txt'))
   Block(gazedata, stimdata)
 }
 
 #' @export
-Block.Gazedata <- function(gazedata, stimdata) {
+Block.Gazedata <- function(gazedata, stimdata, ...) {
   # For each trial in the block, combine the gazedata and stimdata.
   trials <- lapply(stimdata$TrialNo, CombineGazedataStimdata(gazedata, stimdata))
   as.Block(trials)

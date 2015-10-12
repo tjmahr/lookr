@@ -7,6 +7,8 @@
 Block(...)
 }
 \arguments{
+\item{...}{Additional arguments passed onto S3 methods. Currently ignored.}
+
 \item{block_path}{A character string. The full file path of the gazedata and
 stimdata files (which should have the same directory path and basename)
 without the file extensions.}

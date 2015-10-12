@@ -7,6 +7,8 @@
 Task(...)
 }
 \arguments{
+\item{...}{Additional arguments passed onto S3 methods. Currently ignored.}
+
 \item{task_path}{a task-level directory. The subdirectories of
 \code{task_path} should be subject directories, that begin with the pattern
 \code{[0-9]{3}[CLPX]}, and these subject directories should contain
