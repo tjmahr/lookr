@@ -8,7 +8,7 @@ Maintainer: Tristan Mahr <mahr@wisc.edu>
 URL: https://github.com/tjmahr/lookr
 Depends:
     R (>= 3.0.1)
-License: MIT
+License: MIT + file LICENSE
 LazyData: true
 Imports:
     lubridate,
