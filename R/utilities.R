@@ -36,6 +36,7 @@ slice <- function(xs, step = 5) {
 #' teleport_by_column(df, "Location")
 #' # [1] "l1" "r2" "r3" "l4"
 #' # We use the values in "Location" to teleport into those other columns
+#' @noRd
 teleport_by_column <- function(df, col_name) {
   rows <- seq_len(nrow(df))
   # Are the values in the pathway-column also column names?
