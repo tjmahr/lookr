@@ -3,20 +3,21 @@
 
 #' Convert Trial and list of Trials into a long data-frame
 #'
-#' @param trial a Trial object with AOI data added
-#' @param trials a list of Trial objects
+#' @param x a Trial or a TrialList object
 #' @param other_cols additional data-frame columns to extract from each Trial
 #' @param other_attrs additional attributes to pull from each Trial
+#' @param ... Additional arguments passed onto S3 methods. Currently ignored.
 #' @return a single data-frame containing the Time and GazeByImageAOI data from
 #'   the Trial(s) with columns for other attribute values of the Trial(s)
 #' @export
-MeltLooks <- function(...) UseMethod("MeltLooks")
+MeltLooks <- function(x, other_cols, other_attrs) UseMethod("MeltLooks")
 
 #' @export
-MeltLooks.list <- function(trials, ...) ldply(trials, MeltLooks, ...)
+MeltLooks.TrialList <- function(x, ...) ldply(x, MeltLooks, ...)
 
 #' @export
-MeltLooks.Trial <- function(trial, other_cols = NULL, other_attrs = NULL) {
+MeltLooks.Trial <- function(x, other_cols = NULL, other_attrs = NULL, ...) {
+  trial <- x
   # Use the TrialNo attribute rather than the column
   trial$Subj <- substr(trial %@% "Subject", 1, 4)
   trial$TrialNo <- NULL

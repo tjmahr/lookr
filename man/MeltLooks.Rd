@@ -4,16 +4,16 @@
 \alias{MeltLooks}
 \title{Convert Trial and list of Trials into a long data-frame}
 \usage{
-MeltLooks(...)
+MeltLooks(x, other_cols, other_attrs)
 }
 \arguments{
-\item{trial}{a Trial object with AOI data added}
-
-\item{trials}{a list of Trial objects}
+\item{x}{a Trial or a TrialList object}
 
 \item{other_cols}{additional data-frame columns to extract from each Trial}
 
 \item{other_attrs}{additional attributes to pull from each Trial}
+
+\item{...}{Additional arguments passed onto S3 methods. Currently ignored.}
 }
 \value{
 a single data-frame containing the Time and GazeByImageAOI data from
