@@ -144,7 +144,7 @@ FindClosestFrame <- function(trial, time) {
 #' Assign new times to a trial once it has been aligned at a reference frame
 #'
 #' @param trial a Trial object
-#' @param the index of the reference frame that will mark time = 0 in the
+#' @param zero_frame the index of the reference frame that will mark time = 0 in the
 #'   aligned trial
 #' @param frame_rate the eye-tracker sampling rate. Defaults to
 #'   \code{lwl_constants$ms_per_frame} which is 16.6546ms.
