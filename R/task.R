@@ -87,8 +87,6 @@ TryLoad <- function(subject_path, handler = warning) {
   if (!is.empty(blocks)) Session(blocks) else NULL
 }
 
-#' @export
-is.empty <- function(x) length(x) == 0
 
-#' @export
+is.empty <- function(x) length(x) == 0
 is.error <- function(x) inherits(x, "try-error")

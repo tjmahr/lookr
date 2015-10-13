@@ -91,6 +91,11 @@ merge_lists <- function(x, y) {
 }
 
 
+#' Default analysis options
+#' @name lwl_opts
+#' @format An OptionList object. \Sexpr[results=verbatim]{str(lookr::lwl_opts)}
+#' @details Below is a list of default package options, retrieved via
+#' \code{lwl_opts$get()}: \Sexpr[results=verbatim]{str(lookr::lwl_opts$get())}
 #' @export
 lwl_opts <- OptionList(list(
   alignment_event = "TargetOnset",
