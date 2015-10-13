@@ -49,36 +49,49 @@ unique_subject <- unique_attr_checker("Subject")
 n_distinct <- function(xs) length(unique(xs))
 
 
+
+#' lookr_classes
+#' @name lookr_classes
+NULL
+
+#' @rdname lookr_classes
+#' @param x an object to coerce to another class (as.Class function) or an
+#'   object whose class we are checking (is.Class) function
 #' @export
 as.Task <- function(x) {
   class(x) <- c("Task", "TrialList", "list")
   x
 }
 
+#' @rdname lookr_classes
 #' @export
 as.Session <- function(x) {
   class(x) <- c("Session", "TrialList", "list")
   x
 }
 
+#' @rdname lookr_classes
 #' @export
 as.Block <- function(x) {
   class(x) <- c("Block", "TrialList", "list")
   x
 }
 
+#' @rdname lookr_classes
 #' @export
 as.TrialList <- function(x) {
   class(x) <- c("TrialList", "list")
   x
 }
 
+#' @rdname lookr_classes
 #' @export
 as.Trial <- function(x) {
   class(x) <- c("Trial", "data.frame")
   x
 }
 
+#' @rdname lookr_classes
 #' @export
 as.Gazedata<- function(x) {
   class(x) <- c("Gazedata", "data.frame")
@@ -86,20 +99,26 @@ as.Gazedata<- function(x) {
 }
 
 
+#' @rdname lookr_classes
 #' @export
 is.Task <- function(x) inherits(x, "Task")
 
+#' @rdname lookr_classes
 #' @export
 is.Session <- function(x) inherits(x, "Session")
 
+#' @rdname lookr_classes
 #' @export
 is.Block <- function(x) inherits(x, "Block")
 
+#' @rdname lookr_classes
 #' @export
 is.TrialList <- function(x) inherits(x, "TrialList")
 
+#' @rdname lookr_classes
 #' @export
 is.Trial <- function(x) inherits(x, "Trial")
+
 
 #' @export
 print.Trial <- function(x, ...) str(x, ...)
