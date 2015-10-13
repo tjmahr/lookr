@@ -17,4 +17,5 @@ Imports:
     stringr,
     tools
 Suggests:
-    testthat
+    testthat,
+    dplyr
