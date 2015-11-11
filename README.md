@@ -26,3 +26,5 @@ Here are some things I've bookmarked or starred over the years.
 * [`eyetrackingR`](http://www.eyetracking-r.com/)
 * [`saccades`](https://github.com/tmalsburg/saccades)
 * [`gazetools`](https://github.com/RyanHope/gazetools)
+* [`bdots`](https://cran.rstudio.org/web/packages/bdots/index.html) and 
+  [the article describing the method](http://smm.sagepub.com/content/early/2015/09/22/0962280215607411.full)
