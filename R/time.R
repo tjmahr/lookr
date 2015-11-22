@@ -161,8 +161,9 @@ AssignNewTimes <- function(trial, zero_frame, frame_rate = lwl_constants$ms_per_
 #' Adjust the event-timing attributes of a trial
 #'
 #' @keywords internal
-#' @param trial
-#' @param alignment_event
+#' @param trial a \code{Trial} object
+#' @param alignment_event the name of the Trial attribute to be used as time 0.
+#'   The default is \code{"TargetOnset"}.
 #' @return the inputted trial object with updated timing attributes
 AdjustTimingMarks <- function(trial, alignment_event) {
   adjust_by <- trial %@% alignment_event
