@@ -19,3 +19,4 @@ Imports:
 Suggests:
     testthat,
     dplyr
+RoxygenNote: 5.0.1
