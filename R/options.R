@@ -101,7 +101,8 @@ lwl_opts <- OptionList(list(
   alignment_event = "TargetOnset",
   interpolation_window = 150,
   timeslice_start = -200,
-  timeslice_end = 2000
+  timeslice_end = 2000,
+  write_stimdata = FALSE
 ))
 
 

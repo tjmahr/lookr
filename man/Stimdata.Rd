@@ -4,16 +4,16 @@
 \alias{Stimdata}
 \title{Parse an LWL stimulus data file outputted by Eprime}
 \usage{
-Stimdata(stimdata_path, outputFile = NULL)
+Stimdata(stimdata_path, output_file = lwl_opts$get("write_stimdata"))
 }
 \arguments{
 \item{stimdata_path}{Either the full or relative path to the \code{.txt} file
 that is to be parsed.}
 
-\item{output_file}{Either \code{NULL} or the path---full or relative---for
-the output file. If \code{NULL}, then no output file is created. If a path
-is specified, then the parsed stimdata is written out as a \code{.csv}
-file. Default is \code{NULL}.}
+\item{output_file}{Whether to write the parsed stimdata to a csv file.
+Defaults to FALSE. If TRUE, that stimdata is saved to
+\code{[folder]/[basename]_stim.csv}, where the folder and basename are
+extracted from the path used in \code{stimdata_path}}
 }
 \value{
 A dataframe containing the parsed stimdata.  Each row of the
@@ -28,6 +28,6 @@ A stimdata file in a Looking While Listening task file the naming
 convention: \code{[Task]_[BlockNo]_[SubjectID]}. The stimdata file is
 assigned a class based on the task in the filename, and then methods for
 extracting the stimdata are dispatched based on that class value. Valid task
-names include "RWL", "MP", "Coartic" and "VisWorld".
+names include "RWL", "MP", and "Coartic".
 }
 

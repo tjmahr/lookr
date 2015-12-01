@@ -5,21 +5,24 @@ stimdata_path <- "data/MP_NoFixations_CS1/001P00XA1/MP_Block2_001P00XA1.txt"
 stimlog <- suppressMessages(LoadStimdataFile(stimdata_path))
 
 test_that("Get Values", {
-  # Input validation
-  expect_error(.GetValuesOfStimdataType(stimlog)(c("TrialList", "StimType")))
-
-  # Works as expected
-  trials <- as.numeric(.GetValuesOfStimdataType(stimlog)("TrialList"))
-  expect_equivalent(trials, seq_along(trials))
-
+  # Works as expected. Test on experimental conditions.
   stim_types <- .GetValuesOfStimdataType(stimlog)("StimType")
   expect_equivalent(stim_types[1:3], c("FAM", "FAM", "real"))
+
+  # Test on trial numbers
+  trials <- as.numeric(.GetValuesOfStimdataType(stimlog)("TrialList"))
+  # Trials from 1 to the number of the last trial, so the extract trial numbers
+  # be the same as their position in the vector.
+  expect_equivalent(trials, seq_along(trials))
+
+  # Input validation. Only one element should be extracted.
+  expect_error(.GetValuesOfStimdataType(stimlog)(c("TrialList", "StimType")))
 
   # Missing fields return empty vectors
   fake_field <- .GetValuesOfStimdataType(stimlog)("FakeField")
   expect_equal(length(fake_field), 0)
 
-  # Mapped application
+  # Multiple elements are extracted with Map.
   multiple <- c("TrialList", "StimType")
   values <- Map(.GetValuesOfStimdataType(stimlog), multiple)
   expect_equal(values[["TrialList"]][1], "1")
@@ -30,7 +33,40 @@ test_that("Check Values", {
   expect_error(.CheckForStimdataType(stimlog, c("TrialList", "StimType")))
   expect_true(.CheckForStimdataType(stimlog, "TrialList"))
   expect_false(.CheckForStimdataType(stimlog, "FakeField"))
+})
 
+
+test_that("Writing stimdata csvs", {
+  # No csv written by default
+  expected_csv <- paste0(tools::file_path_sans_ext(stimdata_path), "_stim.csv")
+  stim <- Stimdata(stimdata_path)
+  expect_false(file.exists(expected_csv))
+
+  # csv written
+  stim <- Stimdata(stimdata_path, output_file = TRUE)
+  expect_true(file.exists(expected_csv))
+
+  # loaded csv is the same the original dataframe
+  stim_from_csv <- read.csv(expected_csv, stringsAsFactors = FALSE)
+  for (col_name in colnames(stim)) {
+    expect_equal(stim[[col_name]], stim_from_csv[[col_name]])
+  }
+
+  file.remove(expected_csv)
+  expect_false(file.exists(expected_csv))
+
+  # csv written lookr opt is set
+  lwl_opts$set(write_stimdata = TRUE)
+  stim <- Stimdata(stimdata_path)
+  expect_true(file.exists(expected_csv))
+
+  file.remove(expected_csv)
+  expect_false(file.exists(expected_csv))
+
+  # revert option. no file written
+  lwl_opts$restore()
+  stim <- Stimdata(stimdata_path)
+  expect_false(file.exists(expected_csv))
 })
 
 

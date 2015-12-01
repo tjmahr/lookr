@@ -9,22 +9,20 @@
 #'
 #' @param stimdata_path Either the full or relative path to the \code{.txt} file
 #'   that is to be parsed.
-#' @param output_file Either \code{NULL} or the path---full or relative---for
-#'   the output file. If \code{NULL}, then no output file is created. If a path
-#'   is specified, then the parsed stimdata is written out as a \code{.csv}
-#'   file. Default is \code{NULL}.
+#' @param output_file Whether to write the parsed stimdata to a csv file.
+#'   Defaults to FALSE. If TRUE, that stimdata is saved to
+#'   \code{[folder]/[basename]_stim.csv}, where the folder and basename are
+#'   extracted from the path used in \code{stimdata_path}
 #' @return A dataframe containing the parsed stimdata.  Each row of the
 #'   dataframe is the stimdata for a single experimental trial.
 #'
-#' @details
-#' A stimdata file in a Looking While Listening task file the naming
+#' @details A stimdata file in a Looking While Listening task file the naming
 #' convention: \code{[Task]_[BlockNo]_[SubjectID]}. The stimdata file is
 #' assigned a class based on the task in the filename, and then methods for
 #' extracting the stimdata are dispatched based on that class value. Valid task
-#' names include "RWL", "MP", "Coartic" and "VisWorld".
-#'
+#' names include "RWL", "MP", and "Coartic".
 #' @export
-Stimdata <- function(stimdata_path, outputFile = NULL) {
+Stimdata <- function(stimdata_path, output_file = lwl_opts$get("write_stimdata")) {
   # Extract experiment information from the input file name
   file_info <- ParseFilename(stimdata_path)
   task <- file_info$Task
@@ -42,10 +40,12 @@ Stimdata <- function(stimdata_path, outputFile = NULL) {
   stimdata <- FinalizeStimdata(stimdata)
   stimdata$Basename <- file_info$Basename
 
-  # Optionally write out stimdata as a tab-delimited table.
-  if (!is.null(outputFile)) {
-    write.table(stimdata, file = outputFile, sep = ',',
-                quote = FALSE, row.names = FALSE)
+  # Optionally write out stimdata as a csv
+  if (output_file) {
+    landing_dir <- dirname(stimdata_path)
+    landing_file <- paste0(file_info$Basename, "_stim.csv")
+    landing_path <- file.path(landing_dir, landing_file)
+    write.csv(stimdata, landing_path, row.names = FALSE)
   }
 
   stimdata
