@@ -4,6 +4,7 @@ filter_out_targets <- MakeAttributeFilter(attr_name = "TargetImage")
 
 test_that("Two Image Task: Left < .5 < Right", {
   mp_trials <- suppressMessages(Session("data/MP_WFFArea_Long/001P00XS1/"))
+  mp_trials <- AddRelativeGazes(mp_trials)
   mp_trials <- AddAOIData(mp_trials)
 
   # Get the second (i.e., first non-practice) "ImageL" and "ImageR" trials

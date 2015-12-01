@@ -174,3 +174,70 @@ AOI <- function(x_pix, y_pix, width = lwl_constants$screen_width, height = lwl_c
     x = c(left_prop, right_prop),
     y = c(lower_prop, upper_prop)), class = "AOI")
 }
+
+
+
+#' Find gaze location relative to target image
+#'
+#' Creates new columns that measure gaze location relative to the location of
+#' the target image, so that the x and y gaze positions increase the gaze gets
+#' closer to the target. The new columns are \code{XLeftToTarget),
+#' \code{XRightToTarget}, \code{XMeanToTarget}, \code{YLeftToTarget),
+#' \code{YRightToTarget}, \code{YMeanToTarget}.
+#'
+#' @details Normally, the x value (as in \code{trial$XMean}) increases as the gaze
+#'   moves right on screen. When the target is left side of the screen, small x
+#'   means the gaze approached the target, but when the target image is on the
+#'   right, larger x means the gaze approached the target. This function flips
+#'   the x value (sets x to 1-x) on trials where the target is on the left side
+#'   of the screen, so that bigger x means the gaze approached the target
+#'   regardless of which side of the screen the target was on. An analogous
+#'   transformation is done for the y coordinate.
+#'
+#' @param x a Trial with \code{Task} or \code{Protocol} attributes or a
+#'   TrialList where each Trial has these attributes
+#' @return the Trial object(s) with the AOI data attached as new columns.
+#' @export
+AddRelativeGazes <- function(x) UseMethod("AddRelativeGazes")
+
+#' @export
+AddRelativeGazes.TrialList <- function(x) trial_lapply(x, AddRelativeGazes)
+
+#' @export
+AddRelativeGazes.Trial <- function(x) {
+  trial <- x
+  target_image <- trial %@% "TargetImage"
+  trial <- within(trial, {
+    # If the target image was on the left half of the screen, then the
+    # X__ToTarget gazedata is the inverse of the corresponding X__ gazedata.
+    if (is_image_on_left(target_image)) {
+      XLeftToTarget  <- 1 - XLeft
+      XRightToTarget <- 1 - XRight
+      XMeanToTarget  <- 1 - XMean
+    } else {
+      XLeftToTarget  <- XLeft
+      XRightToTarget <- XRight
+      XMeanToTarget  <- XMean
+    }
+    # If the target image was on the lower half of the screen, then the
+    # Y__ToTarget gazedata is the inverse of the corresponding Y__ gazedata.
+    if (is_image_on_bottom(target_image)) {
+      YLeftToTarget  <- 1 - YLeft
+      YRightToTarget <- 1 - YRight
+      YMeanToTarget  <- 1 - YMean
+    } else {
+      YLeftToTarget  <- YLeft
+      YRightToTarget <- YRight
+      YMeanToTarget  <- YMean
+    }
+  })
+  trial
+}
+
+is_image_on_left <- function(image) {
+  str_detect(image, "left|Left|^ImageL$")
+}
+
+is_image_on_bottom <- function(image) {
+  str_detect(image, "lower|Lower")
+}

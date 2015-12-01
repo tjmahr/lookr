@@ -264,15 +264,18 @@ InterpolateMissingFrames.Trial <- function(x, window = lwl_opts$get("interpolati
 
 # Interpolate a single gap
 fill_gap <- function(trial, gap) {
-  # Compute interpolation values
+  # Possible columns to impute
   columns <- c("XLeft", "XRight", "XMean", "YLeft", "YRight", "YMean",
                "XLeftToTarget", "XRightToTarget", "XMeanToTarget",
                "YLeftToTarget", "YRightToTarget", "YMeanToTarget")
-  means <- sapply(trial[gap$seq, columns], mean, na.rm = TRUE)
+  # Keep just those that exist
+  columns <- intersect(columns, colnames(trial))
+
+  means <- lapply(trial[gap$seq, columns], mean, na.rm = TRUE)
 
   # Interpolate each column
   for (col in columns) {
-    trial[gap$na_seq, col] <- means[col]
+    trial[gap$na_seq, col] <- means[[col]]
   }
 
   trial %@% "CorrectedFrames" <- c(trial %@% "CorrectedFrames", gap$na_seq)

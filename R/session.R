@@ -106,41 +106,11 @@ CombineGazedataStimdata <- function(gazedata, stimdata) {
   # gazedata and stimdata (in the manner described above) for the trial.
   function(trial_number) {
     trial <- gazedata[gazedata$TrialNo == trial_number, ]
-    target_image <- .GetTargetImage(stimdata, trial_number)
-
-    trial <- within(trial, {
-      # If the target image was on the left half of the screen, then the
-      # X__ToTarget gazedata is the inverse of the corresponding X__ gazedata.
-      if (is_image_on_left(target_image)) {
-        XLeftToTarget  <- 1 - XLeft
-        XRightToTarget <- 1 - XRight
-        XMeanToTarget  <- 1 - XMean
-      } else {
-        XLeftToTarget  <- XLeft
-        XRightToTarget <- XRight
-        XMeanToTarget  <- XMean
-      }
-      # If the target image was on the lower half of the screen, then the
-      # Y__ToTarget gazedata is the inverse of the corresponding Y__ gazedata.
-      if (is_image_on_bottom(target_image)) {
-        YLeftToTarget  <- 1 - YLeft
-        YRightToTarget <- 1 - YRight
-        YMeanToTarget  <- 1 - YMean
-      } else {
-        YLeftToTarget  <- YLeft
-        YRightToTarget <- YRight
-        YMeanToTarget  <- YMean
-      }
-    })
     # Add the stimdata attributes. Create Trial.
     attributes(trial) <- c(attributes(trial), .GetStimdata(stimdata, trial_number))
     as.Trial(trial)
   }
 }
-
-is_image_on_left <- function(image) grepl("Left", image) | image == "ImageL"
-is_image_on_bottom <- function(image) grepl("Lower", image)
-
 
 # Tell, don't ask.
 .GetStimdata <- function(...) UseMethod(".GetStimdata")
@@ -150,11 +120,3 @@ is_image_on_bottom <- function(image) grepl("Lower", image)
 }
 
 .GetStimdata.default <- .GetStimdata.Stimdata
-
-.GetTargetImage <- function(...) UseMethod(".GetTargetImage")
-
-.GetTargetImage.Stimdata <- function(stimdata, trial_number) {
-  .GetStimdata(stimdata, trial_number)$TargetImage
-}
-
-.GetTargetImage.default <- .GetTargetImage.Stimdata
