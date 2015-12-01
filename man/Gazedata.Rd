@@ -4,10 +4,15 @@
 \alias{Gazedata}
 \title{Load a \code{.gazedata} file for an experiment}
 \usage{
-Gazedata(gazedata_path)
+Gazedata(gazedata_path, output_file = lwl_opts$get("write_gazedata"))
 }
 \arguments{
 \item{gazedata_path}{path to the \code{.gazedata} file that is to be parsed.}
+
+\item{output_file}{Whether to write the parsed gazedata to a csv file.
+Defaults to FALSE. If TRUE, that gazedata is saved to
+\code{[folder]/[basename]_gaze.csv}, where the folder and basename are
+extracted from the path used in \code{gazedata_path}}
 }
 \value{
 A dataframe containing the parsed gazedata. Each row of the dataframe
@@ -15,7 +20,8 @@ A dataframe containing the parsed gazedata. Each row of the dataframe
   the experiment. The dataframe has the additional class of \code{Gazedata}.
 }
 \description{
-Load a \code{.gazedata} file for an experiment
+Loads \code{.gazedata} file created by an Eprime experiment running on a
+Tobii eyetracker, and performs typical data reduction on that file.
 }
 \details{
 The following columns are captured in the gazedata file:

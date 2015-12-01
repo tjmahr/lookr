@@ -102,6 +102,7 @@ lwl_opts <- OptionList(list(
   interpolation_window = 150,
   timeslice_start = -200,
   timeslice_end = 2000,
+  write_gazedata = FALSE,
   write_stimdata = FALSE
 ))
 

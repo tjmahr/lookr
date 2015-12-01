@@ -1,6 +1,13 @@
 #' Load a \code{.gazedata} file for an experiment
 #'
+#' Loads \code{.gazedata} file created by an Eprime experiment running on a
+#' Tobii eyetracker, and performs typical data reduction on that file.
+#'
 #' @param gazedata_path path to the \code{.gazedata} file that is to be parsed.
+#' @param output_file Whether to write the parsed gazedata to a csv file.
+#'   Defaults to FALSE. If TRUE, that gazedata is saved to
+#'   \code{[folder]/[basename]_gaze.csv}, where the folder and basename are
+#'   extracted from the path used in \code{gazedata_path}
 #' @return A dataframe containing the parsed gazedata. Each row of the dataframe
 #'   contains the eye-tracking data for a single frame of time recorded during
 #'   the experiment. The dataframe has the additional class of \code{Gazedata}.
@@ -60,7 +67,7 @@
 #' @references \href{http://bit.ly/1AtKyhR}{Tobii Toolbox for Matlab: Product
 #'   Description & User Guide}
 #' @export
-Gazedata <- function(gazedata_path) {
+Gazedata <- function(gazedata_path, output_file = lwl_opts$get("write_gazedata")) {
   gazedata <- read.delim(gazedata_path, na.strings = c('-1.#INF', '1.#INF'),
                          stringsAsFactors = FALSE)
 
@@ -75,7 +82,7 @@ Gazedata <- function(gazedata_path) {
     DiameterLeft = "DiameterPupilLeftEye",
     DiameterRight = "DiameterPupilRightEye")
   gazedata <- gazedata[unlist(cols_to_keep)]
-  names(gazedata) <- names(cols_to_keep)
+  gazedata <- setNames(gazedata, names(cols_to_keep))
 
   # Set some shortcuts
   measures <- c("X", "Y", "Z", "Diameter")
@@ -92,29 +99,35 @@ Gazedata <- function(gazedata_path) {
   gazedata[invalid_R, measures_R] <- NA
 
   # Replace all values of gazedata that fall beyond [0, 1] (offscreen) with NA.
-  CorrectOffscreenGazes <- function(gaze) {
-    ifelse(gaze < 0 | gaze > 1, NA, gaze)
+  correct_offscreen_gazes <- function(gaze) {
+    ifelse(gaze < 0 | 1 < gaze, NA, gaze)
   }
   screen_cols <- c("XLeft", "XRight", "YLeft", "YRight")
-  gazedata[screen_cols] <- colwise(CorrectOffscreenGazes)(gazedata[screen_cols])
+  gazedata[screen_cols] <- colwise(correct_offscreen_gazes)(gazedata[screen_cols])
 
   # Correct values of gazedata that cannot be negative (distances, diameters)
-  CorrectDistances <- function(gaze) {
+  correct_distances <- function(gaze) {
     ifelse(gaze < 0, NA, gaze)
   }
   distances <- c("ZLeft", "ZRight", "DiameterLeft", "DiameterRight")
-  gazedata[distances] <- colwise(CorrectDistances)(gazedata[distances])
+  gazedata[distances] <- colwise(correct_distances)(gazedata[distances])
 
   # Flip the y values.
   gazedata <- mutate(gazedata, YLeft = 1 - YLeft, YRight = 1 - YRight)
 
-  # Compute the monocular mean gaze values.
-  ComputePairMeans <- function(x1, x2) rowMeans(cbind(x1, x2), na.rm = TRUE)
+  # A "monocular mean" averages both eyes together. If data is available in just
+  # one eye, use the available value as the mean.
+  compute_monocular_mean <- function(x1, x2) {
+    xm <- rowMeans(cbind(x1, x2), na.rm = TRUE)
+    # NaN -> NA
+    ifelse(is.nan(xm), NA, xm)
+  }
+
   gazedata <- mutate(gazedata,
-    XMean = ComputePairMeans(XLeft, XRight),
-    YMean = ComputePairMeans(YLeft, YRight),
-    ZMean = ComputePairMeans(ZLeft, ZRight),
-    DiameterMean = ComputePairMeans(DiameterLeft, DiameterRight)
+    XMean = compute_monocular_mean(XLeft, XRight),
+    YMean = compute_monocular_mean(YLeft, YRight),
+    ZMean = compute_monocular_mean(ZLeft, ZRight),
+    DiameterMean = compute_monocular_mean(DiameterLeft, DiameterRight)
   )
 
   # Add informative columns from the gazedata filename
@@ -130,6 +143,15 @@ Gazedata <- function(gazedata_path) {
                      "YMean", "ZLeft", "ZRight", "ZMean", "DiameterLeft",
                      "DiameterRight", "DiameterMean")
   gazedata <- gazedata[cols_in_order]
+
+  # Optionally write out gazedata as a csv
+  if (output_file) {
+    landing_dir <- dirname(gazedata_path)
+    landing_file <- paste0(file_info$Basename, "_gaze.csv")
+    landing_path <- file.path(landing_dir, landing_file)
+    write.csv(gazedata, landing_path, row.names = FALSE)
+  }
+
   as.Gazedata(gazedata)
 }
 
