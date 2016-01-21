@@ -39,8 +39,8 @@ test_that("AOI names become column names", {
   four_aoi_agg <- AggregateLooks(four_aois, Subject + TrialNo ~ GazeByImageAOI)
 
   # Names not related to the distractor images
-  exp_names <- c("Target", "Elsewhere", "Others", "NAs", "Proportion",
-                 "Looks", "PropNA")
+  exp_names <- c("Target", "Elsewhere", "Others", "NAs",
+                 "Proportion", "ProportionSE", "Looks", "PropNA")
   aggregating_vars <- c("Subject", "TrialNo")
 
   # Add names related to the distractor images

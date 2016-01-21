@@ -99,6 +99,7 @@ AggregateLooks <- function(frame, formula = Subj + Condition + Time ~ GazeByImag
   mutate(looks,
          Looks = Others + Target + NAs + Elsewhere,
          Proportion = Target / (Others + Target),
+         ProportionSE = se_prop(Proportion, Others + Target),
          PropNA = NAs / Looks)
 }
 
