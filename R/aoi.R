@@ -181,8 +181,8 @@ AOI <- function(x_pix, y_pix, width = lwl_constants$screen_width, height = lwl_c
 #'
 #' Creates new columns that measure gaze location relative to the location of
 #' the target image, so that the x and y gaze positions increase the gaze gets
-#' closer to the target. The new columns are \code{XLeftToTarget),
-#' \code{XRightToTarget}, \code{XMeanToTarget}, \code{YLeftToTarget),
+#' closer to the target. The new columns are \code{XLeftToTarget},
+#' \code{XRightToTarget}, \code{XMeanToTarget}, \code{YLeftToTarget},
 #' \code{YRightToTarget}, \code{YMeanToTarget}.
 #'
 #' @details Normally, the x value (as in \code{trial$XMean}) increases as the gaze

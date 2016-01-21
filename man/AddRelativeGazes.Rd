@@ -13,6 +13,13 @@ TrialList where each Trial has these attributes}
 \value{
 the Trial object(s) with the AOI data attached as new columns.
 }
+\description{
+Creates new columns that measure gaze location relative to the location of
+the target image, so that the x and y gaze positions increase the gaze gets
+closer to the target. The new columns are \code{XLeftToTarget},
+\code{XRightToTarget}, \code{XMeanToTarget}, \code{YLeftToTarget},
+\code{YRightToTarget}, \code{YMeanToTarget}.
+}
 \details{
 Normally, the x value (as in \code{trial$XMean}) increases as the gaze
   moves right on screen. When the target is left side of the screen, small x
