@@ -175,3 +175,37 @@ both <- left_join(df_imputed, df2)
 
 # look for mismatches
 both %>% filter(AOI != AOI2)
+
+
+
+# Visual testing
+library("ggplot2")
+df_imputed
+
+
+ggplot(filter(df_imputed, BlockNo == 1)) +
+  aes(x = Time, y = AOI, color = FrameInterpolated, size = FrameInterpolated) +
+  geom_point() +
+  facet_wrap("TrialNo", ncol = 3)
+
+ggplot(filter(df_imputed, BlockNo == 1, TrialNo == 14)) +
+  aes(x = Time, y = AOI, color = FrameInterpolated) +
+  geom_point() +
+  facet_wrap("TrialNo")
+
+
+ggplot(filter(df_imputed, BlockNo == 2)) +
+  aes(x = Time, y = AOI, color = FrameInterpolated, size = FrameInterpolated) +
+  geom_point() +
+  facet_wrap("TrialNo", ncol = 3)
+
+ggplot(filter(df_imputed, BlockNo == 2, TrialNo == 35)) +
+  aes(x = Time, y = AOI, color = FrameInterpolated) +
+  geom_point() +
+  facet_wrap("TrialNo")
+
+ggplot(filter(df_imputed, BlockNo == 2, TrialNo == 26)) +
+  aes(x = Time, y = AOI, color = FrameInterpolated) +
+  geom_point() +
+  facet_wrap("TrialNo")
+
