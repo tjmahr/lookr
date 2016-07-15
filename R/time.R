@@ -15,7 +15,7 @@
 #' @export
 TimeSlice <- function(x, from = lwl_opts$get("timeslice_start"),
                       to = lwl_opts$get("timeslice_end")) {
-  UseMethod('TimeSlice')
+  UseMethod("TimeSlice")
 }
 
 #' @export
@@ -144,8 +144,8 @@ FindClosestFrame <- function(trial, time) {
 #' Assign new times to a trial once it has been aligned at a reference frame
 #'
 #' @param trial a Trial object
-#' @param zero_frame the index of the reference frame that will mark time = 0 in the
-#'   aligned trial
+#' @param zero_frame the index of the reference frame that will mark time = 0 in
+#'   the aligned trial
 #' @param frame_rate the eye-tracker sampling rate. Defaults to
 #'   \code{lwl_constants$ms_per_frame} which is 16.6546ms.
 #' @return the inputted trial object with updated values in its \code{Time}
@@ -167,14 +167,14 @@ AssignNewTimes <- function(trial, zero_frame, frame_rate = lwl_constants$ms_per_
 #' @return the inputted trial object with updated timing attributes
 AdjustTimingMarks <- function(trial, alignment_event) {
   adjust_by <- trial %@% alignment_event
-  events <- c('ImageOnset', 'CarrierOnset', 'CarrierEnd', 'TargetOnset',
-              'TargetEnd', 'AttentionOnset', 'AttentionEnd', 'FixationOnset')
+  events <- c("ImageOnset", "CarrierOnset", "CarrierEnd", "TargetOnset",
+              "TargetEnd", "AttentionOnset", "AttentionEnd", "FixationOnset")
   for (event in events) trial %@% event <- (trial %@% event - adjust_by)
 
   # Add an attribute which tracks where the trial was aligned.
   timing_attributes <- attributes(trial)[names(attributes(trial)) %in% events]
   alignment_names <- names(which(timing_attributes == 0))
-  trial %@% 'AlignedBy' <- alignment_names
+  trial %@% "AlignedBy" <- alignment_names
   trial
 }
 

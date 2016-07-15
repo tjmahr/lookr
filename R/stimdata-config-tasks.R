@@ -37,8 +37,8 @@ GetDialectCode <- function(filename) {
 # the target word, but these are recorded in the stimlog file.
 
 DetermineProtocol <- function (stimlog) {
-  time <- .CheckForStimdataType(stimlog, 'Fixation.OnsetTime')
-  movs <- .CheckForStimdataType(stimlog, 'FixationMovie')
+  time <- .CheckForStimdataType(stimlog, "Fixation.OnsetTime")
+  movs <- .CheckForStimdataType(stimlog, "FixationMovie")
   protocol <- if (movs) "WFF_Movie" else if (time) "WFF_Area" else "NoFixations"
   protocol
 }
@@ -48,29 +48,29 @@ ConfigureProtocol <- function(protocol, stimlog) {
   # We list the stim for the three protocols and choose the appropriate set.
 
   # Stim shared across all protocols in all experiments.
-  shared <- c(TrialNo = 'TrialList',
-              Target = 'Target',
-              WordGroup = 'WordGroup',
-              StimType = 'StimType',
-              ImageOnset = 'Image2sec.OnsetTime',
-              # CarrierDur = 'CarrierDur',
-              Audio = 'AudioStim',
-              Attention = 'Attention',
-              AttentionDur = 'AttentionDur')
+  shared <- c(TrialNo = "TrialList",
+              Target = "Target",
+              WordGroup = "WordGroup",
+              StimType = "StimType",
+              ImageOnset = "Image2sec.OnsetTime",
+              # CarrierDur = "CarrierDur",
+              Audio = "AudioStim",
+              Attention = "Attention",
+              AttentionDur = "AttentionDur")
 
   # Stim shared by the two Wait-For-Fixation protocols.
-  fixation_shared <- c(CarrierOnset = 'CarrierStim.OnsetTime',
-                       FixationOnset = 'Fixation.OnsetTime',
-                       DelayTargetOnset = 'Target.OnsetDelay',
-                       TargetOnset = 'Target.OnsetTime',
-                       TargetDur = 'AudioDur',
-                       CarrierDur = 'CarrierDur')
+  fixation_shared <- c(CarrierOnset = "CarrierStim.OnsetTime",
+                       FixationOnset = "Fixation.OnsetTime",
+                       DelayTargetOnset = "Target.OnsetDelay",
+                       TargetOnset = "Target.OnsetTime",
+                       TargetDur = "AudioDur",
+                       CarrierDur = "CarrierDur")
 
   # Make the stim-lists for each protocol. The `NoFixations` and `WFF_Movie`
   # protocols have an extra stimdata field unique to each one.
-  no_fixation <- c(shared, CarrierOnset = 'AudioStim.OnsetTime')
+  no_fixation <- c(shared, CarrierOnset = "AudioStim.OnsetTime")
   wff_area    <- c(shared, fixation_shared)
-  wff_movie   <- c(shared, fixation_shared, FixationMovie = 'FixationMovie')
+  wff_movie   <- c(shared, fixation_shared, FixationMovie = "FixationMovie")
 
   # Choose the stim based on protocol name
   stim_set <- switch(protocol,
@@ -80,17 +80,17 @@ ConfigureProtocol <- function(protocol, stimlog) {
 
 
   # Some experiments include an Attention.Onset field. (noticed Mar. 2015)
-  attention_onset <- .CheckForStimdataType(stimlog, 'Attention.OnsetTime')
+  attention_onset <- .CheckForStimdataType(stimlog, "Attention.OnsetTime")
 
   if (attention_onset) {
-    stim_set <- c(stim_set, AttentionOnset = 'Attention.OnsetTime')
+    stim_set <- c(stim_set, AttentionOnset = "Attention.OnsetTime")
   }
 
   # Make a stimdata configuration description with the available stimdata info
   config <- MakeStimdataConfig(stim_set)
-  num_stim <- c('AttentionDur', 'CarrierDur', 'TargetDur', 'ImageOnset',
-                'FixationOnset', 'CarrierOnset', 'DelayTargetOnset',
-                'TargetOnset', 'AttentionOnset', 'TrialNo')
+  num_stim <- c("AttentionDur", "CarrierDur", "TargetDur", "ImageOnset",
+                "FixationOnset", "CarrierOnset", "DelayTargetOnset",
+                "TargetOnset", "AttentionOnset", "TrialNo")
   current_num_stim <- num_stim[num_stim %in% names(config$Stim)]
   config <- AddNumerics(config, current_num_stim)
   config <- AddConstants(config, c(Protocol = protocol))
@@ -124,7 +124,7 @@ ConfigureProtocol <- function(protocol, stimlog) {
 
   # Some experiments no longer have attention-getters (effective Nov. 2014).
   # Remove them from the config if they are not referenced in stimlog
-  attention <- .CheckForStimdataType(stimlog, 'Attention')
+  attention <- .CheckForStimdataType(stimlog, "Attention")
   if (!attention) {
     remove_attention <- function(xs) xs[!str_detect(xs, "Attention")]
     config$Stim <- remove_attention(config$Stim)
@@ -143,7 +143,7 @@ DetermineStim <- function(stimlog) UseMethod("DetermineStim")
 
 # Throw an error if the Task is name is invalid.
 DetermineStim.default <- function(stimlog) {
-  error_names <- paste0("\"", class(stimlog), "\"", collapse=", ")
+  error_names <- paste0("\"", class(stimlog), "\"", collapse = ", ")
   stop(paste0("Invalid task name in ", error_names))
 }
 
@@ -204,11 +204,11 @@ DetermineStim.RWL <- function(stimlog) {
   config <- ConfigureProtocol(DetermineProtocol(stimlog), stimlog)
 
   # Load the specific stimuli for this experiment
-  rwl_stim <- c(UpperLeftImage  = 'Image1', UpperRightImage = 'Image2',
-                LowerRightImage = 'Image3', LowerLeftImage  = 'Image4',
-                SemanticFoil = 'SemanticFoil',
-                PhonologicalFoil = 'PhonologicalFoil',
-                Unrelated = 'Unrelated')
+  rwl_stim <- c(UpperLeftImage  = "Image1", UpperRightImage = "Image2",
+                LowerRightImage = "Image3", LowerLeftImage  = "Image4",
+                SemanticFoil = "SemanticFoil",
+                PhonologicalFoil = "PhonologicalFoil",
+                Unrelated = "Unrelated")
   config <- AddStim(config, rwl_stim)
 
   # Add Dialect, Task, Subject, Block constants
@@ -256,16 +256,16 @@ DetermineStim.Coartic <- function(stimlog) {
               StimType = "StimType",
               TargetWord = "TargetWord")
 
-  shared_num <- c(AttentionDur = 'AttentionDur',
-                  ImageOnset = 'Image2sec.OnsetTime',
-                  FixationOnset = 'Fixation.OnsetTime',
-                  TrialNo = 'TrialList')
+  shared_num <- c(AttentionDur = "AttentionDur",
+                  ImageOnset = "Image2sec.OnsetTime",
+                  FixationOnset = "Fixation.OnsetTime",
+                  TrialNo = "TrialList")
 
-  v1_num <- c(CarrierOnset = 'CarrierStim.OnsetTime',
-              CarrierDur = 'CarrierDur',
-              DelayTargetOnset = 'Target.OnsetDelay',
-              TargetOnset = 'Target.OnsetTime',
-              TargetDur = 'AudioDur')
+  v1_num <- c(CarrierOnset = "CarrierStim.OnsetTime",
+              CarrierDur = "CarrierDur",
+              DelayTargetOnset = "Target.OnsetDelay",
+              TargetOnset = "Target.OnsetTime",
+              TargetDur = "AudioDur")
   v1_numerics <- c(names(shared_num), names(v1_num))
   v1_stim <- c(shared, shared_num, v1_num)
   v1_derived <- c("FixationDur <- CarrierOnset - FixationOnset",
@@ -291,7 +291,7 @@ DetermineStim.Coartic <- function(stimlog) {
   v2_config <- MakeStimdataConfig(v2_stim, v2_numerics, v2_constants, v2_derived)
 
 
-  version_2 <- .CheckForStimdataType(stimlog, 'Pitch')
+  version_2 <- .CheckForStimdataType(stimlog, "Pitch")
 
   config <- if (version_2) v2_config else v1_config
 
@@ -308,6 +308,3 @@ DetermineStim.Coartic <- function(stimlog) {
   config
 
 }
-
-
-

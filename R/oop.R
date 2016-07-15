@@ -24,7 +24,7 @@ trial_lapply <- function(trials, trial_func, ...) {
 #' @export
 c.TrialList <- function(trial_list, ...) {
   # Coerce trial_list to a list, so it doesn't infinitely recurse
-  class(trial_list) <- 'list'
+  class(trial_list) <- "list"
   trials <- c(trial_list, ...)
 
   # Single subject, single task: Session
@@ -93,7 +93,7 @@ as.Trial <- function(x) {
 
 #' @rdname lookr_classes
 #' @export
-as.Gazedata<- function(x) {
+as.Gazedata <- function(x) {
   class(x) <- c("Gazedata", "data.frame")
   x
 }

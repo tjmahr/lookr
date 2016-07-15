@@ -68,7 +68,7 @@
 #'   Description & User Guide}
 #' @export
 Gazedata <- function(gazedata_path, output_file = lwl_opts$get("write_gazedata")) {
-  gazedata <- read.delim(gazedata_path, na.strings = c('-1.#INF', '1.#INF'),
+  gazedata <- read.delim(gazedata_path, na.strings = c("-1.#INF", "1.#INF"),
                          stringsAsFactors = FALSE)
 
   # Select/rename columns with experiment information (timing and trial
@@ -119,7 +119,7 @@ Gazedata <- function(gazedata_path, output_file = lwl_opts$get("write_gazedata")
   # one eye, use the available value as the mean.
   compute_monocular_mean <- function(x1, x2) {
     xm <- rowMeans(cbind(x1, x2), na.rm = TRUE)
-    # NaN -> NA
+    # NaN => NA
     ifelse(is.nan(xm), NA, xm)
   }
 
@@ -184,6 +184,7 @@ ParseFilename <- function(filename) {
   subject <- str_extract(file_basename, lwl_constants$l2t_subject)
 
   # Bundle these four data together
-  file_info <- list(Task = task, Block = block, Subject = subject, Basename = file_basename)
+  file_info <- list(Task = task, Block = block, Subject = subject,
+                    Basename = file_basename)
   file_info
 }

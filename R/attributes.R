@@ -54,7 +54,7 @@
 #' @name attributes
 #' @rdname attributes
 #' @export
-`%@%` <- function(x, attribute) UseMethod('%@%')
+`%@%` <- function(x, attribute) UseMethod("%@%")
 
 #' @export
 `%@%.default` <- function(x, attribute) attr(x, attribute, exact = TRUE)

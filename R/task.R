@@ -22,7 +22,7 @@
 #'   could be successfully loaded. If a block could not be loaded, its error
 #'   message is handled using the specified handle function.
 #' @export
-Task <- function(...) UseMethod('Task')
+Task <- function(...) UseMethod("Task")
 
 #' @export
 Task.character <-  function(task_path, partial = NA, handler = warning, ...) {
@@ -73,7 +73,7 @@ ListSubjectsInTaskDir <- function(gaze_dir) {
 #'   could be loaded from \code{subject_path}.
 #' @export
 TryLoad <- function(subject_path, handler = warning) {
-  gaze_files <- dir(subject_path, pattern = 'gazedata', full.names = TRUE)
+  gaze_files <- dir(subject_path, pattern = "gazedata", full.names = TRUE)
   # Attempt to load the blocks
   block_names <- file_path_sans_ext(gaze_files)
   blocks <- lapply(block_names, function(path) try(Block(path)))

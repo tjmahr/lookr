@@ -83,13 +83,13 @@ LoadStimdataFile <- function(stimdata_path) {
   }
 
   # Read in a file connection using the warning handler.
-  con <- file(stimdata_path, open = 'rt', encoding = 'UCS-2LE')
+  con <- file(stimdata_path, open = "rt", encoding = "UCS-2LE")
   withCallingHandlers(stimlog <- readLines(con), warning = HandleWarning)
   close(con)
 
   # If a warning is caught, try connection again with no encoding specified.
   if (0 < length(warned)) {
-    con <- file(stimdata_path, open = 'rt')
+    con <- file(stimdata_path, open = "rt")
     stimlog <- readLines(con)
     close(con)
   }
@@ -121,7 +121,7 @@ ExtractStim <- function(stim_config, stimlog) {
   if (length(drops) != 0) {
     parsed_stimlog <- parsed_stimlog[-drops]
     # Warn the user
-    warn_names <- paste(names(parsed_stimlog)[drops], collapse=", ")
+    warn_names <- paste(names(parsed_stimlog)[drops], collapse = ", ")
     warn <- paste0("Empty stimdata fields: ", warn_names)
     warning(warn)
   }
@@ -146,7 +146,8 @@ ExtractStim <- function(stim_config, stimlog) {
     exp <- parse(text = stim_config$Derived)
     stimdata <- within(stimdata, {
       for (ex in exp) eval(ex)
-      rm(ex)})
+      rm(ex)
+    })
   }
 
   # Include the date and time of the block. `unique` because the date and time

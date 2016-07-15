@@ -197,4 +197,3 @@ FinalizeStimdata.Coartic <- function(stimdata) {
 
 
 flip_image <- function(xs) ifelse(xs == "ImageL", "ImageR", "ImageL")
-# flip_image(c("ImageL", "ImageR"))

@@ -291,4 +291,3 @@ Gap <- function(start, end, na_size) {
     seq = seq(start, end), na_seq = seq(start + 1, end - 1)),
     class = c("Gap", "list"))
 }
-

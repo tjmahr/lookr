@@ -117,4 +117,3 @@ test_that("Non TrialList getter/setter behaviors", {
   # Instead, the attribute is given to the whole list
   expect_match(attr(cats, "FavoriteOwner"), "TJM")
 })
-

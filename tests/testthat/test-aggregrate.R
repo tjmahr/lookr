@@ -90,5 +90,3 @@ test_that("Proportions make sense", {
   expect_equal(two_aoi_agg$PropNA, to_na / 50)
 
 })
-
-

@@ -21,12 +21,12 @@
 #' @param ... Additional arguments passed onto S3 methods. Currently ignored.
 #' @return A Session object.
 #' @export
-Session <- function(...) UseMethod('Session')
+Session <- function(...) UseMethod("Session")
 
 #' @export
 Session.character <- function(session_path, ...) {
   # Get all the .gazedata files that are in the session directory.
-  gazedata_files <- dir(session_path, pattern = 'gazedata', full.names = TRUE)
+  gazedata_files <- dir(session_path, pattern = "gazedata", full.names = TRUE)
   if (length(gazedata_files) == 0) {
     stop(paste0("No `.gazedata` files found in ", session_path))
   }
@@ -68,12 +68,12 @@ Session.list <- function(blocks, ...) {
 #'   represented as a data.frame of its gazedata, augmented with attributes for
 #'   the stimdata.
 #' @export
-Block <- function(...) UseMethod('Block')
+Block <- function(...) UseMethod("Block")
 
 #' @export
 Block.character <- function(block_path, ...) {
-  gazedata <- Gazedata(paste0(block_path, '.gazedata'))
-  stimdata <- Stimdata(paste0(block_path, '.txt'))
+  gazedata <- Gazedata(paste0(block_path, ".gazedata"))
+  stimdata <- Stimdata(paste0(block_path, ".txt"))
   Block(gazedata, stimdata)
 }
 

@@ -45,4 +45,3 @@ test_that("trial_lapply works and preserves classes", {
   expect_is(blck_1, c("Block"))
   expect_is(task_1, c("Task"))
 })
-

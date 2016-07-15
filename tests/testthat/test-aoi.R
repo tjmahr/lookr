@@ -84,8 +84,3 @@ test_that("Four Image Task: Left < .5 < Right, Down < .5 < Up", {
   expect_true(all(lefts < .5))
   expect_true(all(.5 < rights))
 })
-
-
-
-
-

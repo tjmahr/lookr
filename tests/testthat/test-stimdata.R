@@ -142,13 +142,11 @@ for (task_test in task_tests) {
       with(stimdata, {
         expect_true(all(ImageOnset < CarrierOnset))
         expect_true(all(CarrierOnset < TargetOnset))
-#         expect_true(all(TargetOnset < AttentionOnset))
       })
     })
 
     test_that("Events add up", {
       with(stimdata, {
-#         expect_equivalent(AttentionEnd, AttentionOnset + AttentionDur)
         expect_equivalent(CarrierEnd, CarrierOnset + CarrierDur)
         expect_equivalent(TargetEnd, TargetOnset + TargetDur)
         expect_equivalent(TargetOnset, CarrierOnset + CarrierDur +
@@ -165,4 +163,3 @@ for (task_test in task_tests) {
     })
   }
 }
-
