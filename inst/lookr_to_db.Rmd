@@ -3,8 +3,7 @@ title: "Normalizing Eyetracking Data"
 author: "Tristan Mahr"
 date: "October 22, 2015"
 output: 
-  html_document: 
-    keep_md: yes
+  rmarkdown::github_document
 ---
 
 ## Gameplan
@@ -39,7 +38,6 @@ Use lookr to load and reduce some eye-tracking data.
 ```{r, warning = FALSE, message = FALSE}
 library("knitr")
 library("lookr")
-library("purrr") # manipulate lists
 library("dplyr") # manipulate tables
 library("tidyr") # wide/long tables
 
@@ -118,7 +116,7 @@ collect_looks <- function(x) {
   x
 }
 
-looks <- trials %>% map(collect_looks) %>% bind_rows
+looks <- trials %>% purrr::map_df(collect_looks)
 
 # Convert screen proportions to pixel locations
 tbl_looks <- looks %>% 
@@ -231,8 +229,7 @@ get_corrected_times <- function(x) {
 }
 
 interpolated_times <- trials %>% 
-  map(get_corrected_times) %>% 
-  bind_rows
+  purrr::map_df(get_corrected_times)
 
 # Do something similar with the bias measurements. Create a dataframe
 # summarizing which AOI was viewed the most/earliest during the bias window.
@@ -257,8 +254,7 @@ get_bias_measures <- function(x, window) {
 }
 
 bias_summary <- trials %>% 
-  map(get_bias_measures, window = bias_window) %>% 
-  bind_rows %>% 
+  purrr::map_df(get_bias_measures, window = bias_window) %>% 
   gather(Key, Value, -TrialName)
 
 tbl_trial_attrs <- tbl_trial_attrs_gb %>% 
@@ -266,6 +262,8 @@ tbl_trial_attrs <- tbl_trial_attrs_gb %>%
     arrange(TrialName, Key, Value)
 pryr::object_size(tbl_trial_attrs)
 tbl_trial_attrs
+
+tbl_trial_attrs %>% distinct(Key)
 ```
 
-Now these tables can be inserted into the database with the following steps.
+
