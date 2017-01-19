@@ -1,5 +1,5 @@
 context("Time related functions")
-trials <- suppressMessages(Session("data/RWL_WFFArea_Long/001P00XS1/"))
+trials <- suppressMessages(Session(test_path("data/RWL_WFFArea_Long/001P00XS1/")))
 
 test_that("TimeSlice works on correctly for different input types", {
   trial <- trials[[1]]
@@ -28,13 +28,18 @@ test_that("TimeSlice works on correctly for different input types", {
   expect_equal(c(-200, 2000), range(rep_num_times$Time), tol = rate, scale = 1)
 
   # Warn when window is too big
-  expect_warning(TimeSlice(num_times, -300, 2000), "Using new window -216:2000")
-  expect_warning(TimeSlice(num_times, 0, 3000), "Using new window 0:2015")
+  expect_warning(
+    TimeSlice(num_times, -300, 2000),
+    regexp = "Using new window -216:2000")
+
+  expect_warning(
+    TimeSlice(num_times, 0, 3000),
+    regexp = "Using new window 0:2015")
 
   # Accommodate oversized window
-  too_early <- TimeSlice(num_times, -500, 2000)
+  too_early <- suppressWarnings(TimeSlice(num_times, -500, 2000))
   expect_equal(min(too_early$Time), min(num_times$Time))
-  too_late <- TimeSlice(num_times, -500, 20000)
+  too_late <- suppressWarnings(TimeSlice(num_times, -500, 20000))
   expect_equal(max(too_early$Time), max(num_times$Time))
 })
 
@@ -79,7 +84,7 @@ test_that("AdjustTimes updates times and event attributes", {
   raw_rate <- mean(raw_sample_lags)
   adj_rate <- mean(adj_sample_lags)
   # Within .01 units
-  expect_less_than(abs(raw_rate - adj_rate), .01)
+  expect_lt(abs(raw_rate - adj_rate), .01)
 })
 
 
