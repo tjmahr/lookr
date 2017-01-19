@@ -1,6 +1,6 @@
 context("Attributes functions")
-
-trials <- suppressMessages(Session("data/RWL_WFFArea_Long/001P00XA1/"))
+test_session <- test_path("data/RWL_WFFArea_Long/001P00XA1/")
+trials <- suppressMessages(Session(test_session))
 trial <- trials[[1]]
 
 
@@ -64,9 +64,13 @@ test_that("Values are recycled in multiple assignment", {
 })
 
 
-test_that("gathering attributes into dataframes", {
+test_that("Gathering attributes into dataframes", {
+  # An attribute that is only present on some objects
+  trials[[1]] %@% "MaybeThere" <- 1
+  trials[[2]] %@% "MaybeThere" <- numeric(0)
+
   # Input with some named attributes
-  attrs <- c(Subj = "Subject", "TrialNo", "Fake")
+  attrs <- c(Subj = "Subject", "TrialNo", "Fake", Maybe = "MaybeThere")
   results <- gather_attributes(trials, attrs)
 
   # Values stored correctly
@@ -74,8 +78,7 @@ test_that("gathering attributes into dataframes", {
   expect_equal(results$Subj, trials %@% "Subject")
 
   # Column names
-  expect_equal(names(results), c("Subj", "TrialNo", "Fake"))
-  attrs <- c(Subj = "Subject", "TrialNo", "Fake")
+  expect_equal(names(results), c("Subj", "TrialNo", "Fake", "Maybe"))
 
   # Input with one unnamed string
   results2 <- gather_attributes(trials, "Fake")

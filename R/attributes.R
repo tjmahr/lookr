@@ -146,13 +146,17 @@ gather_attributes <- function(x, attrs, omit_na = FALSE) {
   if (is.null(names(attrs))) names(attrs) <- attrs
   names(attrs) <- ifelse(names(attrs) == "", attrs, names(attrs))
 
-  # Get each attribute
-  get_this_attr <- function(this_attr) x %try@% this_attr
-  attr_list <- lapply(attrs, get_this_attr)
+  # Get a one-row dataframe of these attributes
+  get_attrs_df <- function(element) {
+    attr_list <- lapply(attrs, function(one_attr) element %try@% one_attr)
+    as.data.frame(attr_list, stringsAsFactors = FALSE)
+  }
 
-  # List names are inherited from the names of the attrs
-  stopifnot(names(attr_list) == names(attrs))
-  attr_table <- as.data.frame(attr_list, stringsAsFactors = FALSE)
+  # Get a data-frame for each thing in x and bind rows together
+  attr_table <- plyr::ldply(x, get_attrs_df)
+
+  # Column names are inherited from the names of the attrs
+  stopifnot(names(attr_table) == names(attrs))
 
   if (omit_na) {
     # Which columns have all NA values
