@@ -1,4 +1,11 @@
-
+utils::globalVariables(
+  c("XLeft", "XRight", "XMean", "YLeft", "YRight", "YMean",
+    "ZLeft", "ZRight", "DiameterLeft", "DiameterRight",
+    "Location", "Stimulus", "DwellTime", "TotalDwellTime",
+    "Others", "Target", "NAs", "Elsewhere", "Proportion", "Looks",
+    "Time", "Frames", "WindowDur", "LastPossible", "FirstLook", "Weight",
+    "Earliness"),
+  add = TRUE)
 
 #' Transform gazedata coordinates into AOI data
 #'
