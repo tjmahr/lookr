@@ -1,7 +1,7 @@
 lookr
 =====
 
-`lookr` provided a set of tools for analyzing looking-while-listening eye-tracking experiments performed by the [Learning to Talk](http://learningtotalk.org/) project (2010--2016). 
+`lookr` provided a set of tools for analyzing looking-while-listening eye-tracking experiments performed by the [Learning to Talk](http://learningtotalk.org/) project (2010&ndash;2016). 
 
 ### References
 
