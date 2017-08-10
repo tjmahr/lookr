@@ -16,4 +16,3 @@ a numeric vector with the number of frames in each \code{Trial}.
 Get the lengths (in frames) of a list of trials
 }
 \keyword{internal}
-

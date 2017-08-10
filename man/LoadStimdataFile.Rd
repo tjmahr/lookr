@@ -25,4 +25,3 @@ is encountered, the warning is muffled and the file is loaded again, this
 time without specifying the encoding beforehand. If a warning is encountered
 on this second attempt, it is printed to the console.
 }
-

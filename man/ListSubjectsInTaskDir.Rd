@@ -17,4 +17,3 @@ a character vector of the subdirectories that begins with three
 \description{
 This is the first step in gathering all the data in an LWL experimental task.
 }
-

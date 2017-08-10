@@ -30,4 +30,3 @@ Normally, the x value (as in \code{trial$XMean}) increases as the gaze
   regardless of which side of the screen the target was on. An analogous
   transformation is done for the y coordinate.
 }
-

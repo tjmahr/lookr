@@ -22,4 +22,3 @@ a single data-frame containing the Time and GazeByImageAOI data from
 \description{
 Convert Trial and list of Trials into a long data-frame
 }
-

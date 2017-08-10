@@ -23,4 +23,3 @@ hat raised an error. The default is to \code{print} the file-path.}
 encounters an error, it catches the error and moves on to the next in the
 subject directory.
 }
-

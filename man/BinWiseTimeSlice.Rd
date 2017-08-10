@@ -32,4 +32,3 @@ This function extends the time interval for extraction to the nearest bin.
 The result is that the number of time frames in the extracted interval is
 evenly divisible by the bin size.
 }
-

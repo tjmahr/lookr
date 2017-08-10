@@ -30,4 +30,3 @@ assigned a class based on the task in the filename, and then methods for
 extracting the stimdata are dispatched based on that class value. Valid task
 names include "RWL", "MP", and "Coartic".
 }
-

@@ -19,4 +19,3 @@ a numeric vector listing the frames at which the desired time occurs
 Get the frame number for a certain Time value in a list of Trials
 }
 \keyword{internal}
-

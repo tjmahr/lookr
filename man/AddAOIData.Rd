@@ -27,4 +27,3 @@ particular frame, the value is \code{NA}.
 
 "AOI" stands for Area of Interest.
 }
-

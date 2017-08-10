@@ -22,4 +22,3 @@ the inputted trial object with updated values in its \code{Time}
 \description{
 Assign new times to a trial once it has been aligned at a reference frame
 }
-

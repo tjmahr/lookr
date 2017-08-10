@@ -19,4 +19,3 @@ The number of the frame of the trial whose time is closest to the
 If two frames are temporally equidistant from the given time, choose the
 earlier frame.
 }
-

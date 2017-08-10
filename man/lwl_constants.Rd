@@ -12,4 +12,3 @@ lwl_constants
 Package-wide constants
 }
 \keyword{datasets}
-

@@ -18,4 +18,3 @@ The basename of a file in a Looking While Listening task conforms to the
 naming convention: [Task]_[BlockNo]_[SubjectID]. Block names are reduced to
 just the integer value, i.e., \code{"Block1"} becomes \code{1}.
 }
-

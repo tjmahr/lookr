@@ -28,4 +28,3 @@ a list with the class \code{StimConfig}. This list has four slots:
 \code{MakeStimdataConfig} specifies how \code{ExtractStim} processes an
 Eprime stimdata file.
 }
-

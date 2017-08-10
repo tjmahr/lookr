@@ -26,4 +26,3 @@ Dale Barr's
 \href{http://talklab.psy.gla.ac.uk/tvw/elogit-wt.html}{Walkthrough of an
 "empirical logit" analysis in R}
 }
-

@@ -19,4 +19,3 @@ a list specifying the boundaries of the named AOI
 Get the boundaries of an Area of Interest from its name
 }
 \keyword{internal}
-

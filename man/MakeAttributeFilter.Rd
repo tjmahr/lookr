@@ -20,4 +20,3 @@ a function \code{f(trials, attr_values)} that filters out trials with
 \description{
 This is a higher-order function.
 }
-

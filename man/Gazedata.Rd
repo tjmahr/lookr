@@ -81,4 +81,3 @@ Information about the stimuli for each trial is extracted from the associated
 \href{http://bit.ly/1AtKyhR}{Tobii Toolbox for Matlab: Product
   Description & User Guide}
 }
-

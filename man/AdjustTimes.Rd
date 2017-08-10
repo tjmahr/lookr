@@ -22,4 +22,3 @@ the Time column of the Trial(s) is updated so that time 0 occurs at
 \description{
 Adjust trial times using a trial attribute
 }
-

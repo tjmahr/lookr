@@ -24,4 +24,3 @@ AOI (\code{Elsewhere}), number of looks total (\code{Looks}), proportion of
 looks to target versus competing AOIs (\code{Proportion}), and proportion of
 looks that are NA (\code{PropNA})
 }
-

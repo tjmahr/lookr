@@ -28,4 +28,3 @@ the Time column of the Trial(s) is updated so that minimum time is
 \description{
 Extract an interval of time in a Trial
 }
-

@@ -22,4 +22,3 @@ a vector of boolean values indicating whether each x in \code{xs}
 Check whether values in a vector each fall between an upper and lower bound
 }
 \keyword{internal}
-

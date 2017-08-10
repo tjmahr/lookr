@@ -27,4 +27,3 @@ y-boundaries of an image to screen proportions. Note that the coordinate
 (0,0) is the lower-left corner of the screen.
 }
 \keyword{internal}
-

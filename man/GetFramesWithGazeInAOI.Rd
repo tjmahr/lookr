@@ -20,4 +20,3 @@ a vector of boolean values indicating whether the gaze values fall
 Get frames with gazedata within an Area of interest
 }
 \keyword{internal}
-

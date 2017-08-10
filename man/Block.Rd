@@ -36,4 +36,3 @@ Block.character is a function for initializing a Block object from the full
 file path of the block, excluding its extension (since the extension is
 different for the stimdata and gazedata files).
 }
-

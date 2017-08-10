@@ -33,4 +33,3 @@ for blocks of an experimental session.
 \code{Session.list} is a (largely internal) method for initializing a Session
 object from a list of Block objects.
 }
-

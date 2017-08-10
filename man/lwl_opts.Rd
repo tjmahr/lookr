@@ -16,4 +16,3 @@ Below is a list of default package options, retrieved via
 \code{lwl_opts$get()}: \Sexpr[results=verbatim]{str(lookr::lwl_opts$get())}
 }
 \keyword{datasets}
-

@@ -18,4 +18,3 @@ the Trial object(s) with missing data interpolated
 \description{
 Interpolate missing gaze data
 }
-

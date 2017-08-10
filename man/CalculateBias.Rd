@@ -29,4 +29,3 @@ fixation. In that same 6 frame window, if 3 frames are spent each on 2 AOIs,
 the weights would be tied, so the AOI that was fixated on first would be
 chosen.
 }
-

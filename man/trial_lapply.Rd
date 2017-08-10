@@ -17,4 +17,3 @@ trial_lapply(trials, trial_func, ...)
 This function is just a wrapper for \code{lapply} that makes sure that the
 classes of the inputted list are preserved in the outputted list.
 }
-

@@ -9,4 +9,3 @@ ReduceTrials(trials)
 \description{
 Shortcut for reduction
 }
-

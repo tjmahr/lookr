@@ -18,4 +18,3 @@ a data-frame with original time values and an \code{ot} column for
 \description{
 Compute orthogonal times
 }
-

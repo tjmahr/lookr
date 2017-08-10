@@ -21,4 +21,3 @@ function performs this calculation, updating trials with a new attribute
 \code{AvgGazeContact}. This value measures the average duration (ms) of each
 segment of uninterrupted eye-tracking data in a trial.
 }
-

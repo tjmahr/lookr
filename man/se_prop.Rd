@@ -17,4 +17,3 @@ the standard errors of the proportion estimates
 \description{
 See http://www.r-tutor.com/elementary-statistics/interval-estimation/interval-estimate-population-proportion
 }
-

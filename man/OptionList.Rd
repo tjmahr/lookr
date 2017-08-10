@@ -62,4 +62,3 @@ lwl_opts
 # $timeslice_end
 # [1] 2000
 }
-

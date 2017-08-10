@@ -26,4 +26,3 @@ This function is intended to abstract over the pattern of writing code like
 instead allowing us to write \code{gather_attributes(trials, c("x", ZName =
 z))}.
 }
-

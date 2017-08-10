@@ -19,4 +19,3 @@ the Trial object(s) updated to include a \code{DwellSummary}
 A "dwell" is an uninterrupted gaze. This function calculates the longest
 dwell time per image and the total time dwelling in each trial.
 }
-

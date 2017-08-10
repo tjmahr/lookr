@@ -20,4 +20,3 @@ the Trial object(s) updated to include attributes about the amount of
 \description{
 Calculate the amount of missing data in a list of Trials
 }
-

@@ -36,4 +36,3 @@ A \code{Task} object is a list of \code{Trial} objects, which all have the
 same \code{"Task"} attribute but do not have the same \code{"Subject"}
 attribute.
 }
-

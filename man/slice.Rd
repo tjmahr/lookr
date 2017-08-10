@@ -17,4 +17,3 @@ a list with the elements of `xs` partitioned into `step`-sized chunks
 \description{
 Divide a vector into equal-sized chunks, except for maybe the last one
 }
-

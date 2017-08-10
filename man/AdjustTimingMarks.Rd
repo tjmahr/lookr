@@ -19,4 +19,3 @@ the inputted trial object with updated timing attributes
 Adjust the event-timing attributes of a trial
 }
 \keyword{internal}
-
