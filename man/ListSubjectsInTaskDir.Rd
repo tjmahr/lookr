@@ -7,7 +7,7 @@
 ListSubjectsInTaskDir(gaze_dir)
 }
 \arguments{
-\item{the}{path to a directory containing subject subdirectories}
+\item{gaze_dir}{the path to a directory containing subject subdirectories}
 }
 \value{
 a character vector of the subdirectories that begins with three

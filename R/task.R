@@ -25,6 +25,7 @@
 Task <- function(...) UseMethod("Task")
 
 #' @export
+#' @rdname Task
 Task.character <-  function(task_path, partial = NA, handler = warning, ...) {
   # Find subject subdirectories
   paths <- ListSubjectsInTaskDir(task_path)
@@ -44,7 +45,7 @@ Task.character <-  function(task_path, partial = NA, handler = warning, ...) {
 #'
 #' This is the first step in gathering all the data in an LWL experimental task.
 #'
-#' @param the path to a directory containing subject subdirectories
+#' @param gaze_dir the path to a directory containing subject subdirectories
 #' @return a character vector of the subdirectories that begins with three
 #'   digits followed by "C", "L", "P" or "X" --- i.e., paths that begin
 #'   with a L2T subject identifier.

@@ -2,9 +2,12 @@
 % Please edit documentation in R/task.R
 \name{Task}
 \alias{Task}
+\alias{Task.character}
 \title{Load the sessions for an experimental task}
 \usage{
 Task(...)
+
+\method{Task}{character}(task_path, partial = NA, handler = warning, ...)
 }
 \arguments{
 \item{...}{Additional arguments passed onto S3 methods. Currently ignored.}

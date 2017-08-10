@@ -2,9 +2,15 @@
 % Please edit documentation in R/session.R
 \name{Block}
 \alias{Block}
+\alias{Block.character}
+\alias{Block.Gazedata}
 \title{Combine gaze- and stimdata for an experimental Block}
 \usage{
 Block(...)
+
+\method{Block}{character}(block_path, ...)
+
+\method{Block}{Gazedata}(gazedata, stimdata, ...)
 }
 \arguments{
 \item{...}{Additional arguments passed onto S3 methods. Currently ignored.}

@@ -2,10 +2,17 @@
 % Please edit documentation in R/shortcuts.R
 \name{ReduceTrials}
 \alias{ReduceTrials}
-\title{Shortcut for reduction}
+\title{Reduce trial data using conventional steps and default options}
 \usage{
 ReduceTrials(trials)
 }
+\arguments{
+\item{trials}{a TrialList}
+}
+\value{
+the trials with times adjusted, time-sliced to interval of an
+  interest, AOIs added, interpolated frames, and missing data calculated.
+}
 \description{
-Shortcut for reduction
+Reduce trial data using conventional steps and default options
 }

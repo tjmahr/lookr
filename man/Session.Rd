@@ -2,9 +2,15 @@
 % Please edit documentation in R/session.R
 \name{Session}
 \alias{Session}
+\alias{Session.character}
+\alias{Session.list}
 \title{Create a Session from multiple LWL Blocks}
 \usage{
 Session(...)
+
+\method{Session}{character}(session_path, ...)
+
+\method{Session}{list}(blocks, ...)
 }
 \arguments{
 \item{...}{Additional arguments passed onto S3 methods. Currently ignored.}
@@ -12,7 +18,7 @@ Session(...)
 \item{session_path}{The directory path of both pairs of .gazedata and .txt
 files for the session---one pair for each block.}
 
-\item{list_of_blocks}{A list of Block objects, each Block object a block of
+\item{blocks}{A list of Block objects, each Block object a block of
 the same experimental session. The Block objects in list_of_blocks should
 be ordered as they were presented during the experiment. That is, Block 1
 of the experiment should be the first element of list_of_blocks, etc.}

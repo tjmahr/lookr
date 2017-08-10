@@ -8,10 +8,6 @@ MakeAttributeFilter(attr_name)
 }
 \arguments{
 \item{attr_name}{the name of attribute to filter by}
-
-\item{trials}{a list of Trial objects}
-
-\item{attr_value}{a vector of values to filter out}
 }
 \value{
 a function \code{f(trials, attr_values)} that filters out trials with
@@ -19,4 +15,13 @@ a function \code{f(trials, attr_values)} that filters out trials with
 }
 \description{
 This is a higher-order function.
+}
+\details{
+The function returns a higher order function with the \code{attr_name} fixed.
+Details about the returned function:
+\describe{
+  \item{Usage}{\code{MakeAttributeFilter(attr_name)(trials, attr_value)}}
+  \item{\code{trials}}{trials a list of Trial objects}
+  \item{\code{attr_value}}{a vector of values to filter out}
+}
 }

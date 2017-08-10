@@ -14,7 +14,7 @@
 #'
 #' @param session_path The directory path of both pairs of .gazedata and .txt
 #'   files for the session---one pair for each block.
-#' @param list_of_blocks A list of Block objects, each Block object a block of
+#' @param blocks A list of Block objects, each Block object a block of
 #'   the same experimental session. The Block objects in list_of_blocks should
 #'   be ordered as they were presented during the experiment. That is, Block 1
 #'   of the experiment should be the first element of list_of_blocks, etc.
@@ -24,6 +24,7 @@
 Session <- function(...) UseMethod("Session")
 
 #' @export
+#' @rdname Session
 Session.character <- function(session_path, ...) {
   # Get all the .gazedata files that are in the session directory.
   gazedata_files <- dir(session_path, pattern = "gazedata", full.names = TRUE)
@@ -38,6 +39,7 @@ Session.character <- function(session_path, ...) {
 }
 
 #' @export
+#' @rdname Session
 Session.list <- function(blocks, ...) {
   # Create a Session object by concatenating all of the blocks.
   do.call(c, blocks)
@@ -71,6 +73,7 @@ Session.list <- function(blocks, ...) {
 Block <- function(...) UseMethod("Block")
 
 #' @export
+#' @rdname Block
 Block.character <- function(block_path, ...) {
   gazedata <- Gazedata(paste0(block_path, ".gazedata"))
   stimdata <- Stimdata(paste0(block_path, ".txt"))
@@ -78,6 +81,7 @@ Block.character <- function(block_path, ...) {
 }
 
 #' @export
+#' @rdname Block
 Block.Gazedata <- function(gazedata, stimdata, ...) {
   # For each trial in the block, combine the gazedata and stimdata.
   trials <- lapply(stimdata$TrialNo, CombineGazedataStimdata(gazedata, stimdata))
@@ -96,11 +100,17 @@ Block.Gazedata <- function(gazedata, stimdata, ...) {
 #' @keywords internal
 #' @param gazedata A Gazedata object.
 #' @param stimdata A Stimdata object.
-#' @param trial_number The trial number of the trial whose gazedata and stimdata
-#'   will be combined.
 #' @return A data.frame of the gazedata, augmented with attributes for the
 #'   stimdata.
-#' @usage CombineGazedataStimdata(gazedata, stimdata)(trial_number)
+#' @details The function returns a higher order function with the
+#'   \code{gazedata} and \code{stimdata} fixed. Details about the returned
+#'   function:
+#' \describe{
+#'   \item{Usage}{
+#'   \code{CombineGazedataStimdata(gazedata, stimdata)(trial_number)}}
+#'   \item{\code{trial_number}}{The trial number of the trial whose gazedata
+#'   and stimdata will be combined.}
+#' }
 CombineGazedataStimdata <- function(gazedata, stimdata) {
   # A function that when applied to a trial number returns the combined
   # gazedata and stimdata (in the manner described above) for the trial.
