@@ -19,3 +19,4 @@ Suggests:
     testthat,
     dplyr
 RoxygenNote: 6.0.1
+BugReports: https://github.com/tjmahr/lookr/issues
