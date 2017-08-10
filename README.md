@@ -1,23 +1,22 @@
 lookr
 =====
 
-`lookr` provided a set of tools for analyzing looking-while-listening eye-tracking experiments performed by the [Learning to Talk](http://learningtotalk.org/) project (2010&ndash;2016). 
+[![Travis-CI Build Status](https://travis-ci.org/tjmahr/lookr.svg?branch=master)](https://travis-ci.org/tjmahr/lookr)
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](http://www.repostatus.org/badges/latest/inactive.svg)](http://www.repostatus.org/#inactive)
+
+`lookr` provided a set of tools for analyzing looking-while-listening eye-tracking experiments performed by the [Learning to Talk](http://learningtotalk.org/) project (2010–2016). 
 
 ### References
 
-Core references on the looking-while-listening experiment paradigm are listed below.
+Helpful references on analyzing looking-while-listening or visual world eyetracking experiments are listed below.
 
-* Barr, D. J. (2008). __Analyzing "visual world" eyetracking data using multilevel logistic regression__. _Journal of Memory and Language_, _59_(4), 457--474. `doi:10.1016/j.jml.2007.09.002`
-
-* Barr, D. J., Gann, T. M., & Pierce, R. S. (2011). __Anticipatory baseline effects and information integration in visual world studies__. _Acta psychologica_, _137_(2), 201--207.
-
-* Fernald, A., Zangl, R., Portillo, A. L., & Marchman, V. A. (2008). __Looking while listening: Using eye movements to monitor spoken language comprehension by infants and young children__. In I. A. Sekerina, E. M. Fernández, & H. Clahsen (Eds.), _Developmental Psycholinguistics: On-line methods in children's language processing_ (pp. 97--135). Retrieved from http://psych.stanford.edu/~babylab/pdfs/LWL.2008.pdf
+* Barr, D. J. (2008). __Analyzing "visual world" eyetracking data using multilevel logistic regression__. _Journal of Memory and Language_, _59_(4), 457–474. `doi:10.1016/j.jml.2007.09.002`
 
 * Mirman, D. (2014). **_Growth Curve Analysis and Visualization Using R_**. Florida, USA: Chapman & Hall/CRC. 
 
 ### See Also
 
-Here are some things I've bookmarked or starred over the years.
+Here are some eyetracking references that I've bookmarked or starred over the years.
 
 * [Dan Mirman's growth curve analysis guide](http://www.danmirman.org/gca)
 * [Code for my 2015 Cognition article](https://github.com/tjmahr/2015_Coartic) where I conduct a Mirman-style growth curve analysis.
