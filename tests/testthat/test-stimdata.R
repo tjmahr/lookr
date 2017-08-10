@@ -1,8 +1,14 @@
 
 context("Fetching values from Eprime files")
 
-stimdata_path <- "data/MP_NoFixations_CS1/001P00XA1/MP_Block2_001P00XA1.txt"
+stimdata_path <- test_path("data/MP_NoFixations_CS1/001P00XA1/MP_Block2_001P00XA1.txt")
 stimlog <- suppressMessages(LoadStimdataFile(stimdata_path))
+
+test_that("Handling dates from Eprime files", {
+  stim <- Stimdata(stimdata_path)
+  expect_true(stim$DateTime[1] == "2013-01-11 13:08:54")
+})
+
 
 test_that("Get Values", {
   # Works as expected. Test on experimental conditions.

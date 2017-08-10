@@ -104,7 +104,6 @@ LoadStimdataFile <- function(stimdata_path) {
 
 
 #' @keywords internal
-#' @importFrom lubridate mdy hms
 ExtractStim <- function(stim_config, stimlog) {
   # Get the values from the stimdata file
   stim <- stim_config$Stim
@@ -154,7 +153,7 @@ ExtractStim <- function(stim_config, stimlog) {
   # are recorded twice (at the beginning and end of the experiment).
   date <- unique(.GetValuesOfStimdataType(stimlog)("SessionDate"))
   time <- unique(.GetValuesOfStimdataType(stimlog)("SessionTime"))
-  datetime <- mdy(date, quiet = TRUE) + hms(time)
+  datetime <- lubridate::mdy(date, quiet = TRUE) + lubridate::hms(time)
   stimdata$DateTime <- as.character(datetime)
 
   stimdata
